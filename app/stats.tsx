@@ -1,10 +1,111 @@
 import React from 'react';
-import { View, Text, ScrollView, Dimensions, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, ScrollView, Dimensions, TouchableOpacity, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BarChart } from 'react-native-gifted-charts';
 import { Music, ShoppingBag, MonitorPlay, Briefcase, Zap } from 'lucide-react-native';
 import { useSubStore } from '../store/useSubStore';
 import { GlassCard } from '../components/ui/GlassCard';
+
+const CategoryCard = ({ title, count, icon: Icon, color, height = 200, category, selectedCategory, onSelect }: any) => {
+    const subscriptions = useSubStore((state) => state.subscriptions);
+    const [flipAnim] = React.useState(new Animated.Value(0));
+    const isFlipped = selectedCategory === title;
+
+    React.useEffect(() => {
+      Animated.spring(flipAnim, {
+        toValue: isFlipped ? 180 : 0,
+        friction: 8,
+        tension: 10,
+        useNativeDriver: true,
+      }).start();
+    }, [isFlipped]);
+
+    const flipToFrontStyle = {
+      transform: [
+        { rotateY: flipAnim.interpolate({ inputRange: [0, 180], outputRange: ['0deg', '180deg'] }) }
+      ],
+    };
+
+    const flipToBackStyle = {
+      transform: [
+        { rotateY: flipAnim.interpolate({ inputRange: [0, 180], outputRange: ['180deg', '360deg'] }) }
+      ],
+    };
+
+    const subs = React.useMemo(() => {
+      if (!category) return [];
+      return subscriptions.filter(s => s.category === category);
+    }, [category, subscriptions]);
+
+    return (
+      <TouchableOpacity 
+          onPress={() => onSelect(isFlipped ? null : title)}
+          activeOpacity={0.8}
+          style={{ width: '48%', marginBottom: 16, height }}
+      >
+          {/* Front of Card */}
+          <Animated.View style={[{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden' }, flipToFrontStyle]}>
+              <GlassCard style={{ height: '100%' }}>
+                  <View style={{ flex: 1, justifyContent: 'space-between' }}>
+                      <View style={{ alignItems: 'flex-end' }}>
+                          <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.1)', justifyContent: 'center', alignItems: 'center' }}>
+                               <Icon color={color} size={20} />
+                          </View>
+                      </View>
+                      <View>
+                          <Text style={{ color: '#FFFFFF', fontSize: 24, fontWeight: 'bold', marginBottom: 4 }}>{title}</Text>
+                          <Text style={{ color: '#94A3B8', fontSize: 14 }}>{count} subs</Text>
+                      </View>
+                  </View>
+              </GlassCard>
+          </Animated.View>
+
+          {/* Back of Card */}
+          <Animated.View style={[{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden' }, flipToBackStyle]}>
+              <GlassCard style={{ height: '100%' }}>
+                  <View style={{ flex: 1 }}>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                          <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' }}>{title}</Text>
+                          <Text style={{ color: '#94A3B8', fontSize: 12 }}>{subs.length}</Text>
+                      </View>
+                      <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+                          {subs.map((sub, idx) => (
+                              <View 
+                                  key={sub.id} 
+                                  style={{ 
+                                      flexDirection: 'row', 
+                                      justifyContent: 'space-between', 
+                                      alignItems: 'center',
+                                      backgroundColor: 'rgba(255,255,255,0.05)',
+                                      padding: 8,
+                                      borderRadius: 12,
+                                      marginBottom: 6,
+                                      borderWidth: 1,
+                                      borderColor: 'rgba(255,255,255,0.1)'
+                                  }}
+                              >
+                                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
+                                      <View style={{ width: 28, height: 28, borderRadius: 14, justifyContent: 'center', alignItems: 'center', backgroundColor: sub.color + '20' }}>
+                                          <Text style={{ fontSize: 12, fontWeight: 'bold', color: sub.color }}>{sub.name[0]}</Text>
+                                      </View>
+                                      <View style={{ flex: 1 }}>
+                                          <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: '600' }} numberOfLines={1}>{sub.name}</Text>
+                                          <Text style={{ color: '#94A3B8', fontSize: 10 }}>{sub.cycle}</Text>
+                                      </View>
+                                  </View>
+                                  <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: 'bold' }}>{sub.currency}{sub.price.toFixed(2)}</Text>
+                              </View>
+                          ))}
+                          {subs.length === 0 && (
+                              <Text style={{ color: '#94A3B8', textAlign: 'center', marginTop: 20, fontSize: 12 }}>No subscriptions</Text>
+                          )}
+                      </ScrollView>
+                  </View>
+              </GlassCard>
+          </Animated.View>
+      </TouchableOpacity>
+    );
+  };
 
 export default function Stats() {
   const screenWidth = Dimensions.get('window').width;
@@ -62,38 +163,6 @@ export default function Stats() {
 
   // Calculate category counts
   const getCategoryCount = (cat: string) => subscriptions.filter(s => s.category === cat).length;
-  
-  // Get subscriptions for the selected category
-  const getCategorySubs = () => {
-      if (!selectedCategory) return [];
-      let targetCat = selectedCategory;
-      if (selectedCategory === 'Media') targetCat = 'Entertainment';
-      if (selectedCategory === 'Work') targetCat = 'Productivity';
-      
-      return subscriptions.filter(s => s.category === targetCat);
-  };
-
-  const CategoryCard = ({ title, count, icon: Icon, color, height = 200, onPress }: any) => (
-    <TouchableOpacity 
-        onPress={onPress}
-        activeOpacity={0.8}
-        style={{ width: '48%', marginBottom: 16, height }}
-    >
-        <GlassCard style={{ height: '100%' }}>
-            <View style={{ flex: 1, justifyContent: 'space-between' }}>
-                <View style={{ alignItems: 'flex-end' }}>
-                    <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.1)', justifyContent: 'center', alignItems: 'center' }}>
-                         <Icon color={color} size={20} />
-                    </View>
-                </View>
-                <View>
-                    <Text style={{ color: '#FFFFFF', fontSize: 24, fontWeight: 'bold', marginBottom: 4 }}>{title}</Text>
-                    <Text style={{ color: '#94A3B8', fontSize: 14 }}>{count} subs</Text>
-                </View>
-            </View>
-        </GlassCard>
-    </TouchableOpacity>
-  );
 
   return (
     <SafeAreaView className="flex-1" edges={['top']}>
@@ -260,100 +329,65 @@ export default function Stats() {
                 title="Media" 
                 count={getCategoryCount('Entertainment')} 
                 icon={MonitorPlay} 
-                color="#B5DEFF" // Neon Blue
+                color="#B5DEFF"
                 height={165}
-                onPress={() => setSelectedCategory('Media')}
+                category="Entertainment"
+                selectedCategory={selectedCategory}
+                onSelect={setSelectedCategory}
              />
              <CategoryCard 
                 title="Music" 
                 count={getCategoryCount('Music')} 
                 icon={Music} 
-                color="#E7B5FF" // Neon Purple
+                color="#E7B5FF"
                 height={165}
-                onPress={() => setSelectedCategory('Music')}
+                category="Music"
+                selectedCategory={selectedCategory}
+                onSelect={setSelectedCategory}
              />
              <CategoryCard 
                 title="Shopping" 
                 count={getCategoryCount('Shopping')} 
                 icon={ShoppingBag} 
-                color="#B5FFCD" // Neon Green
+                color="#B5FFCD"
                 height={160}
-                onPress={() => setSelectedCategory('Shopping')}
+                category="Shopping"
+                selectedCategory={selectedCategory}
+                onSelect={setSelectedCategory}
              />
              <CategoryCard 
                 title="Work" 
                 count={getCategoryCount('Productivity')} 
                 icon={Briefcase} 
-                color="#FFB5E8" // Neon Pink
+                color="#FFB5E8"
                 height={165}
-                onPress={() => setSelectedCategory('Work')}
+                category="Productivity"
+                selectedCategory={selectedCategory}
+                onSelect={setSelectedCategory}
              />
              <CategoryCard 
                 title="Utilities" 
                 count={getCategoryCount('Utilities')} 
                 icon={Zap} 
-                color="#FFFFFF" 
+                color="#FFFFFF"
                 height={160}
-                onPress={() => setSelectedCategory('Utilities')}
+                category="Utilities"
+                selectedCategory={selectedCategory}
+                onSelect={setSelectedCategory}
              />
              <CategoryCard 
                 title="Other" 
                 count={getCategoryCount('Other')} 
                 icon={Zap} 
-                color="#FEF3C7" 
+                color="#FEF3C7"
                 height={160}
-                onPress={() => setSelectedCategory('Other')}
+                category="Other"
+                selectedCategory={selectedCategory}
+                onSelect={setSelectedCategory}
              />
         </View>
 
       </ScrollView>
-
-      {/* Category Details Modal */}
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={selectedCategory !== null}
-        onRequestClose={() => setSelectedCategory(null)}
-      >
-        <View className="flex-1 justify-end bg-black/80">
-            <View className="h-[60%]">
-                <GlassCard style={{ height: '100%', borderBottomLeftRadius: 0, borderBottomRightRadius: 0 }}>
-                    <View className="flex-row justify-between items-center mb-6">
-                        <Text className="text-white text-2xl font-bold">{selectedCategory} Subscriptions</Text>
-                        <TouchableOpacity 
-                            onPress={() => setSelectedCategory(null)}
-                            className="w-8 h-8 bg-surface-highlight rounded-full justify-center items-center"
-                        >
-                            <Text className="text-white font-bold">X</Text>
-                        </TouchableOpacity>
-                    </View>
-                    
-                    <ScrollView showsVerticalScrollIndicator={false}>
-                        {getCategorySubs().length > 0 ? (
-                            getCategorySubs().map(sub => (
-                                <View key={sub.id} className="flex-row justify-between items-center bg-surface p-4 rounded-2xl mb-3 border border-white/10">
-                                    <View className="flex-row items-center gap-3">
-                                        <View className="w-10 h-10 rounded-full justify-center items-center" style={{ backgroundColor: sub.color + '20' }}>
-                                            <Text className="text-lg font-bold" style={{ color: sub.color }}>{sub.name[0]}</Text>
-                                        </View>
-                                        <View>
-                                            <Text className="text-white font-bold text-lg">{sub.name}</Text>
-                                            <Text className="text-shadow-blue-grey text-sm capitalize">{sub.cycle}</Text>
-                                        </View>
-                                    </View>
-                                    <Text className="text-white font-bold text-lg">
-                                        {sub.currency}{sub.price}
-                                    </Text>
-                                </View>
-                            ))
-                        ) : (
-                            <Text className="text-shadow-blue-grey text-center mt-10">No subscriptions in this category.</Text>
-                        )}
-                    </ScrollView>
-                </GlassCard>
-            </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 }
