@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useSubStore, Cycle } from '../store/useSubStore';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft } from 'lucide-react-native';
+import { GlassCard } from '../components/ui/GlassCard';
 
 export default function AddSubscription() {
   const router = useRouter();
@@ -32,80 +33,108 @@ export default function AddSubscription() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <ScrollView className="flex-1 px-4 pt-2">
+    <SafeAreaView className="flex-1" edges={['top']}>
+      <ScrollView className="flex-1 px-4 pt-2" contentContainerStyle={{ paddingBottom: 40 }}>
         
         {/* Header */}
         <View className="flex-row items-center mb-8">
             <TouchableOpacity 
                 onPress={() => router.back()} 
-                className="w-10 h-10 rounded-full border border-card-lighter justify-center items-center mr-4"
+                className="w-10 h-10 rounded-full bg-surface-highlight justify-center items-center mr-4"
             >
                 <ArrowLeft color="white" size={20} />
             </TouchableOpacity>
-            <Text className="text-text-primary text-2xl font-bold">New Subscription</Text>
+            <Text className="text-white text-2xl font-bold">New Subscription</Text>
         </View>
         
         <View className="space-y-6">
             {/* Name Input */}
             <View>
-                <Text className="text-text-secondary mb-3 ml-1 font-medium">Service Name</Text>
-                <TextInput
-                    className="bg-card text-text-primary p-5 rounded-3xl text-lg border border-card-lighter"
-                    placeholder="e.g. Netflix"
-                    placeholderTextColor="#52525B"
-                    value={name}
-                    onChangeText={setName}
-                    autoFocus
-                />
+                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Service Name</Text>
+                <GlassCard style={{ padding: 0 }}>
+                    <TextInput
+                        className="text-white p-5 text-lg font-medium"
+                        placeholder="e.g. Netflix"
+                        placeholderTextColor="#64748B"
+                        value={name}
+                        onChangeText={setName}
+                        autoFocus
+                    />
+                </GlassCard>
             </View>
 
             {/* Price Input */}
             <View>
-                <Text className="text-text-secondary mb-3 ml-1 font-medium">Price</Text>
-                <View className="flex-row items-center bg-card rounded-3xl border border-card-lighter px-5">
-                    <Text className="text-text-secondary text-lg mr-2">$</Text>
-                    <TextInput
-                        className="flex-1 text-text-primary py-5 text-lg"
-                        placeholder="0.00"
-                        placeholderTextColor="#52525B"
-                        keyboardType="numeric"
-                        value={price}
-                        onChangeText={setPrice}
-                    />
-                </View>
+                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Price</Text>
+                <GlassCard style={{ padding: 0 }}>
+                    <View className="flex-row items-center px-5">
+                        <Text className="text-shadow-blue-grey text-lg mr-2">$</Text>
+                        <TextInput
+                            className="flex-1 text-white py-5 text-lg font-medium"
+                            placeholder="0.00"
+                            placeholderTextColor="#64748B"
+                            keyboardType="numeric"
+                            value={price}
+                            onChangeText={setPrice}
+                        />
+                    </View>
+                </GlassCard>
             </View>
 
             {/* Billing Cycle */}
             <View>
-                <Text className="text-text-secondary mb-3 ml-1 font-medium">Billing Cycle</Text>
+                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Billing Cycle</Text>
                 <View className="flex-row gap-4">
                     <TouchableOpacity 
-                        className={`flex-1 p-5 rounded-3xl border ${cycle === 'monthly' ? 'bg-accent-mint border-accent-mint' : 'bg-card border-card-lighter'}`}
+                        className="flex-1"
                         onPress={() => setCycle('monthly')}
+                        activeOpacity={0.8}
                     >
-                        <Text className={`text-center font-bold text-lg ${cycle === 'monthly' ? 'text-black' : 'text-text-secondary'}`}>Monthly</Text>
+                        <GlassCard 
+                            variant={cycle === 'monthly' ? 'highlight' : 'default'}
+                            style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 20 }}
+                        >
+                            <Text className={`font-bold text-lg ${cycle === 'monthly' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>Monthly</Text>
+                        </GlassCard>
                     </TouchableOpacity>
+                    
                     <TouchableOpacity 
-                        className={`flex-1 p-5 rounded-3xl border ${cycle === 'yearly' ? 'bg-accent-peach border-accent-peach' : 'bg-card border-card-lighter'}`}
+                        className="flex-1"
                         onPress={() => setCycle('yearly')}
+                        activeOpacity={0.8}
                     >
-                        <Text className={`text-center font-bold text-lg ${cycle === 'yearly' ? 'text-black' : 'text-text-secondary'}`}>Yearly</Text>
+                        <GlassCard 
+                            variant={cycle === 'yearly' ? 'active' : 'default'}
+                            style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 20 }}
+                        >
+                            <Text className={`font-bold text-lg ${cycle === 'yearly' ? 'text-neon-pink' : 'text-shadow-blue-grey'}`}>Yearly</Text>
+                        </GlassCard>
                     </TouchableOpacity>
                 </View>
             </View>
 
             {/* Category */}
             <View>
-                <Text className="text-text-secondary mb-3 ml-1 font-medium">Category</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-3">
+                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Category</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-3 pl-1">
                     {['Other', 'Entertainment', 'Music', 'Productivity', 'Utilities', 'Shopping'].map((cat) => (
                         <TouchableOpacity 
                             key={cat}
-                            className={`px-6 py-3 rounded-full border ${category === cat ? 'bg-white border-white' : 'bg-card border-card-lighter'}`}
                             onPress={() => setCategory(cat as any)}
+                            activeOpacity={0.8}
                         >
-                            <Text className={`font-medium ${category === cat ? 'text-black' : 'text-text-secondary'}`}>{cat}</Text>
+                            <View 
+                                style={{ 
+                                    paddingHorizontal: 24, 
+                                    paddingVertical: 12, 
+                                    borderRadius: 24, 
+                                    backgroundColor: category === cat ? '#FFFFFF' : 'rgba(255,255,255,0.05)',
+                                    borderWidth: 1,
+                                    borderColor: category === cat ? '#FFFFFF' : 'rgba(255,255,255,0.1)'
+                                }}
+                            >
+                                <Text className={`font-medium ${category === cat ? 'text-black' : 'text-shadow-blue-grey'}`}>{cat}</Text>
+                            </View>
                         </TouchableOpacity>
                     ))}
                 </ScrollView>
@@ -113,10 +142,13 @@ export default function AddSubscription() {
         </View>
 
         <TouchableOpacity 
-            className="mt-10 bg-accent-blue p-5 rounded-3xl shadow-lg"
+            className="mt-10"
             onPress={handleSave}
+            activeOpacity={0.8}
         >
-            <Text className="text-black text-center font-bold text-xl">Save Subscription</Text>
+            <GlassCard variant="highlight" style={{ alignItems: 'center', paddingVertical: 20 }}>
+                <Text className="text-neon-blue text-center font-bold text-xl uppercase tracking-widest">Save Subscription</Text>
+            </GlassCard>
         </TouchableOpacity>
 
       </ScrollView>

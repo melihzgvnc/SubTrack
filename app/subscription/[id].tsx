@@ -5,6 +5,8 @@ import { useSubStore } from '../../store/useSubStore';
 import { format, differenceInMonths, parseISO } from 'date-fns';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, Trash2 } from 'lucide-react-native';
+import { GlassCard } from '../../components/ui/GlassCard';
+import { Squircle } from '../../components/ui/Squircle';
 
 export default function SubscriptionDetail() {
   const { id } = useLocalSearchParams();
@@ -29,68 +31,80 @@ export default function SubscriptionDetail() {
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
-      <ScrollView className="flex-1 px-4 pt-2">
+    <SafeAreaView className="flex-1" edges={['top']}>
+      <ScrollView className="flex-1 px-4 pt-2" contentContainerStyle={{ paddingBottom: 40 }}>
         
         {/* Header */}
         <View className="flex-row justify-between items-center mb-8">
             <TouchableOpacity 
                 onPress={() => router.back()} 
-                className="w-10 h-10 rounded-full border border-card-lighter justify-center items-center"
+                className="w-10 h-10 rounded-full bg-surface-highlight justify-center items-center"
             >
                 <ArrowLeft color="white" size={20} />
             </TouchableOpacity>
-            <Text className="text-text-secondary font-medium">Details</Text>
+            <Text className="text-shadow-blue-grey font-medium">Details</Text>
             <TouchableOpacity 
                 onPress={handleDelete}
-                className="w-10 h-10 rounded-full border border-red-900/30 bg-red-900/10 justify-center items-center"
+                className="w-10 h-10 rounded-full bg-red-500/10 justify-center items-center"
             >
-                <Trash2 color="#EF4444" size={20} />
+                <Trash2 color="#FFB5E8" size={20} />
             </TouchableOpacity>
         </View>
 
         {/* Main Card */}
-        <View className="bg-card rounded-4xl p-8 items-center mb-6">
-            <View 
-                className="w-24 h-24 rounded-full justify-center items-center mb-6 shadow-lg"
-                style={{ backgroundColor: color || '#333' }}
-            >
-                <Text className="text-white font-bold text-4xl">{name.charAt(0)}</Text>
+        <GlassCard style={{ alignItems: 'center', paddingVertical: 32, marginBottom: 24 }}>
+            <View style={{ width: 96, height: 96, marginBottom: 24 }}>
+                <Squircle 
+                    width={96} 
+                    height={96} 
+                    cornerRadius={32} 
+                    backgroundColor={color || '#333'}
+                    showBorder={true}
+                    borderColor="rgba(255,255,255,0.3)"
+                >
+                    <View className="flex-1 justify-center items-center">
+                        <Text className="text-white font-bold text-4xl">{name.charAt(0)}</Text>
+                    </View>
+                </Squircle>
             </View>
-            <Text className="text-text-primary text-3xl font-bold mb-2">{name}</Text>
-            <Text className="text-text-secondary text-lg capitalize">{cycle} Plan • {subscription.category}</Text>
-        </View>
+            <Text className="text-white text-3xl font-bold mb-2">{name}</Text>
+            <Text className="text-shadow-blue-grey text-lg capitalize">{cycle} Plan • {subscription.category}</Text>
+        </GlassCard>
 
         {/* Stats Grid */}
         <View className="flex-row gap-4 mb-4">
-            <View className="flex-1 bg-accent-blue rounded-4xl p-6 h-40 justify-between">
-                <Text className="text-black/60 font-bold uppercase text-xs">Monthly Cost</Text>
-                <View>
-                    <Text className="text-black text-3xl font-bold">{currency}{price}</Text>
-                    <Text className="text-black/60 text-xs">per {cycle === 'monthly' ? 'month' : 'year'}</Text>
-                </View>
+            <View className="flex-1">
+                <GlassCard variant="highlight" style={{ height: 160, padding: 20, justifyContent: 'space-between' }}>
+                    <Text className="text-neon-blue font-bold uppercase text-xs tracking-widest">Monthly Cost</Text>
+                    <View>
+                        <Text className="text-white text-3xl font-bold">{currency}{price}</Text>
+                        <Text className="text-shadow-blue-grey text-xs">per {cycle === 'monthly' ? 'month' : 'year'}</Text>
+                    </View>
+                </GlassCard>
             </View>
-            <View className="flex-1 bg-accent-mint rounded-4xl p-6 h-40 justify-between">
-                <Text className="text-black/60 font-bold uppercase text-xs">Total Spend</Text>
-                <View>
-                    <Text className="text-black text-3xl font-bold">{currency}{totalSpend.toFixed(2)}</Text>
-                    <Text className="text-black/60 text-xs">lifetime</Text>
-                </View>
+            <View className="flex-1">
+                <GlassCard variant="active" style={{ height: 160, padding: 20, justifyContent: 'space-between' }}>
+                    <Text className="text-neon-pink font-bold uppercase text-xs tracking-widest">Total Spend</Text>
+                    <View>
+                        <Text className="text-white text-3xl font-bold">{currency}{totalSpend.toFixed(2)}</Text>
+                        <Text className="text-shadow-blue-grey text-xs">lifetime</Text>
+                    </View>
+                </GlassCard>
             </View>
         </View>
 
-        <View className="bg-card-lighter rounded-4xl p-6 mb-6">
+        <GlassCard style={{ padding: 24, marginBottom: 24 }}>
             <View className="flex-row justify-between items-center mb-4">
-                <Text className="text-text-secondary">Status</Text>
-                <View className="bg-green-900/30 px-3 py-1 rounded-full">
-                    <Text className="text-green-400 text-xs font-bold uppercase">Active</Text>
+                <Text className="text-shadow-blue-grey">Status</Text>
+                <View className="bg-neon-green/20 px-3 py-1 rounded-full">
+                    <Text className="text-neon-green text-xs font-bold uppercase">Active</Text>
                 </View>
             </View>
             <View className="flex-row justify-between items-center">
-                <Text className="text-text-secondary">Started On</Text>
-                <Text className="text-text-primary font-medium">{format(start, 'MMM do, yyyy')}</Text>
+                <Text className="text-shadow-blue-grey">Started On</Text>
+                <Text className="text-white font-medium">{format(start, 'MMM do, yyyy')}</Text>
             </View>
-        </View>
+        </GlassCard>
 
       </ScrollView>
     </SafeAreaView>
