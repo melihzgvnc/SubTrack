@@ -79,16 +79,16 @@ export default function Stats() {
         activeOpacity={0.8}
         style={{ width: '48%', marginBottom: 16, height }}
     >
-        <GlassCard style={{ height: '100%', padding: 0 }}>
-            <View className="flex-1 p-5 justify-between">
-                <View className="items-end">
+        <GlassCard style={{ height: '100%' }}>
+            <View style={{ flex: 1, justifyContent: 'space-between' }}>
+                <View style={{ alignItems: 'flex-end' }}>
                     <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.1)', justifyContent: 'center', alignItems: 'center' }}>
                          <Icon color={color} size={20} />
                     </View>
                 </View>
                 <View>
-                    <Text className="text-white text-2xl font-bold mb-1">{title}</Text>
-                    <Text className="text-shadow-blue-grey font-medium">{count} subs</Text>
+                    <Text style={{ color: '#FFFFFF', fontSize: 24, fontWeight: 'bold', marginBottom: 4 }}>{title}</Text>
+                    <Text style={{ color: '#94A3B8', fontSize: 14 }}>{count} subs</Text>
                 </View>
             </View>
         </GlassCard>
@@ -261,7 +261,7 @@ export default function Stats() {
                 count={getCategoryCount('Entertainment')} 
                 icon={MonitorPlay} 
                 color="#B5DEFF" // Neon Blue
-                height={200}
+                height={165}
                 onPress={() => setSelectedCategory('Media')}
              />
              <CategoryCard 
@@ -269,7 +269,7 @@ export default function Stats() {
                 count={getCategoryCount('Music')} 
                 icon={Music} 
                 color="#E7B5FF" // Neon Purple
-                height={160}
+                height={165}
                 onPress={() => setSelectedCategory('Music')}
              />
              <CategoryCard 
@@ -285,7 +285,7 @@ export default function Stats() {
                 count={getCategoryCount('Productivity')} 
                 icon={Briefcase} 
                 color="#FFB5E8" // Neon Pink
-                height={200}
+                height={165}
                 onPress={() => setSelectedCategory('Work')}
              />
              <CategoryCard 

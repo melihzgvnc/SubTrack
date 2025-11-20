@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     elevation: 5, // Android
   },
   content: {
+    flex: 1,
     padding: 16,
     zIndex: 1,
   }
