@@ -100,43 +100,153 @@ export default function Stats() {
       <ScrollView className="flex-1 px-4 pt-2" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
         
         {/* Header */}
-        <View className="flex-row justify-between items-center mb-6">
-            <View>
-                <Text className="text-shadow-blue-grey mb-1 font-medium">Total Monthly</Text>
-                <Text className="text-white text-4xl font-light tracking-tighter">${totalMonthlyCost().toFixed(2)}</Text>
-            </View>
+        <View className="flex-row justify-between items-center mb-6 mt-2">
+            <Text className="text-white text-3xl font-bold">Insights</Text>
         </View>
 
-        {/* Chart Section */}
+        {/* Chart Section - Spending by Category */}
         <GlassCard style={{ marginBottom: 32 }}>
-            <View className="w-full flex-row justify-between items-center mb-6">
-                <Text className="text-white font-bold">Projected Spend</Text>
-                {selectedBarIndex !== null && (
-                    <View className="bg-surface-highlight px-3 py-1 rounded-full">
-                        <Text className="text-neon-blue text-xs font-medium">
-                            {projectionData[selectedBarIndex].label}: ${projectionData[selectedBarIndex].value.toFixed(2)}
+            <View className="w-full mb-6">
+                <View className="flex-row justify-between items-start mb-2">
+                    <View>
+                        <Text className="text-shadow-blue-grey mb-1 font-medium">Total Spending</Text>
+                        <Text className="text-white text-4xl font-light tracking-tighter">
+                            ${totalMonthlyCost().toFixed(2)}
                         </Text>
                     </View>
-                )}
+                    {(() => {
+                        // Calculate this month's spending
+                        const today = new Date();
+                        const currentMonth = today.getMonth();
+                        const currentYear = today.getFullYear();
+                        
+                        // Calculate last month
+                        const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+                        const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+                        
+                        let thisMonthSpending = 0;
+                        let lastMonthSpending = 0;
+                        
+                        subscriptions.forEach(sub => {
+                            const subDate = new Date(sub.startDate);
+                            const monthlyPrice = sub.cycle === 'monthly' ? sub.price : sub.price / 12;
+                            
+                            // Check if subscription was active this month
+                            if (subDate <= today) {
+                                thisMonthSpending += monthlyPrice;
+                            }
+                            
+                            // Check if subscription was active last month
+                            const lastMonthDate = new Date(lastMonthYear, lastMonth, 1);
+                            if (subDate <= lastMonthDate) {
+                                lastMonthSpending += monthlyPrice;
+                            }
+                        });
+                        
+                        // Calculate percentage change
+                        let percentChange = 0;
+                        let changeText = '';
+                        let isIncrease = false;
+                        
+                        if (lastMonthSpending > 0) {
+                            percentChange = ((thisMonthSpending - lastMonthSpending) / lastMonthSpending) * 100;
+                            isIncrease = percentChange > 0;
+                            changeText = `${isIncrease ? '+' : ''}${percentChange.toFixed(1)}%`;
+                        } else if (thisMonthSpending > 0) {
+                            changeText = 'New';
+                            isIncrease = true;
+                        }
+                        
+                        if (!changeText) return null;
+                        
+                        return (
+                            <View className={`px-3 py-1 rounded-full ${isIncrease ? 'bg-red-500/20' : 'bg-neon-green/20'}`}>
+                                <Text className={`text-xs font-medium ${isIncrease ? 'text-red-400' : 'text-neon-green'}`}>
+                                    This Month {changeText}
+                                </Text>
+                            </View>
+                        );
+                    })()}
+                </View>
             </View>
             
-            <BarChart
-                data={projectionData}
-                barWidth={32}
-                noOfSections={3}
-                barBorderRadius={8}
-                frontColor="#B5FFCD"
-                yAxisThickness={0}
-                xAxisThickness={0}
-                yAxisTextStyle={{ color: '#64748B' }}
-                xAxisLabelTextStyle={{ color: '#94A3B8' }}
-                hideRules
-                height={180}
-                width={screenWidth - 80}
-                isAnimated
-                onPress={(item: any, index: number) => setSelectedBarIndex(index)}
-                disablePress={false}
-            />
+            {/* Category Spending Bars */}
+            {subscriptions.length === 0 ? (
+                <View className="w-full py-12">
+                    <Text className="text-shadow-blue-grey text-center">No subscriptions</Text>
+                </View>
+            ) : (
+                <View className="w-full flex-row justify-center items-end" style={{ height: 160, gap: 16 }}>
+                    {(() => {
+                        // Get category color mapping
+                        const categoryColors: Record<string, string> = {
+                            'Entertainment': '#B5DEFF',
+                            'Productivity': '#FFB5E8',
+                            'Utilities': '#B5FFCD',
+                            'Music': '#E7B5FF',
+                            'Shopping': '#FFB5E8',
+                            'Other': '#FEF3C7',
+                        };
+
+                        // Get category short names
+                        const categoryShortNames: Record<string, string> = {
+                            'Entertainment': 'Ent.',
+                            'Productivity': 'Prod.',
+                            'Utilities': 'Cloud',
+                            'Music': 'Music',
+                            'Shopping': 'Shop',
+                            'Other': 'Other',
+                        };
+
+                        // Calculate spending per category (only for categories with subscriptions)
+                        const categorySpending = subscriptions.reduce((acc, sub) => {
+                            const monthlyPrice = sub.cycle === 'monthly' ? sub.price : sub.price / 12;
+                            if (!acc[sub.category]) {
+                                acc[sub.category] = 0;
+                            }
+                            acc[sub.category] += monthlyPrice;
+                            return acc;
+                        }, {} as Record<string, number>);
+
+                        // Convert to array and sort by value (descending)
+                        const categoryData = Object.entries(categorySpending)
+                            .map(([category, value]) => ({
+                                name: categoryShortNames[category] || category,
+                                category,
+                                color: categoryColors[category] || '#94A3B8',
+                                value,
+                            }))
+                            .sort((a, b) => b.value - a.value);
+
+                        const maxValue = Math.max(...categoryData.map(c => c.value), 1);
+
+                        return categoryData.map((cat, index) => {
+                            const heightPercentage = (cat.value / maxValue) * 100;
+                            const barHeight = Math.max((heightPercentage / 100) * 140, 40); // Min height 40
+
+                            return (
+                                <View key={index} className="items-center">
+                                    <Text className="text-shadow-blue-grey text-[10px] mb-1 font-medium">
+                                        ${cat.value.toFixed(2)}
+                                    </Text>
+                                    <View 
+                                        style={{ 
+                                            width: 48,
+                                            height: barHeight,
+                                            backgroundColor: cat.color,
+                                            borderRadius: 24,
+                                            marginBottom: 8,
+                                        }}
+                                    />
+                                    <Text className="text-shadow-blue-grey text-xs font-medium">
+                                        {cat.name}
+                                    </Text>
+                                </View>
+                            );
+                        });
+                    })()}
+                </View>
+            )}
         </GlassCard>
 
         {/* Categories Header */}

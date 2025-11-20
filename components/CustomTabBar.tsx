@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, TouchableOpacity, Text, Platform } from 'react-native';
+import { View, TouchableOpacity, Text, Platform, StyleSheet } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Home, BarChart2, Plus, Settings, CreditCard } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Squircle } from './ui/Squircle';
+import { BlurView } from 'expo-blur';
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const router = useRouter();
@@ -17,17 +18,30 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
                 flexDirection: 'row', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                backgroundColor: 'rgba(9, 9, 11, 0.7)', // Semi-transparent dark
-                borderRadius: 32, // We can't use Squircle easily for the whole bar without layout, using high radius for now or we can wrap each item.
-                // User requested Squircles for "all cards and buttons". 
-                // Let's try to make the tab bar itself a GlassCard if possible, or just the buttons?
-                // "Frosted Acetate for navigation elements"
                 paddingHorizontal: 20,
                 paddingVertical: 12,
-                borderWidth: 1,
-                borderColor: 'rgba(255,255,255,0.1)',
+                // Remove background color and border from here, move to BlurView wrapper or absolute background
             }}
         >
+            {/* Glass Background */}
+            <BlurView
+                intensity={400}
+                tint="dark"
+                style={{
+                    ...StyleSheet.absoluteFillObject,
+                    borderRadius: 32,
+                    overflow: 'hidden',
+                    borderWidth: 1,
+                    borderColor: 'rgba(255,255,255,0.15)',
+                    backgroundColor: 'rgba(9, 9, 11, 0.5)', // Stronger dark overlay for better separation
+                    shadowColor: '#000',
+                    shadowOffset: { width: 0, height: -4 },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 12,
+                    elevation: 8,
+                }}
+            />
+
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
