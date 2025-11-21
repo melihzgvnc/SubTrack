@@ -8,6 +8,7 @@ interface GlassCardProps {
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   variant?: 'default' | 'highlight' | 'active';
+  autoHeight?: boolean;
 }
 
 export const GlassCard: React.FC<GlassCardProps> = ({
@@ -16,6 +17,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   children,
   style,
   variant = 'default',
+  autoHeight = false,
 }) => {
   // Determine colors based on variant
   let backgroundColor = 'rgba(255, 255, 255, 0.03)';
@@ -67,7 +69,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
         </View>
       )}
       {/* Content */}
-      <View style={styles.content}>
+      <View style={[styles.content, autoHeight ? {} : { flex: 1 }]}>
         {children}
       </View>
       
@@ -98,7 +100,6 @@ const styles = StyleSheet.create({
     elevation: 5, // Android
   },
   content: {
-    flex: 1,
     padding: 16,
     zIndex: 1,
   }

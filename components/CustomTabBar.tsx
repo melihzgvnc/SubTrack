@@ -109,8 +109,8 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
         } else if (route.name === 'stats') {
             Icon = BarChart2;
             label = 'Insights';
-        } else if (route.name === 'subscription/[id]' || route.name === 'settings') {
-            return null; // Hide detail and settings from tab bar
+        } else if (route.name === 'subscription/[id]' || route.name === 'settings' || route.name === 'onboarding') {
+            return null; // Hide detail, settings, and onboarding from tab bar
         } else {
             Icon = CreditCard; // Fallback
         }

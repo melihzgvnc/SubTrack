@@ -18,8 +18,10 @@ export interface Subscription {
 
 interface SubscriptionState {
   subscriptions: Subscription[];
+  hasSeenOnboarding: boolean;
   addSubscription: (subscription: Subscription) => void;
   removeSubscription: (id: string) => void;
+  completeOnboarding: () => void;
   totalMonthlyCost: () => number;
   currency: { code: string; symbol: string };
   setCurrency: (currency: { code: string; symbol: string }) => void;
@@ -82,6 +84,7 @@ export const useSubStore = create<SubscriptionState>()(
           category: 'Utilities',
         },
       ],
+      hasSeenOnboarding: false,
       currency: getCurrency(),
       notificationsEnabled: true,
       addSubscription: (subscription) =>
@@ -90,6 +93,7 @@ export const useSubStore = create<SubscriptionState>()(
         set((state) => ({
           subscriptions: state.subscriptions.filter((sub) => sub.id !== id),
         })),
+      completeOnboarding: () => set({ hasSeenOnboarding: true }),
       totalMonthlyCost: () => {
         const { subscriptions } = get();
         return subscriptions.reduce((total, sub) => {
