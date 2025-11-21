@@ -3,9 +3,17 @@ import { StatusBar } from 'expo-status-bar';
 import { CustomTabBar } from '../components/CustomTabBar';
 import { MeshBackground } from '../components/ui/MeshBackground';
 import { View } from 'react-native';
+import { AdBanner } from '../components/AdBanner';
 import './global.css';
 
+import { useEffect } from 'react';
+import { registerForPushNotificationsAsync } from '../utils/notifications';
+
 export default function Layout() {
+  useEffect(() => {
+    registerForPushNotificationsAsync();
+  }, []);
+
   return (
     <View style={{ flex: 1, backgroundColor: '#09090B' }}>
       <MeshBackground />
@@ -31,7 +39,11 @@ export default function Layout() {
         <Tabs.Screen name="add" options={{ title: 'Add', presentation: 'modal' }} />
         <Tabs.Screen name="stats" options={{ title: 'Stats' }} />
         <Tabs.Screen name="subscription/[id]" options={{ href: null }} />
+        <Tabs.Screen name="settings" options={{ href: null }} />
       </Tabs>
+      <View className="absolute bottom-0 w-full items-center pb-safe">
+        <AdBanner />
+      </View>
       <StatusBar style="light" />
     </View>
   );

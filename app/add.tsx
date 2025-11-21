@@ -1,10 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSubStore, Cycle } from '../store/useSubStore';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft } from 'lucide-react-native';
 import { GlassCard } from '../components/ui/GlassCard';
+import { Squircle } from '../components/ui/Squircle';
+import { Dropdown } from '../components/ui/Dropdown';
+import { scheduleSubscriptionNotifications } from '../utils/notifications';
+import { getCurrency } from '../utils/currency';
+import { useInterstitialAd } from 'react-native-google-mobile-ads';
+import { adUnitIDs, shouldShowInterstitial } from '../utils/ads';
+import { useEffect } from 'react';
 
 export default function AddSubscription() {
   const router = useRouter();
@@ -14,27 +21,73 @@ export default function AddSubscription() {
   const [price, setPrice] = useState('');
   const [cycle, setCycle] = useState<Cycle>('monthly');
   const [category, setCategory] = useState('Other');
+  
+  // Date state
+  const today = new Date();
+  const [day, setDay] = useState(today.getDate().toString());
+  const [month, setMonth] = useState((today.getMonth() + 1).toString());
+  const [year, setYear] = useState(today.getFullYear().toString());
+
+  // Generate options
+  const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
+  const months = Array.from({ length: 12 }, (_, i) => (i + 1).toString());
+  const currentYear = today.getFullYear();
+  const years = Array.from({ length: 11 }, (_, i) => (currentYear - 5 + i).toString());
+
+  const currency = useSubStore((state) => state.currency);
+
+  // AdMob Interstitial
+  const { isLoaded, isClosed, load, show } = useInterstitialAd(adUnitIDs.interstitial!, {
+    requestNonPersonalizedAdsOnly: true,
+  });
+  const [pendingNavigation, setPendingNavigation] = useState(false);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  useEffect(() => {
+    if (isClosed && pendingNavigation) {
+      setPendingNavigation(false);
+      router.back();
+    }
+  }, [isClosed, pendingNavigation]);
 
   const handleSave = () => {
     if (!name || !price) return;
 
-    addSubscription({
+    // Construct date
+    const dateObj = new Date(
+        parseInt(year), 
+        parseInt(month) - 1, 
+        parseInt(day)
+    );
+
+    const newSub = {
       id: Math.random().toString(36).substr(2, 9),
       name,
       price: parseFloat(price),
-      currency: '$',
+      currency: currency.symbol,
       cycle,
-      startDate: new Date().toISOString(),
+      startDate: dateObj.toISOString(),
       color: '#' + Math.floor(Math.random()*16777215).toString(16), // Random color
       category: category as any,
-    });
+    };
 
-    router.back();
+    addSubscription(newSub);
+    scheduleSubscriptionNotifications(newSub);
+
+    if (shouldShowInterstitial() && isLoaded) {
+      setPendingNavigation(true);
+      show();
+    } else {
+      router.back();
+    }
   };
 
   return (
     <SafeAreaView className="flex-1" edges={['top']}>
-      <ScrollView className="flex-1 px-4 pt-2" contentContainerStyle={{ paddingBottom: 40 }}>
+      <ScrollView className="flex-1 px-4 pt-2" contentContainerStyle={{ paddingBottom: 180 }}>
         
         {/* Header */}
         <View className="flex-row items-center mb-8">
@@ -50,40 +103,41 @@ export default function AddSubscription() {
         <View className="space-y-6">
             {/* Name Input */}
             <View>
-                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Service Name</Text>
-                <GlassCard style={{ padding: 0 }}>
-                    <TextInput
-                        className="text-white p-5 text-lg font-medium"
-                        placeholder="e.g. Netflix"
-                        placeholderTextColor="#64748B"
-                        value={name}
-                        onChangeText={setName}
-                        autoFocus
-                    />
-                </GlassCard>
-            </View>
-
-            {/* Price Input */}
-            <View>
-                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Price</Text>
-                <GlassCard style={{ padding: 0 }}>
-                    <View className="flex-row items-center px-5">
-                        <Text className="text-shadow-blue-grey text-lg mr-2">$</Text>
-                        <TextInput
-                            className="flex-1 text-white py-5 text-lg font-medium"
-                            placeholder="0.00"
-                            placeholderTextColor="#64748B"
-                            keyboardType="numeric"
-                            value={price}
-                            onChangeText={setPrice}
-                        />
+                <View className="flex-row gap-4">
+                    {/* Name Input */}
+                    <View className="flex-[1.5]">
+                        <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Service Name</Text>
+                        <GlassCard style={{ padding: 0 }}>
+                            <TextInput
+                                className="text-white p-5 text-lg font-medium"
+                                placeholder="e.g. Netflix"
+                                placeholderTextColor="#64748B"
+                                value={name}
+                                onChangeText={setName}
+                                autoFocus
+                            />
+                        </GlassCard>
                     </View>
-                </GlassCard>
-            </View>
 
-            {/* Billing Cycle */}
-            <View>
-                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Billing Cycle</Text>
+                    {/* Price Input */}
+                    <View className="flex-1">
+                        <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Price</Text>
+                        <GlassCard style={{ padding: 0 }}>
+                            <View className="flex-row items-center px-4">
+                                <Text className="text-white text-lg font-medium mr-1">{currency.symbol}</Text>
+                                <TextInput
+                                    className="flex-1 text-white py-5 text-lg font-medium"
+                                    placeholder="0.00"
+                                    placeholderTextColor="#64748B"
+                                    value={price}
+                                    onChangeText={setPrice}
+                                    keyboardType="numeric"
+                                />
+                            </View>
+                        </GlassCard>
+                    </View>
+                </View>
+                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium mt-4">Billing Cycle</Text>
                 <View className="flex-row gap-4">
                     <TouchableOpacity 
                         className="flex-1"
@@ -110,6 +164,37 @@ export default function AddSubscription() {
                             <Text className={`font-bold text-lg ${cycle === 'yearly' ? 'text-neon-pink' : 'text-shadow-blue-grey'}`}>Yearly</Text>
                         </GlassCard>
                     </TouchableOpacity>
+                </View>
+            </View>
+
+            {/* Start Date */}
+            <View>
+                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Start Date</Text>
+                <View className="flex-row gap-3">
+                    <View className="flex-1">
+                        <Dropdown 
+                            label="Day" 
+                            value={day} 
+                            options={days} 
+                            onSelect={setDay} 
+                        />
+                    </View>
+                    <View className="flex-1">
+                        <Dropdown 
+                            label="Month" 
+                            value={month} 
+                            options={months} 
+                            onSelect={setMonth} 
+                        />
+                    </View>
+                    <View className="flex-[1.5]">
+                        <Dropdown 
+                            label="Year" 
+                            value={year} 
+                            options={years} 
+                            onSelect={setYear} 
+                        />
+                    </View>
                 </View>
             </View>
 
@@ -142,13 +227,23 @@ export default function AddSubscription() {
         </View>
 
         <TouchableOpacity 
-            className="mt-10"
+            className="mt-7"
             onPress={handleSave}
             activeOpacity={0.8}
         >
-            <GlassCard variant="highlight" style={{ alignItems: 'center', paddingVertical: 20 }}>
-                <Text className="text-neon-blue text-center font-bold text-xl uppercase tracking-widest">Save Subscription</Text>
-            </GlassCard>
+            <Squircle 
+                width={Dimensions.get('window').width - 32} 
+                height={60} 
+                cornerRadius={20} 
+                backgroundColor="rgba(181, 255, 204, 1)" 
+                showBorder={true}
+                borderColor="rgba(255,255,255,0.5)"
+                style={{ alignItems: 'center', justifyContent: 'center' }}
+            >
+                <View className="w-full h-full items-center justify-center">
+                    <Text className="text-black text-center font-bold text-xl tracking-widest">Save Subscription</Text>
+                </View>
+            </Squircle>
         </TouchableOpacity>
 
       </ScrollView>

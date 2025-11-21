@@ -1,25 +1,36 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, Platform, StyleSheet } from 'react-native';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { Home, BarChart2, Plus, Settings, CreditCard } from 'lucide-react-native';
+import { Home, BarChart2, Plus, CreditCard } from 'lucide-react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Squircle } from './ui/Squircle';
 import { BlurView } from 'expo-blur';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  
+  // Calculate bottom offset to clear the AdBanner
+  // AdBanner is usually ~50px + 20px padding + safe area
+  // We lift the tab bar above that
+  const AD_HEIGHT = 65;
+  const bottomOffset = insets.bottom + AD_HEIGHT;
 
   return (
-    <View className="absolute bottom-0 left-0 right-0 px-4 pb-8 pt-2">
+    <View 
+        className="absolute left-0 right-0 px-4 pb-2 pt-2"
+        style={{ bottom: bottomOffset }}
+    >
         {/* Floating Tab Bar Container */}
         <View 
             style={{ 
                 flexDirection: 'row', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                paddingHorizontal: 20,
-                paddingVertical: 12,
+                paddingHorizontal: 48, // Increased from 20 to bring icons closer to center
+                paddingVertical: 6,
                 // Remove background color and border from here, move to BlurView wrapper or absolute background
             }}
         >
@@ -90,10 +101,19 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
         }
 
         let Icon;
-        if (route.name === 'index') Icon = Home;
-        else if (route.name === 'stats') Icon = BarChart2;
-        else if (route.name === 'subscription/[id]') return null; // Hide detail from tab bar
-        else Icon = Settings; // Fallback
+        let label = '';
+        
+        if (route.name === 'index') {
+            Icon = Home;
+            label = 'Dashboard';
+        } else if (route.name === 'stats') {
+            Icon = BarChart2;
+            label = 'Insights';
+        } else if (route.name === 'subscription/[id]' || route.name === 'settings') {
+            return null; // Hide detail and settings from tab bar
+        } else {
+            Icon = CreditCard; // Fallback
+        }
 
         return (
           <TouchableOpacity
@@ -105,22 +125,21 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
             style={{
                 alignItems: 'center',
                 justifyContent: 'center',
-                width: 44,
-                height: 44,
+                minWidth: 60, // Ensure enough width for text
             }}
           >
-            {/* Active Indicator (Glow) */}
-            {isFocused && (
-                <View style={{ position: 'absolute', width: 44, height: 44, opacity: 0.2 }}>
-                    <Squircle 
-                        width={44} 
-                        height={44} 
-                        cornerRadius={14} 
-                        backgroundColor="#B5DEFF" 
-                    />
-                </View>
-            )}
-            {Icon && <Icon color={isFocused ? '#B5DEFF' : '#64748B'} size={24} />}
+            <View style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
+                {Icon && <Icon color={isFocused ? '#B5DEFF' : '#64748B'} size={24} />}
+            </View>
+            <Text style={{ 
+                color: isFocused ? '#B5DEFF' : '#64748B', 
+                fontSize: 10, 
+                fontWeight: isFocused ? '600' : '400',
+                marginTop: -4,
+                marginBottom: 6 
+            }}>
+                {label}
+            </Text>
           </TouchableOpacity>
         );
       })}

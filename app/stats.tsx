@@ -5,6 +5,7 @@ import { BarChart } from 'react-native-gifted-charts';
 import { Music, ShoppingBag, MonitorPlay, Briefcase, Zap } from 'lucide-react-native';
 import { useSubStore } from '../store/useSubStore';
 import { GlassCard } from '../components/ui/GlassCard';
+import { getCurrency } from '../utils/currency';
 
 const CategoryCard = ({ title, count, icon: Icon, color, height = 200, category, selectedCategory, onSelect }: any) => {
     const subscriptions = useSubStore((state) => state.subscriptions);
@@ -111,52 +112,7 @@ export default function Stats() {
   const screenWidth = Dimensions.get('window').width;
   const subscriptions = useSubStore((state) => state.subscriptions);
   const totalMonthlyCost = useSubStore((state) => state.totalMonthlyCost);
-
-  // State for selected bar
-  const [selectedBarIndex, setSelectedBarIndex] = React.useState<number | null>(null);
-
-  // Calculate Projected Spending for next 6 months
-  const getProjections = () => {
-    const today = new Date();
-    const months = [];
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-    for (let i = 0; i < 6; i++) {
-      const currentMonthDate = new Date(today.getFullYear(), today.getMonth() + i, 1);
-      const monthIndex = currentMonthDate.getMonth();
-      
-      let monthlyTotal = 0;
-
-      subscriptions.forEach(sub => {
-        if (sub.cycle === 'monthly') {
-          monthlyTotal += sub.price;
-        } else if (sub.cycle === 'yearly') {
-          const subDate = new Date(sub.startDate);
-          if (subDate.getMonth() === monthIndex) {
-             monthlyTotal += sub.price;
-          }
-        }
-      });
-
-      months.push({
-        value: monthlyTotal,
-        label: monthNames[monthIndex],
-        frontColor: '#B5FFCD', // Neon Green
-        topLabelComponent: () => (
-            <Text className="text-shadow-blue-grey text-[10px] mb-1">{monthlyTotal > 0 ? Math.round(monthlyTotal) : ''}</Text>
-        ),
-      });
-    }
-    return months;
-  };
-
-  const projectionData = React.useMemo(() => {
-      const data = getProjections();
-      if (selectedBarIndex !== null && data[selectedBarIndex]) {
-          data[selectedBarIndex].frontColor = '#FFB5E8'; // Neon Pink Highlight
-      }
-      return data;
-  }, [subscriptions, selectedBarIndex]);
+  const currency = useSubStore((state) => state.currency);
 
   // State for selected category popup
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
@@ -166,7 +122,7 @@ export default function Stats() {
 
   return (
     <SafeAreaView className="flex-1" edges={['top']}>
-      <ScrollView className="flex-1 px-4 pt-2" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
+      <ScrollView className="flex-1 px-4 pt-2" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 180 }}>
         
         {/* Header */}
         <View className="flex-row justify-between items-center mb-6 mt-2">
@@ -180,7 +136,7 @@ export default function Stats() {
                     <View>
                         <Text className="text-shadow-blue-grey mb-1 font-medium">Total Spending</Text>
                         <Text className="text-white text-4xl font-light tracking-tighter">
-                            ${totalMonthlyCost().toFixed(2)}
+                            {currency.symbol}{totalMonthlyCost().toFixed(2)}
                         </Text>
                     </View>
                     {(() => {
@@ -296,7 +252,7 @@ export default function Stats() {
                             return (
                                 <View key={index} className="items-center">
                                     <Text className="text-shadow-blue-grey text-[10px] mb-1 font-medium">
-                                        ${cat.value.toFixed(2)}
+                                        {currency.symbol}{cat.value.toFixed(2)}
                                     </Text>
                                     <View 
                                         style={{ 

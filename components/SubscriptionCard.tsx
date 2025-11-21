@@ -11,18 +11,26 @@ export const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
   const { name, price, currency, cycle, startDate, color } = subscription;
 
   const getNextBillDate = (start: string, cycle: 'monthly' | 'yearly') => {
-    const date = parseISO(start);
+    const startDate = parseISO(start);
     const now = new Date();
-    // Simple logic: just add one cycle to start date until it's in the future
-    // For a real app, we'd calculate based on current date more precisely
-    // For this demo, let's just say "Next Bill: [Same Day Next Month/Year]"
-    // actually, let's just show the day of month for monthly
     
-    if (cycle === 'monthly') {
-        return format(addMonths(date, 1), 'MMM do'); // Simplified
-    } else {
-        return format(addYears(date, 1), 'MMM do, yyyy');
+    let nextDate = startDate;
+    
+    // If start date is in the future, that's the next bill date
+    if (nextDate > now) {
+        return format(nextDate, 'MMM do, yyyy');
     }
+
+    // Otherwise, add cycles until we pass today
+    while (nextDate <= now) {
+        if (cycle === 'monthly') {
+            nextDate = addMonths(nextDate, 1);
+        } else {
+            nextDate = addYears(nextDate, 1);
+        }
+    }
+    
+    return format(nextDate, 'MMM do, yyyy');
   };
 
   const displayPrice = cycle === 'yearly' 
