@@ -20,6 +20,7 @@ import Animated, {
   Easing,
   useAnimatedProps
 } from 'react-native-reanimated';
+import { colors } from '../theme/colors';
 
 const { width, height } = Dimensions.get('window');
 
@@ -29,7 +30,7 @@ const slides = [
     title: 'CONTROL',
     subtitle: 'Your Subscriptions.\nOne Command Center.',
     icon: CreditCard,
-    color: '#B5DEFF', // Neon Blue
+    color: colors.accent.secondary, // Neon Blue
     accent: 'rgba(181, 222, 255, 0.2)',
   },
   {
@@ -37,7 +38,7 @@ const slides = [
     title: 'INSIGHT',
     subtitle: 'Visualize Spending.\nSpot the Leaks.',
     icon: TrendingUp,
-    color: '#E7B5FF', // Neon Purple
+    color: colors.accent.quaternary, // Neon Purple
     accent: 'rgba(231, 181, 255, 0.2)',
   },
   {
@@ -45,7 +46,7 @@ const slides = [
     title: 'ALERT',
     subtitle: 'Never Miss a Due Date.\nStay Ahead.',
     icon: Bell,
-    color: '#B5FFCD', // Neon Green
+    color: colors.accent.tertiary, // Neon Green
     accent: 'rgba(181, 255, 205, 0.2)',
   },
   {
@@ -53,7 +54,7 @@ const slides = [
     title: 'LAUNCH',
     subtitle: 'Ready to optimize?  Let\'s go.',
     icon: Check,
-    color: '#FFB5B5', // Neon Red/Pink
+    color: colors.accent.primary, // Neon Red/Pink
     accent: 'rgba(255, 181, 181, 0.2)',
     isLast: true,
   },
@@ -86,7 +87,7 @@ const Dot = ({ index, scrollX }: { index: number; scrollX: SharedValue<number> }
     return {
       width: withSpring(dotWidth, { damping: 15 }),
       opacity: withTiming(opacity, { duration: 200 }),
-      backgroundColor: index === 0 ? '#B5DEFF' : index === 1 ? '#E7B5FF' : index === 2 ? '#B5FFCD' : '#FFB5B5', // Dynamic color based on index? Or interpolate colors?
+      backgroundColor: index === 0 ? colors.accent.secondary : index === 1 ? colors.accent.quaternary : index === 2 ? colors.accent.tertiary : colors.accent.primary, // Dynamic color based on index? Or interpolate colors?
       // Let's keep it simple with white/active color or just use the slide color if we want to be fancy.
       // For now, let's use a static color logic or just white for simplicity in "Neon" theme against dark.
       // Actually, let's use the specific neon color for the active dot.
@@ -226,7 +227,7 @@ export default function Onboarding() {
                                     width={160}
                                     height={160}
                                     cornerRadius={48}
-                                    backgroundColor="rgba(255,255,255,0.03)"
+                                    backgroundColor={colors.border.subtle}
                                     showBorder
                                     borderColor={slide.color}
                                     borderWidth={1.5}
@@ -272,7 +273,7 @@ export default function Onboarding() {
                                     >
                                         <View className="flex-1 flex-row justify-center items-center gap-3">
                                             <Text className="text-background font-bold text-xl tracking-wider">ADD SUBSCRIPTION</Text>
-                                            <ArrowRight color="#09090B" size={24} strokeWidth={3} />
+                                            <ArrowRight color={colors.text.inverse} size={24} strokeWidth={3} />
                                         </View>
                                     </Squircle>
                                 </TouchableOpacity>

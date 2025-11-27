@@ -12,6 +12,8 @@ import { getCurrency } from '../utils/currency';
 import { useInterstitialAd } from 'react-native-google-mobile-ads';
 import { adUnitIDs, shouldShowInterstitial } from '../utils/ads';
 import { useEffect } from 'react';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
 
 export default function AddSubscription() {
   const router = useRouter();
@@ -87,7 +89,7 @@ export default function AddSubscription() {
 
   return (
     <SafeAreaView className="flex-1" edges={['top']}>
-      <ScrollView className="flex-1 px-4 pt-2" contentContainerStyle={{ paddingBottom: 180 }}>
+      <ScrollView className="flex-1 px-4 pt-2" contentContainerStyle={{ paddingBottom: spacing.bottomScroll }}>
         
         {/* Header */}
         <View className="flex-row items-center mb-8">
@@ -95,7 +97,7 @@ export default function AddSubscription() {
                 onPress={() => router.back()} 
                 className="w-10 h-10 rounded-full bg-surface-highlight justify-center items-center mr-4"
             >
-                <ArrowLeft color="white" size={20} />
+                <ArrowLeft color={colors.text.primary} size={20} />
             </TouchableOpacity>
             <Text className="text-white text-2xl font-bold">New Subscription</Text>
         </View>
@@ -107,11 +109,11 @@ export default function AddSubscription() {
                     {/* Name Input */}
                     <View className="flex-[1.5]">
                         <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Service Name</Text>
-                        <GlassCard style={{ padding: 0 }}>
+                        <GlassCard style={{ padding: spacing.none }}>
                             <TextInput
                                 className="text-white p-5 text-lg font-medium"
                                 placeholder="e.g. Netflix"
-                                placeholderTextColor="#64748B"
+                                placeholderTextColor={colors.text.muted}
                                 value={name}
                                 onChangeText={setName}
                                 autoFocus
@@ -122,13 +124,13 @@ export default function AddSubscription() {
                     {/* Price Input */}
                     <View className="flex-1">
                         <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Price</Text>
-                        <GlassCard style={{ padding: 0 }}>
+                        <GlassCard style={{ padding: spacing.none }}>
                             <View className="flex-row items-center px-4">
                                 <Text className="text-white text-lg font-medium mr-1">{currency.symbol}</Text>
                                 <TextInput
                                     className="flex-1 text-white py-5 text-lg font-medium"
                                     placeholder="0.00"
-                                    placeholderTextColor="#64748B"
+                                    placeholderTextColor={colors.text.muted}
                                     value={price}
                                     onChangeText={setPrice}
                                     keyboardType="numeric"
@@ -146,7 +148,7 @@ export default function AddSubscription() {
                     >
                         <GlassCard 
                             variant={cycle === 'monthly' ? 'highlight' : 'default'}
-                            style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 20 }}
+                            style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.lg }}
                         >
                             <Text className={`font-bold text-lg ${cycle === 'monthly' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>Monthly</Text>
                         </GlassCard>
@@ -159,7 +161,7 @@ export default function AddSubscription() {
                     >
                         <GlassCard 
                             variant={cycle === 'yearly' ? 'active' : 'default'}
-                            style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: 20 }}
+                            style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.lg }}
                         >
                             <Text className={`font-bold text-lg ${cycle === 'yearly' ? 'text-neon-pink' : 'text-shadow-blue-grey'}`}>Yearly</Text>
                         </GlassCard>
@@ -210,12 +212,12 @@ export default function AddSubscription() {
                         >
                             <View 
                                 style={{ 
-                                    paddingHorizontal: 24, 
-                                    paddingVertical: 12, 
-                                    borderRadius: 24, 
-                                    backgroundColor: category === cat ? '#FFFFFF' : 'rgba(255,255,255,0.05)',
+                                    paddingHorizontal: spacing.xl, 
+                                    paddingVertical: spacing.sm, 
+                                    borderRadius: spacing.xl, 
+                                    backgroundColor: category === cat ? colors.text.primary : colors.border.subtle,
                                     borderWidth: 1,
-                                    borderColor: category === cat ? '#FFFFFF' : 'rgba(255,255,255,0.1)'
+                                    borderColor: category === cat ? colors.text.primary : colors.border.highlight
                                 }}
                             >
                                 <Text className={`font-medium ${category === cat ? 'text-black' : 'text-shadow-blue-grey'}`}>{cat}</Text>
@@ -232,10 +234,10 @@ export default function AddSubscription() {
             activeOpacity={0.8}
         >
             <Squircle 
-                width={Dimensions.get('window').width - 32} 
+                width={Dimensions.get('window').width - (spacing.md * 2)} 
                 height={60} 
                 cornerRadius={20} 
-                backgroundColor="rgba(181, 255, 204, 1)" 
+                backgroundColor={colors.accent.tertiary} 
                 showBorder={true}
                 borderColor="rgba(255,255,255,0.5)"
                 style={{ alignItems: 'center', justifyContent: 'center' }}

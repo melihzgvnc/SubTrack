@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, ViewStyle, StyleProp, StyleSheet } from 'react-native';
 import { Squircle } from './Squircle';
+import { colors } from '../../theme/colors';
+import { spacing } from '../../theme/spacing';
 
 interface GlassCardProps {
   width?: number | string;
@@ -20,18 +22,18 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   autoHeight = false,
 }) => {
   // Determine colors based on variant
-  let backgroundColor = 'rgba(255, 255, 255, 0.03)';
-  let borderColor = 'rgba(255, 255, 255, 0.1)';
-  let shadowColor = '#64748B'; // Blue-grey tint
+  let backgroundColor: string = colors.background.surface;
+  let borderColor: string = colors.border.highlight;
+  let shadowColor: string = colors.text.muted; // Blue-grey tint
 
   if (variant === 'highlight') {
-    backgroundColor = 'rgba(181, 222, 255, 0.08)'; // Slight blue tint
-    borderColor = 'rgba(181, 222, 255, 0.3)';
-    shadowColor = '#B5DEFF';
+    backgroundColor = colors.background.surface; // Keeping surface for consistency
+    borderColor = colors.accent.secondary;
+    shadowColor = colors.accent.secondary;
   } else if (variant === 'active') {
-    backgroundColor = 'rgba(255, 181, 232, 0.08)'; // Slight pink tint
-    borderColor = 'rgba(255, 181, 232, 0.3)';
-    shadowColor = '#FFB5E8';
+    backgroundColor = colors.background.surface; // Keeping surface for consistency
+    borderColor = colors.accent.primary;
+    shadowColor = colors.accent.primary;
   }
 
   // We need to resolve width/height to numbers for the Squircle SVG if possible,
@@ -60,7 +62,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
             <Squircle
                 width={layout.width}
                 height={layout.height}
-                cornerRadius={24}
+                cornerRadius={spacing.xl}
                 backgroundColor={backgroundColor}
                 borderColor={borderColor}
                 showBorder={true}
@@ -93,14 +95,14 @@ const styles = StyleSheet.create({
     // We don't set background here
     // We don't set borderRadius here (user forbidden)
     // We can set shadow here?
-    shadowColor: '#64748B',
+    shadowColor: colors.text.muted,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 5, // Android
   },
   content: {
-    padding: 16,
+    padding: spacing.md,
     zIndex: 1,
   }
 });

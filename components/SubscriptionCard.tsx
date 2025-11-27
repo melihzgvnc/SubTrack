@@ -2,6 +2,9 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { Subscription } from '../store/useSubStore';
 import { format, addMonths, addYears, parseISO } from 'date-fns';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
+import { typography } from '../theme/typography';
 
 interface Props {
   subscription: Subscription;
@@ -38,23 +41,39 @@ export const SubscriptionCard: React.FC<Props> = ({ subscription }) => {
     : `${currency}${price}/mo`;
 
   return (
-    <View className="bg-gray-800 p-4 rounded-2xl mb-4 flex-row justify-between items-center border border-gray-700">
-      <View className="flex-row items-center gap-4">
+    <View style={{
+        backgroundColor: colors.background.surface,
+        padding: spacing.md,
+        borderRadius: spacing.lg,
+        marginBottom: spacing.md,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderWidth: 1,
+        borderColor: colors.border.highlight
+    }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
         <View 
-          className="w-12 h-12 rounded-full justify-center items-center"
-          style={{ backgroundColor: color || '#333' }}
+          style={{
+            width: spacing.xxxl,
+            height: spacing.xxxl,
+            borderRadius: 9999,
+            justifyContent: 'center',
+            alignItems: 'center',
+            backgroundColor: color || colors.background.surface
+          }}
         >
-          <Text className="text-white font-bold text-xl">{name.charAt(0)}</Text>
+          <Text style={{ color: colors.text.primary, fontWeight: 'bold', fontSize: typography.size.xl }}>{name.charAt(0)}</Text>
         </View>
         <View>
-          <Text className="text-white text-lg font-bold">{name}</Text>
-          <Text className="text-gray-400 text-sm">Next Bill: {getNextBillDate(startDate, cycle)}</Text>
+          <Text style={{ color: colors.text.primary, fontSize: typography.size.lg, fontWeight: 'bold' }}>{name}</Text>
+          <Text style={{ color: colors.text.secondary, fontSize: typography.size.sm }}>Next Bill: {getNextBillDate(startDate, cycle)}</Text>
         </View>
       </View>
       <View>
-        <Text className="text-white text-lg font-bold text-right">{displayPrice}</Text>
+        <Text style={{ color: colors.text.primary, fontSize: typography.size.lg, fontWeight: 'bold', textAlign: 'right' }}>{displayPrice}</Text>
         {cycle === 'yearly' && (
-             <Text className="text-gray-500 text-xs text-right">
+             <Text style={{ color: colors.text.muted, fontSize: typography.size.xs, textAlign: 'right' }}>
                 ~{currency}{(price / 12).toFixed(2)}/mo
              </Text>
         )}

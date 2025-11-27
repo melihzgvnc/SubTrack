@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Modal, FlatList, TouchableWithoutFeedback } from 'react-native';
 import { ChevronDown } from 'lucide-react-native';
 import { GlassCard } from './GlassCard';
+import { colors } from '../../theme/colors';
+import { spacing } from '../../theme/spacing';
+import { typography } from '../../theme/typography';
 
 interface DropdownProps {
   label: string;
@@ -17,17 +20,17 @@ export const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSel
   const renderItem = ({ item }: { item: string }) => (
     <TouchableOpacity
       style={{
-        paddingVertical: 12,
-        paddingHorizontal: 16,
+        paddingVertical: spacing.sm,
+        paddingHorizontal: spacing.md,
         borderBottomWidth: 1,
-        borderBottomColor: 'rgba(255,255,255,0.1)',
+        borderBottomColor: colors.border.highlight,
       }}
       onPress={() => {
         onSelect(item);
         setVisible(false);
       }}
     >
-      <Text style={{ color: item === value ? '#B5FFCD' : '#FFFFFF', fontSize: 16, fontWeight: item === value ? 'bold' : 'normal' }}>
+      <Text style={{ color: item === value ? colors.accent.tertiary : colors.text.primary, fontSize: typography.size.base, fontWeight: item === value ? 'bold' : 'normal' }}>
         {item}
       </Text>
     </TouchableOpacity>
@@ -36,13 +39,13 @@ export const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSel
   return (
     <View style={{ width: width as any }}>
       <TouchableOpacity onPress={() => setVisible(true)} activeOpacity={0.8}>
-        <GlassCard style={{ padding: 0 }}>
-            <View style={{ padding: 12, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+        <GlassCard style={{ padding: spacing.none }}>
+            <View style={{ padding: spacing.sm, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={{ flex: 1, alignItems: 'center' }}>
-                    <Text style={{ color: '#94A3B8', fontSize: 10, marginBottom: 2 }}>{label}</Text>
-                    <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' }}>{value}</Text>
+                    <Text style={{ color: colors.text.secondary, fontSize: typography.size.xs, marginBottom: 2 }}>{label}</Text>
+                    <Text style={{ color: colors.text.primary, fontSize: typography.size.lg, fontWeight: 'bold' }}>{value}</Text>
                 </View>
-                <ChevronDown color="#64748B" size={16} />
+                <ChevronDown color={colors.text.muted} size={16} />
             </View>
         </GlassCard>
       </TouchableOpacity>
@@ -51,9 +54,9 @@ export const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSel
         <TouchableWithoutFeedback onPress={() => setVisible(false)}>
           <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'center', alignItems: 'center' }}>
             <TouchableWithoutFeedback>
-              <View style={{ width: '80%', maxHeight: '50%', backgroundColor: '#1E293B', borderRadius: 20, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' }}>
-                <View style={{ padding: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(255,255,255,0.1)', backgroundColor: '#0F172A' }}>
-                    <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 'bold', textAlign: 'center' }}>Select {label}</Text>
+              <View style={{ width: '80%', maxHeight: '50%', backgroundColor: colors.background.surface, borderRadius: spacing.lg, overflow: 'hidden', borderWidth: 1, borderColor: colors.border.highlight }}>
+                <View style={{ padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border.highlight, backgroundColor: colors.background.elevated }}>
+                    <Text style={{ color: colors.text.primary, fontSize: typography.size.lg, fontWeight: 'bold', textAlign: 'center' }}>Select {label}</Text>
                 </View>
                 <FlatList
                   data={options}

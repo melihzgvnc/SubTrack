@@ -5,6 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ArrowLeft, Bell, DollarSign } from 'lucide-react-native';
 import { GlassCard } from '../components/ui/GlassCard';
 import { useSubStore } from '../store/useSubStore';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
 
 import { currencies } from '../utils/currencies';
 
@@ -26,12 +28,12 @@ export default function Settings() {
                 onPress={() => router.back()}
                 className="w-10 h-10 rounded-full bg-white/10 justify-center items-center mr-4"
             >
-                <ArrowLeft color="#FFF" size={24} />
+                <ArrowLeft color={colors.text.primary} size={24} />
             </TouchableOpacity>
             <Text className="text-white text-3xl font-bold">Settings</Text>
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 180 }}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing.bottomScroll }}>
             {/* Notifications Section */}
             <View className="mb-6">
                 <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">General</Text>
@@ -39,7 +41,7 @@ export default function Settings() {
                     <View className="flex-row justify-between items-center py-2">
                         <View className="flex-row items-center gap-4">
                             <View className="w-10 h-10 rounded-full bg-neon-blue/20 justify-center items-center">
-                                <Bell color="#B5DEFF" size={20} />
+                                <Bell color={colors.accent.secondary} size={20} />
                             </View>
                             <View>
                                 <Text className="text-white text-lg font-bold">Notifications</Text>
@@ -49,8 +51,8 @@ export default function Settings() {
                         <Switch 
                             value={notificationsEnabled} 
                             onValueChange={toggleNotifications}
-                            trackColor={{ false: '#334155', true: '#B5FFCD' }}
-                            thumbColor={notificationsEnabled ? '#FFFFFF' : '#94A3B8'}
+                            trackColor={{ false: colors.background.surface, true: colors.accent.tertiary }}
+                            thumbColor={notificationsEnabled ? colors.text.primary : colors.text.secondary}
                         />
                     </View>
                 </GlassCard>
@@ -63,7 +65,7 @@ export default function Settings() {
                     <View className="mb-4">
                         <View className="flex-row items-center gap-4 mb-4">
                             <View className="w-10 h-10 rounded-full bg-neon-green/20 justify-center items-center">
-                                <DollarSign color="#B5FFCD" size={20} />
+                                <DollarSign color={colors.accent.tertiary} size={20} />
                             </View>
                             <View>
                                 <Text className="text-white text-lg font-bold">Currency</Text>

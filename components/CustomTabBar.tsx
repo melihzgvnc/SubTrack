@@ -7,6 +7,9 @@ import { useRouter } from 'expo-router';
 import { Squircle } from './ui/Squircle';
 import { BlurView } from 'expo-blur';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
+import { typography } from '../theme/typography';
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const router = useRouter();
@@ -15,7 +18,7 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
   // Calculate bottom offset to clear the AdBanner
   // AdBanner is usually ~50px + 20px padding + safe area
   // We lift the tab bar above that
-  const AD_HEIGHT = 65;
+  const AD_HEIGHT = 40;
   const bottomOffset = insets.bottom + AD_HEIGHT;
 
   return (
@@ -29,8 +32,8 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
                 flexDirection: 'row', 
                 justifyContent: 'space-between', 
                 alignItems: 'center',
-                paddingHorizontal: 48, // Increased from 20 to bring icons closer to center
-                paddingVertical: 6,
+                paddingHorizontal: spacing.xxxl, // Increased from 20 to bring icons closer to center
+                paddingVertical: spacing.xs,
                 // Remove background color and border from here, move to BlurView wrapper or absolute background
             }}
         >
@@ -40,12 +43,12 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
                 tint="dark"
                 style={{
                     ...StyleSheet.absoluteFillObject,
-                    borderRadius: 32,
+                    borderRadius: spacing.xxl,
                     overflow: 'hidden',
                     borderWidth: 1,
-                    borderColor: 'rgba(255,255,255,0.15)',
+                    borderColor: colors.border.highlight,
                     backgroundColor: 'rgba(9, 9, 11, 0.5)', // Stronger dark overlay for better separation
-                    shadowColor: '#000',
+                    shadowColor: colors.background.main,
                     shadowOffset: { width: 0, height: -4 },
                     shadowOpacity: 0.3,
                     shadowRadius: 12,
@@ -90,12 +93,12 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
                             width={56} 
                             height={56} 
                             cornerRadius={20} 
-                            backgroundColor="#B5FFCD" // Neon Green
+                            backgroundColor={colors.accent.tertiary} // Neon Green
                             showBorder={true}
                             borderColor="rgba(255,255,255,0.5)"
                         />
                      </View>
-                     <Plus color="#000" size={28} />
+                     <Plus color={colors.text.inverse} size={28} />
                 </TouchableOpacity>
             );
         }
@@ -129,14 +132,14 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
             }}
           >
             <View style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
-                {Icon && <Icon color={isFocused ? '#B5DEFF' : '#64748B'} size={24} />}
+                {Icon && <Icon color={isFocused ? colors.accent.secondary : colors.text.muted} size={24} />}
             </View>
             <Text style={{ 
-                color: isFocused ? '#B5DEFF' : '#64748B', 
-                fontSize: 10, 
+                color: isFocused ? colors.accent.secondary : colors.text.muted, 
+                fontSize: typography.size.xs, 
                 fontWeight: isFocused ? '600' : '400',
-                marginTop: -4,
-                marginBottom: 6 
+                marginTop: -spacing.xxs,
+                marginBottom: spacing.xxs 
             }}>
                 {label}
             </Text>

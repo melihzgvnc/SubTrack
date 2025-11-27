@@ -9,6 +9,7 @@ import './global.css';
 import { useEffect, useState } from 'react';
 import { registerForPushNotificationsAsync } from '../utils/notifications';
 import { useSubStore } from '../store/useSubStore';
+import { colors } from '../theme/colors';
 
 export default function Layout() {
   const hasSeenOnboarding = useSubStore((state) => state.hasSeenOnboarding);
@@ -38,7 +39,7 @@ export default function Layout() {
   const isOnboarding = segments[0] === 'onboarding';
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#09090B' }}>
+    <View style={{ flex: 1, backgroundColor: colors.background.main }}>
       <MeshBackground />
       <Tabs
         tabBar={(props) => isOnboarding ? null : <CustomTabBar {...props} />}
@@ -60,7 +61,7 @@ export default function Layout() {
         }}
       >
         <Tabs.Screen name="index" options={{ title: 'Home' }} />
-        <Tabs.Screen name="add" options={{ title: 'Add', presentation: 'modal' }} />
+        <Tabs.Screen name="add" options={{ title: 'Add' }} />
         <Tabs.Screen name="stats" options={{ title: 'Stats' }} />
         <Tabs.Screen name="subscription/[id]" options={{ href: null }} />
         <Tabs.Screen name="settings" options={{ href: null }} />

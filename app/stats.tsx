@@ -6,6 +6,9 @@ import { Music, ShoppingBag, MonitorPlay, Briefcase, Zap } from 'lucide-react-na
 import { useSubStore } from '../store/useSubStore';
 import { GlassCard } from '../components/ui/GlassCard';
 import { getCurrency } from '../utils/currency';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
+import { typography } from '../theme/typography';
 
 const CategoryCard = ({ title, count, icon: Icon, color, height = 200, category, selectedCategory, onSelect }: any) => {
     const subscriptions = useSubStore((state) => state.subscriptions);
@@ -42,20 +45,20 @@ const CategoryCard = ({ title, count, icon: Icon, color, height = 200, category,
       <TouchableOpacity 
           onPress={() => onSelect(isFlipped ? null : title)}
           activeOpacity={0.8}
-          style={{ width: '48%', marginBottom: 16, height }}
+          style={{ width: '48%', marginBottom: spacing.md, height }}
       >
           {/* Front of Card */}
           <Animated.View style={[{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden' }, flipToFrontStyle]}>
               <GlassCard style={{ height: '100%' }}>
                   <View style={{ flex: 1, justifyContent: 'space-between' }}>
                       <View style={{ alignItems: 'flex-end' }}>
-                          <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.1)', justifyContent: 'center', alignItems: 'center' }}>
+                          <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.border.highlight, justifyContent: 'center', alignItems: 'center' }}>
                                <Icon color={color} size={20} />
                           </View>
                       </View>
                       <View>
-                          <Text style={{ color: '#FFFFFF', fontSize: 24, fontWeight: 'bold', marginBottom: 4 }}>{title}</Text>
-                          <Text style={{ color: '#94A3B8', fontSize: 14 }}>{count} subs</Text>
+                          <Text style={{ color: colors.text.primary, fontSize: typography.size.xl, fontWeight: 'bold', marginBottom: spacing.xxs }}>{title}</Text>
+                          <Text style={{ color: colors.text.secondary, fontSize: typography.size.sm }}>{count} subs</Text>
                       </View>
                   </View>
               </GlassCard>
@@ -65,9 +68,9 @@ const CategoryCard = ({ title, count, icon: Icon, color, height = 200, category,
           <Animated.View style={[{ position: 'absolute', width: '100%', height: '100%', backfaceVisibility: 'hidden' }, flipToBackStyle]}>
               <GlassCard style={{ height: '100%' }}>
                   <View style={{ flex: 1 }}>
-                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                          <Text style={{ color: '#FFFFFF', fontSize: 18, fontWeight: 'bold' }}>{title}</Text>
-                          <Text style={{ color: '#94A3B8', fontSize: 12 }}>{subs.length}</Text>
+                      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.sm }}>
+                          <Text style={{ color: colors.text.primary, fontSize: typography.size.lg, fontWeight: 'bold' }}>{title}</Text>
+                          <Text style={{ color: colors.text.secondary, fontSize: typography.size.xs }}>{subs.length}</Text>
                       </View>
                       <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
                           {subs.map((sub, idx) => (
@@ -77,28 +80,28 @@ const CategoryCard = ({ title, count, icon: Icon, color, height = 200, category,
                                       flexDirection: 'row', 
                                       justifyContent: 'space-between', 
                                       alignItems: 'center',
-                                      backgroundColor: 'rgba(255,255,255,0.05)',
-                                      padding: 8,
-                                      borderRadius: 12,
+                                      backgroundColor: colors.border.subtle,
+                                      padding: spacing.xs,
+                                      borderRadius: spacing.sm,
                                       marginBottom: 6,
                                       borderWidth: 1,
-                                      borderColor: 'rgba(255,255,255,0.1)'
+                                      borderColor: colors.border.highlight
                                   }}
                               >
-                                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1 }}>
+                                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.xs, flex: 1 }}>
                                       <View style={{ width: 28, height: 28, borderRadius: 14, justifyContent: 'center', alignItems: 'center', backgroundColor: sub.color + '20' }}>
-                                          <Text style={{ fontSize: 12, fontWeight: 'bold', color: sub.color }}>{sub.name[0]}</Text>
+                                          <Text style={{ fontSize: typography.size.xs, fontWeight: 'bold', color: sub.color }}>{sub.name[0]}</Text>
                                       </View>
                                       <View style={{ flex: 1 }}>
-                                          <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: '600' }} numberOfLines={1}>{sub.name}</Text>
-                                          <Text style={{ color: '#94A3B8', fontSize: 10 }}>{sub.cycle}</Text>
+                                          <Text style={{ color: colors.text.primary, fontSize: typography.size.xs, fontWeight: '600' }} numberOfLines={1}>{sub.name}</Text>
+                                          <Text style={{ color: colors.text.secondary, fontSize: 10 }}>{sub.cycle}</Text>
                                       </View>
                                   </View>
-                                  <Text style={{ color: '#FFFFFF', fontSize: 12, fontWeight: 'bold' }}>{sub.currency}{sub.price.toFixed(2)}</Text>
+                                  <Text style={{ color: colors.text.primary, fontSize: typography.size.xs, fontWeight: 'bold' }}>{sub.currency}{sub.price.toFixed(2)}</Text>
                               </View>
                           ))}
                           {subs.length === 0 && (
-                              <Text style={{ color: '#94A3B8', textAlign: 'center', marginTop: 20, fontSize: 12 }}>No subscriptions</Text>
+                              <Text style={{ color: colors.text.secondary, textAlign: 'center', marginTop: spacing.lg, fontSize: typography.size.xs }}>No subscriptions</Text>
                           )}
                       </ScrollView>
                   </View>
@@ -122,7 +125,7 @@ export default function Stats() {
 
   return (
     <SafeAreaView className="flex-1" edges={['top']}>
-      <ScrollView className="flex-1 px-4 pt-2" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 180 }}>
+      <ScrollView className="flex-1 px-4 pt-2" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing.bottomScroll }}>
         
         {/* Header */}
         <View className="flex-row justify-between items-center mb-6 mt-2">
@@ -130,7 +133,7 @@ export default function Stats() {
         </View>
 
         {/* Chart Section - Spending by Category */}
-        <GlassCard style={{ marginBottom: 32 }}>
+        <GlassCard style={{ marginBottom: spacing.xxl }}>
             <View className="w-full mb-6">
                 <View className="flex-row justify-between items-start mb-2">
                     <View>
@@ -201,16 +204,16 @@ export default function Stats() {
                     <Text className="text-shadow-blue-grey text-center">No subscriptions</Text>
                 </View>
             ) : (
-                <View className="w-full flex-row justify-center items-end" style={{ height: 160, gap: 16 }}>
+                <View className="w-full flex-row justify-center items-end" style={{ height: 160, gap: spacing.md }}>
                     {(() => {
                         // Get category color mapping
                         const categoryColors: Record<string, string> = {
-                            'Entertainment': '#B5DEFF',
-                            'Productivity': '#FFB5E8',
-                            'Utilities': '#B5FFCD',
-                            'Music': '#E7B5FF',
-                            'Shopping': '#FFB5E8',
-                            'Other': '#FEF3C7',
+                            'Entertainment': colors.accent.secondary,
+                            'Productivity': colors.accent.primary,
+                            'Utilities': colors.accent.tertiary,
+                            'Music': colors.accent.quaternary,
+                            'Shopping': colors.accent.primary,
+                            'Other': colors.accent.neutral,
                         };
 
                         // Get category short names
@@ -238,7 +241,7 @@ export default function Stats() {
                             .map(([category, value]) => ({
                                 name: categoryShortNames[category] || category,
                                 category,
-                                color: categoryColors[category] || '#94A3B8',
+                                color: categoryColors[category] || colors.text.secondary,
                                 value,
                             }))
                             .sort((a, b) => b.value - a.value);
@@ -260,7 +263,7 @@ export default function Stats() {
                                             height: barHeight,
                                             backgroundColor: cat.color,
                                             borderRadius: 24,
-                                            marginBottom: 8,
+                                            marginBottom: spacing.xs,
                                         }}
                                     />
                                     <Text className="text-shadow-blue-grey text-xs font-medium">
@@ -285,7 +288,7 @@ export default function Stats() {
                 title="Media" 
                 count={getCategoryCount('Entertainment')} 
                 icon={MonitorPlay} 
-                color="#B5DEFF"
+                color={colors.accent.secondary}
                 height={165}
                 category="Entertainment"
                 selectedCategory={selectedCategory}
@@ -295,7 +298,7 @@ export default function Stats() {
                 title="Music" 
                 count={getCategoryCount('Music')} 
                 icon={Music} 
-                color="#E7B5FF"
+                color={colors.accent.quaternary}
                 height={165}
                 category="Music"
                 selectedCategory={selectedCategory}
@@ -305,7 +308,7 @@ export default function Stats() {
                 title="Shopping" 
                 count={getCategoryCount('Shopping')} 
                 icon={ShoppingBag} 
-                color="#B5FFCD"
+                color={colors.accent.tertiary}
                 height={160}
                 category="Shopping"
                 selectedCategory={selectedCategory}
@@ -315,7 +318,7 @@ export default function Stats() {
                 title="Work" 
                 count={getCategoryCount('Productivity')} 
                 icon={Briefcase} 
-                color="#FFB5E8"
+                color={colors.accent.primary}
                 height={165}
                 category="Productivity"
                 selectedCategory={selectedCategory}
@@ -325,7 +328,7 @@ export default function Stats() {
                 title="Utilities" 
                 count={getCategoryCount('Utilities')} 
                 icon={Zap} 
-                color="#FFFFFF"
+                color={colors.text.primary}
                 height={160}
                 category="Utilities"
                 selectedCategory={selectedCategory}
@@ -335,7 +338,7 @@ export default function Stats() {
                 title="Other" 
                 count={getCategoryCount('Other')} 
                 icon={Zap} 
-                color="#FEF3C7"
+                color={colors.accent.neutral}
                 height={160}
                 category="Other"
                 selectedCategory={selectedCategory}

@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, StyleSheet, Dimensions } from 'react-native';
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg';
+import { colors } from '../../theme/colors';
 
 const { width, height } = Dimensions.get('window');
 
 export const MeshBackground = () => {
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="none">
-      <View style={[StyleSheet.absoluteFill, { backgroundColor: '#09090B' }]} />
+      <View style={[StyleSheet.absoluteFill, { backgroundColor: colors.background.main }]} />
       <Svg height="100%" width="100%" style={StyleSheet.absoluteFill}>
         <Defs>
           <RadialGradient
@@ -20,8 +21,8 @@ export const MeshBackground = () => {
             fy="0%"
             gradientUnits="userSpaceOnUse"
           >
-            <Stop offset="0" stopColor="#FFB5E8" stopOpacity="0.3" />
-            <Stop offset="1" stopColor="#09090B" stopOpacity="0" />
+            <Stop offset="0" stopColor={colors.accent.primary} stopOpacity="0.3" />
+            <Stop offset="1" stopColor={colors.background.main} stopOpacity="0" />
           </RadialGradient>
           <RadialGradient
             id="grad2"
@@ -33,8 +34,8 @@ export const MeshBackground = () => {
             fy="0%"
             gradientUnits="userSpaceOnUse"
           >
-            <Stop offset="0" stopColor="#B5DEFF" stopOpacity="0.3" />
-            <Stop offset="1" stopColor="#09090B" stopOpacity="0" />
+            <Stop offset="0" stopColor={colors.accent.secondary} stopOpacity="0.3" />
+            <Stop offset="1" stopColor={colors.background.main} stopOpacity="0" />
           </RadialGradient>
           <RadialGradient
             id="grad3"
@@ -46,8 +47,8 @@ export const MeshBackground = () => {
             fy="100%"
             gradientUnits="userSpaceOnUse"
           >
-            <Stop offset="0" stopColor="#B5FFCD" stopOpacity="0.2" />
-            <Stop offset="1" stopColor="#09090B" stopOpacity="0" />
+            <Stop offset="0" stopColor={colors.accent.tertiary} stopOpacity="0.2" />
+            <Stop offset="1" stopColor={colors.background.main} stopOpacity="0" />
           </RadialGradient>
            <RadialGradient
             id="grad4"
@@ -59,8 +60,8 @@ export const MeshBackground = () => {
             fy="100%"
             gradientUnits="userSpaceOnUse"
           >
-            <Stop offset="0" stopColor="#E7B5FF" stopOpacity="0.2" />
-            <Stop offset="1" stopColor="#09090B" stopOpacity="0" />
+            <Stop offset="0" stopColor={colors.accent.quaternary} stopOpacity="0.2" />
+            <Stop offset="1" stopColor={colors.background.main} stopOpacity="0" />
           </RadialGradient>
         </Defs>
         <Rect x="0" y="0" width="100%" height="100%" fill="url(#grad1)" />

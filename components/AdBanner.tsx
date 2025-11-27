@@ -12,7 +12,7 @@ export const AdBanner: React.FC<AdBannerProps> = ({ style }) => {
     <View style={[{ alignItems: 'center', justifyContent: 'center', paddingVertical: 10 }, style]}>
       <BannerAd
         unitId={adUnitIDs.banner!}
-        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        size={BannerAdSize.BANNER}
         requestOptions={{
           requestNonPersonalizedAdsOnly: true,
         }}

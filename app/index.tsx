@@ -8,6 +8,8 @@ import { GlassCard } from '../components/ui/GlassCard';
 import { Squircle } from '../components/ui/Squircle';
 import { format, addMonths, addYears, parseISO, differenceInDays } from 'date-fns';
 import { getCurrency } from '../utils/currency';
+import { colors } from '../theme/colors';
+import { spacing } from '../theme/spacing';
 
 export default function Dashboard() {
   const subscriptions = useSubStore((state) => state.subscriptions);
@@ -45,7 +47,7 @@ export default function Dashboard() {
 
   return (
     <SafeAreaView className="flex-1" edges={['top']}>
-      <ScrollView className="flex-1 px-4 pt-2" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 180 }}>
+      <ScrollView className="flex-1 px-4 pt-2" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing.bottomScroll }}>
         
         {/* Header */}
         <View className="flex-row justify-between items-center mb-6 mt-2">
@@ -57,7 +59,7 @@ export default function Dashboard() {
                 onPress={() => router.push('/settings')}
                 className="w-10 h-10 rounded-full bg-white/10 justify-center items-center"
             >
-                <Settings color="#FFF" size={20} />
+                <Settings color={colors.text.primary} size={20} />
             </TouchableOpacity>
         </View>
 
@@ -68,7 +70,7 @@ export default function Dashboard() {
                 <View className="flex-1 justify-between">
                     <View className="flex-row justify-between items-start">
                         <View className="bg-surface-highlight p-2 rounded-full">
-                             <CreditCard color="#B5DEFF" size={24} />
+                             <CreditCard color={colors.accent.secondary} size={24} />
                         </View>
                         <Text className="text-neon-blue font-bold tracking-widest uppercase text-xs">Total Monthly Spend</Text>
                     </View>
@@ -87,10 +89,10 @@ export default function Dashboard() {
             {/* Stats Row */}
             <View className="flex-row">
                 <View className="flex-1 mr-2">
-                    <GlassCard style={{ minHeight: 80, padding: 12 }}>
+                    <GlassCard style={{ minHeight: 80, padding: spacing.sm }}>
                         <View className="flex-row items-center justify-between h-full">
                              <View className="bg-surface-highlight w-10 h-10 rounded-full justify-center items-center mr-3">
-                                <Calendar color="#B5FFCD" size={20} />
+                                <Calendar color={colors.accent.tertiary} size={20} />
                             </View>
                             <View className="items-end">
                                 <Text className="text-white text-2xl font-bold">{monthlyCount}</Text>
@@ -100,10 +102,10 @@ export default function Dashboard() {
                     </GlassCard>
                 </View>
                 <View className="flex-1 ml-2">
-                    <GlassCard style={{ minHeight: 80, padding: 12 }}>
+                    <GlassCard style={{ minHeight: 80, padding: spacing.sm }}>
                         <View className="flex-row items-center justify-between h-full">
                             <View className="bg-surface-highlight w-10 h-10 rounded-full justify-center items-center mr-3">
-                                <TrendingUp color="#E7B5FF" size={20} />
+                                <TrendingUp color={colors.accent.quaternary} size={20} />
                             </View>
                             <View className="items-end">
                                 <Text className="text-white text-2xl font-bold">{yearlyCount}</Text>
@@ -126,17 +128,17 @@ export default function Dashboard() {
                         onPress={() => router.push(`/subscription/${sub.id}`)}
                         activeOpacity={0.7}
                     >
-                        <GlassCard style={{ padding: 0 }}>
+                        <GlassCard style={{ padding: spacing.none }}>
                              <View className="flex-row items-center p-1">
                                 {/* Icon Container with Squircle */}
-                                <View style={{ width: 56, height: 56, marginRight: 16 }}>
+                                <View style={{ width: 56, height: 56, marginRight: spacing.md }}>
                                     <Squircle 
                                         width={56} 
                                         height={56} 
                                         cornerRadius={18} 
-                                        backgroundColor={sub.color || '#333'}
+                                        backgroundColor={sub.color || colors.background.surface}
                                         showBorder={true}
-                                        borderColor="rgba(255,255,255,0.2)"
+                                        borderColor={colors.border.highlight}
                                     >
                                         <View className="flex-1 justify-center items-center">
                                             <Text className="text-white font-bold text-xl">{sub.name.charAt(0)}</Text>
