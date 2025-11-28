@@ -9,6 +9,8 @@ import { getCurrency } from '../utils/currency';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
+import { useProStore } from '../store/useProStore';
+import { PaywallModal } from '../components/PaywallModal';
 
 const CategoryCard = ({ title, count, icon: Icon, color, height = 200, category, selectedCategory, onSelect }: any) => {
     const subscriptions = useSubStore((state) => state.subscriptions);
@@ -116,6 +118,8 @@ export default function Stats() {
   const subscriptions = useSubStore((state) => state.subscriptions);
   const totalMonthlyCost = useSubStore((state) => state.totalMonthlyCost);
   const currency = useSubStore((state) => state.currency);
+  const { isPro } = useProStore();
+  const [showPaywall, setShowPaywall] = React.useState(false);
 
   // State for selected category popup
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
@@ -204,75 +208,88 @@ export default function Stats() {
                     <Text className="text-shadow-blue-grey text-center">No subscriptions</Text>
                 </View>
             ) : (
-                <View className="w-full flex-row justify-center items-end" style={{ height: 160, gap: spacing.md }}>
-                    {(() => {
-                        // Get category color mapping
-                        const categoryColors: Record<string, string> = {
-                            'Entertainment': colors.accent.secondary,
-                            'Productivity': colors.accent.primary,
-                            'Utilities': colors.accent.tertiary,
-                            'Music': colors.accent.quaternary,
-                            'Shopping': colors.accent.primary,
-                            'Other': colors.accent.neutral,
-                        };
+                <View>
+                    <View className="w-full flex-row justify-center items-end" style={{ height: 160, gap: spacing.md, opacity: isPro ? 1 : 0.3 }}>
+                        {(() => {
+                            // Get category color mapping
+                            const categoryColors: Record<string, string> = {
+                                'Entertainment': colors.accent.secondary,
+                                'Productivity': colors.accent.primary,
+                                'Utilities': colors.accent.tertiary,
+                                'Music': colors.accent.quaternary,
+                                'Shopping': colors.accent.primary,
+                                'Other': colors.accent.neutral,
+                            };
 
-                        // Get category short names
-                        const categoryShortNames: Record<string, string> = {
-                            'Entertainment': 'Ent.',
-                            'Productivity': 'Prod.',
-                            'Utilities': 'Cloud',
-                            'Music': 'Music',
-                            'Shopping': 'Shop',
-                            'Other': 'Other',
-                        };
+                            // Get category short names
+                            const categoryShortNames: Record<string, string> = {
+                                'Entertainment': 'Ent.',
+                                'Productivity': 'Prod.',
+                                'Utilities': 'Cloud',
+                                'Music': 'Music',
+                                'Shopping': 'Shop',
+                                'Other': 'Other',
+                            };
 
-                        // Calculate spending per category (only for categories with subscriptions)
-                        const categorySpending = subscriptions.reduce((acc, sub) => {
-                            const monthlyPrice = sub.cycle === 'monthly' ? sub.price : sub.price / 12;
-                            if (!acc[sub.category]) {
-                                acc[sub.category] = 0;
-                            }
-                            acc[sub.category] += monthlyPrice;
-                            return acc;
-                        }, {} as Record<string, number>);
+                            // Calculate spending per category (only for categories with subscriptions)
+                            const categorySpending = subscriptions.reduce((acc, sub) => {
+                                const monthlyPrice = sub.cycle === 'monthly' ? sub.price : sub.price / 12;
+                                if (!acc[sub.category]) {
+                                    acc[sub.category] = 0;
+                                }
+                                acc[sub.category] += monthlyPrice;
+                                return acc;
+                            }, {} as Record<string, number>);
 
-                        // Convert to array and sort by value (descending)
-                        const categoryData = Object.entries(categorySpending)
-                            .map(([category, value]) => ({
-                                name: categoryShortNames[category] || category,
-                                category,
-                                color: categoryColors[category] || colors.text.secondary,
-                                value,
-                            }))
-                            .sort((a, b) => b.value - a.value);
+                            // Convert to array and sort by value (descending)
+                            const categoryData = Object.entries(categorySpending)
+                                .map(([category, value]) => ({
+                                    name: categoryShortNames[category] || category,
+                                    category,
+                                    color: categoryColors[category] || colors.text.secondary,
+                                    value,
+                                }))
+                                .sort((a, b) => b.value - a.value);
 
-                        const maxValue = Math.max(...categoryData.map(c => c.value), 1);
+                            const maxValue = Math.max(...categoryData.map(c => c.value), 1);
 
-                        return categoryData.map((cat, index) => {
-                            const heightPercentage = (cat.value / maxValue) * 100;
-                            const barHeight = Math.max((heightPercentage / 100) * 140, 40); // Min height 40
+                            return categoryData.map((cat, index) => {
+                                const heightPercentage = (cat.value / maxValue) * 100;
+                                const barHeight = Math.max((heightPercentage / 100) * 140, 40); // Min height 40
 
-                            return (
-                                <View key={index} className="items-center">
-                                    <Text className="text-shadow-blue-grey text-[10px] mb-1 font-medium">
-                                        {currency.symbol}{cat.value.toFixed(2)}
-                                    </Text>
-                                    <View 
-                                        style={{ 
-                                            width: 48,
-                                            height: barHeight,
-                                            backgroundColor: cat.color,
-                                            borderRadius: 24,
-                                            marginBottom: spacing.xs,
-                                        }}
-                                    />
-                                    <Text className="text-shadow-blue-grey text-xs font-medium">
-                                        {cat.name}
-                                    </Text>
-                                </View>
-                            );
-                        });
-                    })()}
+                                return (
+                                    <View key={index} className="items-center">
+                                        <Text className="text-shadow-blue-grey text-[10px] mb-1 font-medium">
+                                            {currency.symbol}{cat.value.toFixed(2)}
+                                        </Text>
+                                        <View 
+                                            style={{ 
+                                                width: 48,
+                                                height: barHeight,
+                                                backgroundColor: cat.color,
+                                                borderRadius: 24,
+                                                marginBottom: spacing.xs,
+                                            }}
+                                        />
+                                        <Text className="text-shadow-blue-grey text-xs font-medium">
+                                            {cat.name}
+                                        </Text>
+                                    </View>
+                                );
+                            });
+                        })()}
+                    </View>
+                    
+                    {!isPro && (
+                        <View className="absolute inset-0 justify-center items-center">
+                            <TouchableOpacity 
+                                onPress={() => setShowPaywall(true)}
+                                className="bg-neon-blue/20 px-6 py-3 rounded-full border border-neon-blue/50 backdrop-blur-md"
+                            >
+                                <Text className="text-neon-blue font-bold">Unlock Advanced Stats</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
                 </View>
             )}
         </GlassCard>
@@ -347,6 +364,7 @@ export default function Stats() {
         </View>
 
       </ScrollView>
+      <PaywallModal visible={showPaywall} onClose={() => setShowPaywall(false)} />
     </SafeAreaView>
   );
 }

@@ -5,6 +5,7 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Plus, Calendar, TrendingUp, CreditCard, Settings } from 'lucide-react-native';
 import { GlassCard } from '../components/ui/GlassCard';
+import { NativeAdCard } from '../components/NativeAdCard';
 import { Squircle } from '../components/ui/Squircle';
 import { format, addMonths, addYears, parseISO, differenceInDays } from 'date-fns';
 import { getCurrency } from '../utils/currency';
@@ -121,55 +122,62 @@ export default function Dashboard() {
         <View className="mb-4">
             <Text className="text-white text-xl font-bold mb-4">Your Subscriptions</Text>
             
-            <View className="gap-3">
-                {subscriptions.map((sub) => (
-                    <TouchableOpacity 
-                        key={sub.id} 
-                        onPress={() => router.push(`/subscription/${sub.id}`)}
-                        activeOpacity={0.7}
-                    >
-                        <GlassCard style={{ padding: spacing.none }}>
-                             <View className="flex-row items-center p-1">
-                                {/* Icon Container with Squircle */}
-                                <View style={{ width: 56, height: 56, marginRight: spacing.md }}>
-                                    <Squircle 
-                                        width={56} 
-                                        height={56} 
-                                        cornerRadius={18} 
-                                        backgroundColor={sub.color || colors.background.surface}
-                                        showBorder={true}
-                                        borderColor={colors.border.highlight}
-                                    >
-                                        <View className="flex-1 justify-center items-center">
-                                            <Text className="text-white font-bold text-xl">{sub.name.charAt(0)}</Text>
-                                        </View>
-                                    </Squircle>
-                                </View>
-                                
-                                <View className="flex-1 py-3">
-                                    <Text className="text-white font-bold text-lg">{sub.name}</Text>
-                                    {(() => {
-                                        const info = getBillingInfo(sub);
-                                        const isDueSoon = info.startsWith('Due');
-                                        return (
-                                            <Text className={`text-xs font-medium mt-0.5 ${isDueSoon ? 'text-neon-pink' : 'text-gray-300'}`}>
-                                                {info}
-                                            </Text>
-                                        );
-                                    })()}
-                                </View>
+            <View>
+                {subscriptions.map((sub, index) => (
+                    <React.Fragment key={sub.id}>
+                        <TouchableOpacity 
+                            onPress={() => router.push(`/subscription/${sub.id}`)}
+                            activeOpacity={0.7}
+                            style={{ marginBottom: spacing.md }}
+                        >
+                            <GlassCard style={{ padding: spacing.none }}>
+                                 <View className="flex-row items-center p-1">
+                                    {/* Icon Container with Squircle */}
+                                    <View style={{ width: 56, height: 56, marginRight: spacing.md }}>
+                                        <Squircle 
+                                            width={56} 
+                                            height={56} 
+                                            cornerRadius={18} 
+                                            backgroundColor={sub.color || colors.background.surface}
+                                            showBorder={true}
+                                            borderColor={colors.border.highlight}
+                                        >
+                                            <View className="flex-1 justify-center items-center">
+                                                <Text className="text-white font-bold text-xl">{sub.name.charAt(0)}</Text>
+                                            </View>
+                                        </Squircle>
+                                    </View>
+                                    
+                                    <View className="flex-1 py-3">
+                                        <Text className="text-white font-bold text-lg">{sub.name}</Text>
+                                        {(() => {
+                                            const info = getBillingInfo(sub);
+                                            const isDueSoon = info.startsWith('Due');
+                                            return (
+                                                <Text className={`text-xs font-medium mt-0.5 ${isDueSoon ? 'text-neon-pink' : 'text-gray-300'}`}>
+                                                    {info}
+                                                </Text>
+                                            );
+                                        })()}
+                                    </View>
 
-                                <View className="items-end py-3 pr-4">
-                                    <Text className="text-white font-bold text-lg">
-                                        {sub.currency}{sub.price}
-                                    </Text>
-                                    <Text className="text-shadow-blue-grey text-xs">
-                                        {sub.cycle === 'monthly' ? 'monthly' : 'yearly'}
-                                    </Text>
+                                    <View className="items-end py-3 pr-4">
+                                        <Text className="text-white font-bold text-lg">
+                                            {sub.currency}{sub.price}
+                                        </Text>
+                                        <Text className="text-shadow-blue-grey text-xs">
+                                            {sub.cycle === 'monthly' ? 'monthly' : 'yearly'}
+                                        </Text>
+                                    </View>
                                 </View>
+                            </GlassCard>
+                        </TouchableOpacity>
+                        {index === 2 && (
+                            <View style={{ marginBottom: spacing.md }}>
+                                <NativeAdCard />
                             </View>
-                        </GlassCard>
-                    </TouchableOpacity>
+                        )}
+                    </React.Fragment>
                 ))}
             </View>
         </View>

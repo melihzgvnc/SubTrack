@@ -3,12 +3,12 @@ import { StatusBar } from 'expo-status-bar';
 import { CustomTabBar } from '../components/CustomTabBar';
 import { MeshBackground } from '../components/ui/MeshBackground';
 import { View } from 'react-native';
-import { AdBanner } from '../components/AdBanner';
 import './global.css';
 
 import { useEffect, useState } from 'react';
 import { registerForPushNotificationsAsync } from '../utils/notifications';
 import { useSubStore } from '../store/useSubStore';
+import { useRevenueCat } from '../hooks/useRevenueCat';
 import { colors } from '../theme/colors';
 
 export default function Layout() {
@@ -21,6 +21,9 @@ export default function Layout() {
     setIsMounted(true);
     registerForPushNotificationsAsync();
   }, []);
+
+  // Initialize RevenueCat
+  useRevenueCat();
 
   useEffect(() => {
     if (isMounted) {
@@ -73,11 +76,6 @@ export default function Layout() {
             }} 
         />
       </Tabs>
-      {!isOnboarding && (
-        <View className="absolute bottom-0 w-full items-center pb-safe">
-            <AdBanner />
-        </View>
-      )}
       <StatusBar style="light" />
     </View>
   );

@@ -7,6 +7,8 @@ import { ArrowLeft } from 'lucide-react-native';
 import { GlassCard } from '../components/ui/GlassCard';
 import { Squircle } from '../components/ui/Squircle';
 import { Dropdown } from '../components/ui/Dropdown';
+import { PaywallModal } from '../components/PaywallModal';
+import { useProStore } from '../store/useProStore';
 import { scheduleSubscriptionNotifications } from '../utils/notifications';
 import { getCurrency } from '../utils/currency';
 import { useInterstitialAd } from 'react-native-google-mobile-ads';
@@ -55,8 +57,18 @@ export default function AddSubscription() {
     }
   }, [isClosed, pendingNavigation]);
 
+  const subscriptions = useSubStore((state) => state.subscriptions);
+  const { isPro } = useProStore();
+  const [showPaywall, setShowPaywall] = useState(false);
+
   const handleSave = () => {
     if (!name || !price) return;
+
+    // Check limits
+    if (subscriptions.length >= 5 && !isPro) {
+        setShowPaywall(true);
+        return;
+    }
 
     // Construct date
     const dateObj = new Date(
@@ -249,6 +261,7 @@ export default function AddSubscription() {
         </TouchableOpacity>
 
       </ScrollView>
+      <PaywallModal visible={showPaywall} onClose={() => setShowPaywall(false)} />
     </SafeAreaView>
   );
 }

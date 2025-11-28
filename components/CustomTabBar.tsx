@@ -18,7 +18,7 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
   // Calculate bottom offset to clear the AdBanner
   // AdBanner is usually ~50px + 20px padding + safe area
   // We lift the tab bar above that
-  const AD_HEIGHT = 40;
+  const AD_HEIGHT = 0;
   const bottomOffset = insets.bottom + AD_HEIGHT;
 
   return (
