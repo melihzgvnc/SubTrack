@@ -1,7 +1,7 @@
 // Responsive design utilities
-export { 
-  useResponsive, 
-  useScaledSize, 
+export {
+  useResponsive,
+  useScaledSize,
   useResponsiveValue,
   breakpoints,
   type Breakpoint,
@@ -12,7 +12,7 @@ export {
 export { useRevenueCat } from './useRevenueCat';
 
 // Spending calculations for Insights
-export { 
+export {
   useSpendingCalculations,
   useCategorySpending,
 } from './useSpendingCalculations';

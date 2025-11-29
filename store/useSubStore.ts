@@ -27,6 +27,8 @@ interface SubscriptionState {
   setCurrency: (currency: { code: string; symbol: string }) => void;
   notificationsEnabled: boolean;
   toggleNotifications: () => void;
+  updateSubscription: (subscription: Subscription) => void;
+  setSubscriptions: (subscriptions: Subscription[]) => void;
 }
 
 export const useSubStore = create<SubscriptionState>()(
@@ -89,6 +91,13 @@ export const useSubStore = create<SubscriptionState>()(
       notificationsEnabled: true,
       addSubscription: (subscription) =>
         set((state) => ({ subscriptions: [...state.subscriptions, subscription] })),
+      updateSubscription: (subscription) =>
+        set((state) => ({
+          subscriptions: state.subscriptions.map((sub) =>
+            sub.id === subscription.id ? subscription : sub
+          ),
+        })),
+      setSubscriptions: (subscriptions) => set({ subscriptions }),
       removeSubscription: (id) =>
         set((state) => ({
           subscriptions: state.subscriptions.filter((sub) => sub.id !== id),

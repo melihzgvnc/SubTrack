@@ -12,6 +12,9 @@ import { useResponsive, useResponsiveValue } from '../hooks/useResponsive';
 
 import { currencies } from '../utils/currencies';
 
+import { AccountCard } from '../components/auth/AccountCard';
+import { useAuth } from '../hooks/useAuth';
+
 export default function Settings() {
     const router = useRouter();
     const {
@@ -20,6 +23,7 @@ export default function Settings() {
         currency,
         setCurrency
     } = useSubStore();
+    const { signOut } = useAuth();
     const { isTablet, height } = useResponsive();
 
     // Responsive currency list height
@@ -51,6 +55,15 @@ export default function Settings() {
                 </View>
 
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing.bottomScroll }}>
+                    {/* Account Section */}
+                    <View className="mb-6">
+                        <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">Account</Text>
+                        <AccountCard
+                            onSignInPress={() => router.push('/(auth)/login')}
+                            onSignOutPress={signOut}
+                        />
+                    </View>
+
                     {/* Notifications Section */}
                     <View className="mb-6">
                         <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">General</Text>
@@ -125,8 +138,8 @@ export default function Settings() {
                                                 >
                                                     <View
                                                         className={`flex-row justify-between items-center p-3 rounded-xl border ${currency.code === curr.code
-                                                                ? 'bg-white/10 border-neon-green/50'
-                                                                : 'bg-transparent border-white/5'
+                                                            ? 'bg-white/10 border-neon-green/50'
+                                                            : 'bg-transparent border-white/5'
                                                             }`}
                                                     >
                                                         <View className="flex-row items-center gap-3">

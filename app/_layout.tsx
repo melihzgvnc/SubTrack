@@ -11,6 +11,9 @@ import { useSubStore } from '../store/useSubStore';
 import { useRevenueCat } from '../hooks/useRevenueCat';
 import { colors } from '../theme/colors';
 
+import { useAuth } from '../hooks/useAuth';
+import { useCloudSync } from '../hooks/useCloudSync';
+
 // Font loading
 import { useFonts, ConcertOne_400Regular } from '@expo-google-fonts/concert-one';
 import * as SplashScreen from 'expo-splash-screen';
@@ -44,15 +47,21 @@ export default function Layout() {
   // Initialize RevenueCat
   useRevenueCat();
 
+  // Initialize Auth
+  useAuth();
+
+  // Initialize Cloud Sync
+  useCloudSync();
+
   useEffect(() => {
     if (isMounted && fontsLoaded) {
       // Check if store is hydrated
       const hasHydrated = useSubStore.persist.hasHydrated();
-      
+
       if (hasHydrated && !hasSeenOnboarding) {
         // Use a small timeout to ensure navigation is ready
         setTimeout(() => {
-            router.replace('/onboarding');
+          router.replace('/onboarding');
         }, 100);
       }
     }
@@ -96,12 +105,18 @@ export default function Layout() {
         <Tabs.Screen name="stats" options={{ title: 'Stats' }} />
         <Tabs.Screen name="subscription/[id]" options={{ href: null }} />
         <Tabs.Screen name="settings" options={{ href: null }} />
-        <Tabs.Screen 
-            name="onboarding" 
-            options={{ 
-                href: null,
-                tabBarStyle: { display: 'none' },
-            }} 
+        <Tabs.Screen
+          name="onboarding"
+          options={{
+            href: null,
+            tabBarStyle: { display: 'none' },
+          }}
+        />
+        <Tabs.Screen
+          name="(auth)"
+          options={{
+            href: null,
+          }}
         />
       </Tabs>
       <StatusBar style="light" />

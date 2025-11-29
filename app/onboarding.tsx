@@ -416,6 +416,13 @@ export default function Onboarding() {
                     >
                       <Text className="text-gray-500 font-medium text-sm tracking-widest uppercase">Skip for now</Text>
                     </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => router.push('/(auth)/login')}
+                      className="py-2 items-center"
+                    >
+                      <Text className="text-white font-medium text-sm tracking-widest uppercase">I have an account</Text>
+                    </TouchableOpacity>
                   </Animated.View>
                 )}
               </View>
