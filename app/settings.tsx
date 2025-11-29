@@ -147,7 +147,8 @@ export default function Settings() {
                             </View>
                         </GlassCard>
                     </View>
-                    {/* Debug Section - Temporary */}
+
+                    {/* Debug Section */}
                     <View className="mb-6">
                         <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">Debug</Text>
                         <GlassCard>
@@ -157,22 +158,14 @@ export default function Settings() {
                             >
                                 <View className="flex-row items-center gap-4">
                                     <View className="w-10 h-10 rounded-full bg-neon-pink/20 justify-center items-center">
-                                        <Text className="text-xl">🚀</Text>
+                                        <Text className="text-neon-pink text-lg">🚀</Text>
                                     </View>
                                     <View>
-                                        <Text
-                                            className="text-white text-lg font-bold"
-                                            allowFontScaling
-                                            maxFontSizeMultiplier={1.2}
-                                        >
-                                            Reset Onboarding
+                                        <Text className="text-white text-lg font-bold">
+                                            Onboarding
                                         </Text>
-                                        <Text
-                                            className="text-shadow-blue-grey text-xs"
-                                            allowFontScaling
-                                            maxFontSizeMultiplier={1.3}
-                                        >
-                                            View the onboarding flow again
+                                        <Text className="text-shadow-blue-grey text-xs">
+                                            Launch onboarding flow
                                         </Text>
                                     </View>
                                 </View>
