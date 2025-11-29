@@ -2,20 +2,39 @@ import { Tabs, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { CustomTabBar } from '../components/CustomTabBar';
 import { MeshBackground } from '../components/ui/MeshBackground';
-import { View } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 import './global.css';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { registerForPushNotificationsAsync } from '../utils/notifications';
 import { useSubStore } from '../store/useSubStore';
 import { useRevenueCat } from '../hooks/useRevenueCat';
 import { colors } from '../theme/colors';
+
+// Font loading
+import { useFonts, ConcertOne_400Regular } from '@expo-google-fonts/concert-one';
+import * as SplashScreen from 'expo-splash-screen';
+
+// Prevent splash screen from auto-hiding before fonts load
+SplashScreen.preventAutoHideAsync();
 
 export default function Layout() {
   const hasSeenOnboarding = useSubStore((state) => state.hasSeenOnboarding);
   const router = useRouter();
   const segments = useSegments();
   const [isMounted, setIsMounted] = useState(false);
+
+  // Load Concert One font
+  const [fontsLoaded, fontError] = useFonts({
+    ConcertOne_400Regular,
+  });
+
+  // Hide splash screen once fonts are loaded
+  useEffect(() => {
+    if (fontsLoaded || fontError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontError]);
 
   useEffect(() => {
     setIsMounted(true);
@@ -26,7 +45,7 @@ export default function Layout() {
   useRevenueCat();
 
   useEffect(() => {
-    if (isMounted) {
+    if (isMounted && fontsLoaded) {
       // Check if store is hydrated
       const hasHydrated = useSubStore.persist.hasHydrated();
       
@@ -37,9 +56,18 @@ export default function Layout() {
         }, 100);
       }
     }
-  }, [isMounted, hasSeenOnboarding]);
+  }, [isMounted, hasSeenOnboarding, fontsLoaded]);
 
   const isOnboarding = segments[0] === 'onboarding';
+
+  // Don't render until fonts are loaded
+  if (!fontsLoaded && !fontError) {
+    return (
+      <View style={{ flex: 1, backgroundColor: colors.background.main, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={colors.accent.secondary} />
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background.main }}>

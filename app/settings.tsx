@@ -7,6 +7,8 @@ import { GlassCard } from '../components/ui/GlassCard';
 import { useSubStore } from '../store/useSubStore';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
+import { typography } from '../theme/typography';
+import { useResponsive, useResponsiveValue } from '../hooks/useResponsive';
 
 import { currencies } from '../utils/currencies';
 
@@ -18,6 +20,16 @@ export default function Settings() {
     currency, 
     setCurrency 
   } = useSubStore();
+  const { isTablet, height } = useResponsive();
+
+  // Responsive currency list height
+  const currencyListHeight = useResponsiveValue({
+    sm: 240,
+    md: 256,
+    lg: 320,
+    xl: 400,
+    default: 256,
+  });
 
   return (
     <SafeAreaView className="flex-1" edges={['top']}>
@@ -30,7 +42,12 @@ export default function Settings() {
             >
                 <ArrowLeft color={colors.text.primary} size={24} />
             </TouchableOpacity>
-            <Text className="text-white text-3xl font-bold">Settings</Text>
+            <Text 
+                className="text-white text-3xl"
+                style={{ fontFamily: typography.fontFamily.display }}
+            >
+                Settings
+            </Text>
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing.bottomScroll }}>
@@ -41,11 +58,23 @@ export default function Settings() {
                     <View className="flex-row justify-between items-center py-2">
                         <View className="flex-row items-center gap-4">
                             <View className="w-10 h-10 rounded-full bg-neon-blue/20 justify-center items-center">
-                                <Bell color={colors.accent.secondary} size={20} />
+                                <Bell color={colors.accent.secondary} size={isTablet ? 24 : 20} />
                             </View>
                             <View>
-                                <Text className="text-white text-lg font-bold">Notifications</Text>
-                                <Text className="text-shadow-blue-grey text-xs">Get reminders for upcoming bills</Text>
+                                <Text 
+                                    className="text-white text-lg font-bold"
+                                    allowFontScaling
+                                    maxFontSizeMultiplier={1.2}
+                                >
+                                    Notifications
+                                </Text>
+                                <Text 
+                                    className="text-shadow-blue-grey text-xs"
+                                    allowFontScaling
+                                    maxFontSizeMultiplier={1.3}
+                                >
+                                    Get reminders for upcoming bills
+                                </Text>
                             </View>
                         </View>
                         <Switch 
@@ -65,15 +94,27 @@ export default function Settings() {
                     <View className="mb-4">
                         <View className="flex-row items-center gap-4 mb-4">
                             <View className="w-10 h-10 rounded-full bg-neon-green/20 justify-center items-center">
-                                <DollarSign color={colors.accent.tertiary} size={20} />
+                                <DollarSign color={colors.accent.tertiary} size={isTablet ? 24 : 20} />
                             </View>
                             <View>
-                                <Text className="text-white text-lg font-bold">Currency</Text>
-                                <Text className="text-shadow-blue-grey text-xs">Select your preferred currency</Text>
+                                <Text 
+                                    className="text-white text-lg font-bold"
+                                    allowFontScaling
+                                    maxFontSizeMultiplier={1.2}
+                                >
+                                    Currency
+                                </Text>
+                                <Text 
+                                    className="text-shadow-blue-grey text-xs"
+                                    allowFontScaling
+                                    maxFontSizeMultiplier={1.3}
+                                >
+                                    Select your preferred currency
+                                </Text>
                             </View>
                         </View>
                         
-                        <View className="h-64">
+                        <View style={{ height: currencyListHeight }}>
                             <ScrollView nestedScrollEnabled showsVerticalScrollIndicator={true}>
                                 <View className="gap-2 pb-2">
                                     {currencies.map((curr) => (

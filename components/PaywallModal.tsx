@@ -8,6 +8,7 @@ import { typography } from '../theme/typography';
 import { useRevenueCat } from '../hooks/useRevenueCat';
 import { Squircle } from './ui/Squircle';
 import { GlassCard } from './ui/GlassCard';
+import { useResponsive, useResponsiveValue } from '../hooks/useResponsive';
 
 interface Props {
   visible: boolean;
@@ -16,6 +17,25 @@ interface Props {
 
 export const PaywallModal: React.FC<Props> = ({ visible, onClose }) => {
   const { currentOffering, purchasePackage, restorePurchases, isLoading, isPro } = useRevenueCat();
+  const { isTablet, width } = useResponsive();
+
+  // Responsive icon size
+  const heroIconSize = useResponsiveValue({
+    sm: 72,
+    md: 80,
+    lg: 100,
+    xl: 120,
+    default: 80,
+  });
+
+  // Responsive padding
+  const horizontalPadding = useResponsiveValue({
+    sm: 20,
+    md: 24,
+    lg: 40,
+    xl: 60,
+    default: 24,
+  });
 
   // Close automatically if user becomes pro while modal is open
   React.useEffect(() => {
@@ -52,7 +72,7 @@ export const PaywallModal: React.FC<Props> = ({ visible, onClose }) => {
     >
       <View style={{ flex: 1, backgroundColor: 'rgba(0,0,0,0.8)' }}>
         <BlurView intensity={40} tint="dark" style={{ flex: 1 }}>
-          <View className="flex-1 pt-12 px-6 pb-8">
+          <View style={{ flex: 1, paddingTop: isTablet ? 48 : 48, paddingHorizontal: horizontalPadding, paddingBottom: 32 }}>
             {/* Header */}
             <View className="flex-row justify-between items-center mb-8">
                 <View />
@@ -68,21 +88,30 @@ export const PaywallModal: React.FC<Props> = ({ visible, onClose }) => {
                 {/* Hero Icon */}
                 <View className="items-center mb-8">
                     <Squircle 
-                        width={80} 
-                        height={80} 
-                        cornerRadius={24} 
+                        width={heroIconSize} 
+                        height={heroIconSize} 
+                        cornerRadius={heroIconSize * 0.3} 
                         backgroundColor={colors.accent.primary}
                         showBorder
                         borderColor={colors.border.highlight}
                     >
                         <View className="flex-1 justify-center items-center">
-                            <Star color="#fff" size={40} fill="#fff" />
+                            <Star color="#fff" size={heroIconSize * 0.5} fill="#fff" />
                         </View>
                     </Squircle>
-                    <Text className="text-white text-3xl font-bold mt-6 text-center">
-                        Unlock <Text style={{ color: colors.accent.primary }}>Pro</Text>
+                    <Text 
+                        className="text-white text-3xl mt-6 text-center"
+                        style={{ fontFamily: typography.fontFamily.display }}
+                        allowFontScaling
+                        maxFontSizeMultiplier={1.2}
+                    >
+                        Unlock <Text style={{ color: colors.accent.primary, fontFamily: typography.fontFamily.display }}>Pro</Text>
                     </Text>
-                    <Text className="text-gray-400 text-center mt-2 text-lg">
+                    <Text 
+                        className="text-gray-400 text-center mt-2 text-lg"
+                        allowFontScaling
+                        maxFontSizeMultiplier={1.3}
+                    >
                         Take control of your financial life.
                     </Text>
                 </View>

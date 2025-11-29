@@ -3,6 +3,13 @@ module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      // Responsive breakpoints for NativeWind
+      screens: {
+        'sm': '375px',   // Small phones (iPhone SE)
+        'md': '414px',   // Standard phones (iPhone 14)
+        'lg': '768px',   // Tablets
+        'xl': '1024px',  // Large tablets / iPad Pro
+      },
       colors: {
         background: '#09090B', // Dark background for contrast with mesh
         surface: 'rgba(255, 255, 255, 0.05)', // Glassy surface
@@ -14,7 +21,12 @@ module.exports = {
         'shadow-blue-grey': '#64748B',
       },
       fontFamily: {
-        sans: ['System', 'sans-serif'], // Use system font (San Francisco on iOS)
+        sans: ['System', 'sans-serif'],           // Body text (San Francisco on iOS)
+        display: ['ConcertOne_400Regular'],       // Headings and display text
+      },
+      // Responsive spacing scale
+      spacing: {
+        'safe': 'env(safe-area-inset-bottom)',
       },
     },
   },

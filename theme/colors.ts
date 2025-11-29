@@ -1,7 +1,9 @@
 export const colors = {
   background: {
-    main: '#09090B',      // Deepest black/gray
-    surface: '#1E293B',   // Card background
+    main: '#1c0012ff',      // Deepest black/gray
+    // main: '#09090B',      // Deepest black/gray
+    // surface: '#1E293B',   // Card background
+    surface: '#c8dbfb12',   // Card background
     elevated: '#0F172A',  // Dropdowns / Modals
   },
   text: {

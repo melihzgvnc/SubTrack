@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, ScrollView, Dimensions, TouchableOpacity, SafeAreaView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, StyleSheet, useWindowDimensions } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSubStore } from '../store/useSubStore';
 import { Squircle } from '../components/ui/Squircle';
@@ -21,8 +21,8 @@ import Animated, {
   useAnimatedProps
 } from 'react-native-reanimated';
 import { colors } from '../theme/colors';
-
-const { width, height } = Dimensions.get('window');
+import { typography } from '../theme/typography';
+import { useResponsive } from '../hooks/useResponsive';
 
 const slides = [
   {
@@ -60,9 +60,9 @@ const slides = [
   },
 ];
 
-const Dot = ({ index, scrollX }: { index: number; scrollX: SharedValue<number> }) => {
+const Dot = ({ index, scrollX, screenWidth }: { index: number; scrollX: SharedValue<number>; screenWidth: number }) => {
   const animatedStyle = useAnimatedStyle(() => {
-    const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
+    const inputRange = [(index - 1) * screenWidth, index * screenWidth, (index + 1) * screenWidth];
     
     const dotWidth = interpolate(
       scrollX.value,
@@ -113,6 +113,14 @@ export default function Onboarding() {
   const router = useRouter();
   const completeOnboarding = useSubStore((state) => state.completeOnboarding);
   const scrollX = useSharedValue(0);
+  
+  // Use dynamic dimensions that update on rotation/resize
+  const { width, height, isTablet } = useResponsive();
+  
+  // Responsive sizing
+  const iconSize = isTablet ? 80 : 64;
+  const squircleSize = isTablet ? 200 : 160;
+  const buttonHeight = isTablet ? 72 : 64;
 
   const scrollHandler = useAnimatedScrollHandler((event) => {
     scrollX.value = event.contentOffset.x;
@@ -137,8 +145,10 @@ export default function Onboarding() {
       >
         {slides.map((slide, index) => {
             // Parallax or scale effects for content
+            // Capture width in closure for animation
+            const slideWidth = width;
             const animatedSlideStyle = useAnimatedStyle(() => {
-                const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
+                const inputRange = [(index - 1) * slideWidth, index * slideWidth, (index + 1) * slideWidth];
                 const scale = interpolate(
                     scrollX.value,
                     inputRange,
@@ -198,7 +208,7 @@ export default function Onboarding() {
             });
 
             return (
-                <View key={slide.id} style={{ width, height }} className="items-center px-8">
+                <View key={slide.id} style={{ width: width, height: height }} className="items-center px-8">
                     {/* Top Spacer */}
                     <View style={{ flex: 1 }} />
                     
@@ -224,16 +234,16 @@ export default function Onboarding() {
                             {/* Bouncing Squircle */}
                             <Animated.View style={squircleBounceStyle}>
                                 <Squircle
-                                    width={160}
-                                    height={160}
-                                    cornerRadius={48}
+                                    width={squircleSize}
+                                    height={squircleSize}
+                                    cornerRadius={squircleSize * 0.3}
                                     backgroundColor={colors.border.subtle}
                                     showBorder
                                     borderColor={slide.color}
                                     borderWidth={1.5}
                                 >
                                     <View className="flex-1 justify-center items-center">
-                                        <slide.icon color={slide.color} size={64} />
+                                        <slide.icon color={slide.color} size={iconSize} />
                                     </View>
                                 </Squircle>
                             </Animated.View>
@@ -242,8 +252,13 @@ export default function Onboarding() {
                         {/* Typography */}
                         <View className="w-full items-center mt-8">
                             <Text 
-                                className="text-6xl font-black tracking-tighter mb-2 text-center"
-                                style={{ color: slide.color, textShadowColor: slide.color, textShadowRadius: 10 }}
+                                className="text-6xl tracking-tighter mb-2 text-center"
+                                style={{ 
+                                    fontFamily: typography.fontFamily.display,
+                                    color: slide.color, 
+                                    textShadowColor: slide.color, 
+                                    textShadowRadius: 10 
+                                }}
                             >
                                 {slide.title}
                             </Text>
@@ -267,12 +282,17 @@ export default function Onboarding() {
                                 >
                                     <Squircle
                                         width={width - 64} // Full width minus padding
-                                        height={64}
+                                        height={buttonHeight}
                                         cornerRadius={20}
                                         backgroundColor={slide.color}
                                     >
                                         <View className="flex-1 flex-row justify-center items-center gap-3">
-                                            <Text className="text-background font-bold text-xl tracking-wider">ADD SUBSCRIPTION</Text>
+                                            <Text 
+                                                className="text-background text-xl tracking-wider"
+                                                style={{ fontFamily: typography.fontFamily.display }}
+                                            >
+                                                ADD SUBSCRIPTION
+                                            </Text>
                                             <ArrowRight color={colors.text.inverse} size={24} strokeWidth={3} />
                                         </View>
                                     </Squircle>
@@ -295,7 +315,7 @@ export default function Onboarding() {
       {/* Animated Progress Bar */}
       <View className="absolute bottom-12 left-0 right-0 flex-row justify-center items-center h-8">
         {slides.map((_, index) => (
-          <Dot key={index} index={index} scrollX={scrollX} />
+          <Dot key={index} index={index} scrollX={scrollX} screenWidth={width} />
         ))}
       </View>
     </SafeAreaView>

@@ -10,10 +10,30 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
+import { useResponsive, useResponsiveValue } from '../hooks/useResponsive';
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { isTablet } = useResponsive();
+  
+  // Responsive add button size
+  const addButtonSize = useResponsiveValue({
+    sm: 52,
+    md: 56,
+    lg: 64,
+    xl: 72,
+    default: 56,
+  });
+
+  // Responsive icon sizes
+  const iconSize = useResponsiveValue({
+    sm: 22,
+    md: 24,
+    lg: 28,
+    xl: 32,
+    default: 24,
+  });
   
   // Calculate bottom offset to clear the AdBanner
   // AdBanner is usually ~50px + 20px padding + safe area
@@ -79,26 +99,26 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
                     key={index}
                     onPress={() => router.push('/add')}
                     style={{
-                        width: 56,
-                        height: 56,
+                        width: addButtonSize,
+                        height: addButtonSize,
                         justifyContent: 'center',
                         alignItems: 'center',
-                        marginTop: -28, // Float up
+                        marginTop: -(addButtonSize / 1.5), // Float up proportionally
                     }}
                     activeOpacity={0.8}
                 >
                      {/* Use Squircle for the Add Button */}
-                     <View style={{ position: 'absolute', width: 56, height: 56 }}>
+                     <View style={{ position: 'absolute', width: addButtonSize, height: addButtonSize }}>
                         <Squircle 
-                            width={56} 
-                            height={56} 
-                            cornerRadius={20} 
+                            width={addButtonSize} 
+                            height={addButtonSize} 
+                            cornerRadius={addButtonSize * 0.36} 
                             backgroundColor={colors.accent.tertiary} // Neon Green
                             showBorder={true}
                             borderColor="rgba(255,255,255,0.5)"
                         />
                      </View>
-                     <Plus color={colors.text.inverse} size={28} />
+                     <Plus color={colors.text.inverse} size={addButtonSize * 0.5} />
                 </TouchableOpacity>
             );
         }
@@ -128,19 +148,23 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
             style={{
                 alignItems: 'center',
                 justifyContent: 'center',
-                minWidth: 60, // Ensure enough width for text
+                minWidth: isTablet ? 80 : 60, // Ensure enough width for text
             }}
           >
-            <View style={{ width: 44, height: 44, alignItems: 'center', justifyContent: 'center' }}>
-                {Icon && <Icon color={isFocused ? colors.accent.secondary : colors.text.muted} size={24} />}
+            <View style={{ width: isTablet ? 52 : 44, height: isTablet ? 52 : 44, alignItems: 'center', justifyContent: 'center' }}>
+                {Icon && <Icon color={isFocused ? colors.accent.secondary : colors.text.muted} size={iconSize} />}
             </View>
-            <Text style={{ 
-                color: isFocused ? colors.accent.secondary : colors.text.muted, 
-                fontSize: typography.size.xs, 
-                fontWeight: isFocused ? '600' : '400',
-                marginTop: -spacing.xxs,
-                marginBottom: spacing.xxs 
-            }}>
+            <Text 
+                style={{ 
+                    color: isFocused ? colors.accent.secondary : colors.text.muted, 
+                    fontSize: isTablet ? typography.size.sm : typography.size.xs, 
+                    fontWeight: isFocused ? '600' : '400',
+                    marginTop: -spacing.xxs,
+                    marginBottom: spacing.xxs 
+                }}
+                allowFontScaling
+                maxFontSizeMultiplier={1.2}
+            >
                 {label}
             </Text>
           </TouchableOpacity>

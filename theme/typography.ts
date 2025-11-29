@@ -1,4 +1,9 @@
 export const typography = {
+  // Font families
+  fontFamily: {
+    display: 'ConcertOne_400Regular',  // For headings and display text
+    body: 'System',                     // For body text and labels
+  },
   size: {
     xs: 12,    // Bumped up from 10px for readability
     sm: 14,
@@ -6,6 +11,7 @@ export const typography = {
     lg: 20,    // Rounded from 18/22
     xl: 24,
     xxl: 32,
+    display: 48,  // For hero/display text
   },
   weight: {
     regular: '400',
@@ -18,3 +24,7 @@ export const typography = {
     relaxed: 1.75,
   }
 } as const;
+
+// Font family constants for easy imports
+export const FONT_DISPLAY = 'ConcertOne_400Regular';
+export const FONT_BODY = 'System';

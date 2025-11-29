@@ -9,6 +9,8 @@ import { GlassCard } from '../../components/ui/GlassCard';
 import { Squircle } from '../../components/ui/Squircle';
 import { colors } from '../../theme/colors';
 import { spacing } from '../../theme/spacing';
+import { typography } from '../../theme/typography';
+import { useResponsive, useResponsiveValue } from '../../hooks/useResponsive';
 
 export default function SubscriptionDetail() {
   const { id } = useLocalSearchParams();
@@ -17,6 +19,24 @@ export default function SubscriptionDetail() {
     state.subscriptions.find((s) => s.id === id)
   );
   const removeSubscription = useSubStore((state) => state.removeSubscription);
+
+  // Responsive icon size
+  const iconSquircleSize = useResponsiveValue({
+    sm: 88,
+    md: 96,
+    lg: 120,
+    xl: 140,
+    default: 96,
+  });
+
+  // Responsive stats card height
+  const statsCardHeight = useResponsiveValue({
+    sm: 150,
+    md: 160,
+    lg: 180,
+    xl: 200,
+    default: 160,
+  });
 
   if (!subscription) return null;
 
@@ -67,42 +87,87 @@ export default function SubscriptionDetail() {
         {/* Main Card */}
         <GlassCard style={{ paddingVertical: spacing.xxl, marginBottom: spacing.xl }}>
             <View style={{ width: '100%', alignItems: 'center' }}>
-                <View style={{ width: 96, height: 96, marginBottom: spacing.xl }}>
+                <View style={{ width: iconSquircleSize, height: iconSquircleSize, marginBottom: spacing.xl }}>
                     <Squircle 
-                        width={96} 
-                        height={96} 
-                        cornerRadius={32} 
+                        width={iconSquircleSize} 
+                        height={iconSquircleSize} 
+                        cornerRadius={iconSquircleSize * 0.33} 
                         backgroundColor={color || colors.background.surface}
                         showBorder={true}
                         borderColor={colors.border.highlight}
                     >
                         <View className="flex-1 justify-center items-center">
-                            <Text className="text-white font-bold text-4xl">{name.charAt(0)}</Text>
+                            <Text 
+                                className="text-white font-bold text-4xl"
+                                allowFontScaling
+                                maxFontSizeMultiplier={1.2}
+                            >
+                                {name.charAt(0)}
+                            </Text>
                         </View>
                     </Squircle>
                 </View>
-                <Text className="text-white text-3xl font-bold mb-2 text-center">{name}</Text>
-                <Text className="text-shadow-blue-grey text-lg capitalize text-center">{cycle} Plan • {subscription.category}</Text>
+                <Text 
+                    className="text-white text-3xl mb-2 text-center"
+                    style={{ fontFamily: typography.fontFamily.display }}
+                    allowFontScaling
+                    maxFontSizeMultiplier={1.2}
+                >
+                    {name}
+                </Text>
+                <Text 
+                    className="text-shadow-blue-grey text-lg capitalize text-center"
+                    allowFontScaling
+                    maxFontSizeMultiplier={1.3}
+                >
+                    {cycle} Plan • {subscription.category}
+                </Text>
             </View>
         </GlassCard>
 
         {/* Stats Grid */}
         <View className="flex-row gap-4 mb-4">
             <View className="flex-1">
-                <GlassCard variant="highlight" style={{ height: 160, padding: spacing.lg, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text className="text-neon-blue font-bold uppercase text-xs tracking-widest mb-4">Monthly Cost</Text>
+                <GlassCard variant="highlight" style={{ height: statsCardHeight, padding: spacing.sm, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text 
+                        className="text-neon-blue font-bold uppercase text-[10px] tracking-widest mb-3"
+                        numberOfLines={1}
+                    >
+                        Monthly Cost
+                    </Text>
                     <View className="items-center">
-                        <Text className="text-white text-3xl font-bold mb-1">{currency}{monthlyCost.toFixed(2)}</Text>
-                        <Text className="text-shadow-blue-grey text-xs">per month</Text>
+                        <Text 
+                            className="text-white text-2xl font-bold mb-1"
+                            adjustsFontSizeToFit
+                            numberOfLines={1}
+                        >
+                            {currency}{monthlyCost.toFixed(2)}
+                        </Text>
+                        <Text className="text-shadow-blue-grey text-[10px]">
+                            per month
+                        </Text>
                     </View>
                 </GlassCard>
             </View>
             <View className="flex-1">
-                <GlassCard variant="active" style={{ height: 160, padding: spacing.lg, justifyContent: 'center', alignItems: 'center' }}>
-                    <Text className="text-neon-pink font-bold uppercase text-xs tracking-widest mb-4">Total Spend</Text>
+                <GlassCard variant="active" style={{ height: statsCardHeight, padding: spacing.sm, justifyContent: 'center', alignItems: 'center' }}>
+                    <Text 
+                        className="text-neon-pink font-bold uppercase text-[10px] tracking-widest mb-3"
+                        numberOfLines={1}
+                    >
+                        Total Spend
+                    </Text>
                     <View className="items-center">
-                        <Text className="text-white text-3xl font-bold mb-1">{currency}{totalSpend.toFixed(2)}</Text>
-                        <Text className="text-shadow-blue-grey text-xs">lifetime</Text>
+                        <Text 
+                            className="text-white text-2xl font-bold mb-1"
+                            adjustsFontSizeToFit
+                            numberOfLines={1}
+                        >
+                            {currency}{totalSpend.toFixed(2)}
+                        </Text>
+                        <Text className="text-shadow-blue-grey text-[10px]">
+                            lifetime
+                        </Text>
                     </View>
                 </GlassCard>
             </View>

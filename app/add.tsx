@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, ScrollView, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSubStore, Cycle } from '../store/useSubStore';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -13,18 +13,29 @@ import { scheduleSubscriptionNotifications } from '../utils/notifications';
 import { getCurrency } from '../utils/currency';
 import { useInterstitialAd } from 'react-native-google-mobile-ads';
 import { adUnitIDs, shouldShowInterstitial } from '../utils/ads';
-import { useEffect } from 'react';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
+import { typography } from '../theme/typography';
+import { useResponsive, useResponsiveValue } from '../hooks/useResponsive';
 
 export default function AddSubscription() {
   const router = useRouter();
   const addSubscription = useSubStore((state) => state.addSubscription);
+  const { width, isTablet } = useResponsive();
 
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [cycle, setCycle] = useState<Cycle>('monthly');
   const [category, setCategory] = useState('Other');
+  
+  // Responsive button height
+  const buttonHeight = useResponsiveValue({
+    sm: 56,
+    md: 60,
+    lg: 68,
+    xl: 72,
+    default: 60,
+  });
   
   // Date state
   const today = new Date();
@@ -111,7 +122,12 @@ export default function AddSubscription() {
             >
                 <ArrowLeft color={colors.text.primary} size={20} />
             </TouchableOpacity>
-            <Text className="text-white text-2xl font-bold">New Subscription</Text>
+            <Text 
+                className="text-white text-2xl"
+                style={{ fontFamily: typography.fontFamily.display }}
+            >
+                New Subscription
+            </Text>
         </View>
         
         <View className="space-y-6">
@@ -246,8 +262,8 @@ export default function AddSubscription() {
             activeOpacity={0.8}
         >
             <Squircle 
-                width={Dimensions.get('window').width - (spacing.md * 2)} 
-                height={60} 
+                width={width - (spacing.md * 2)} 
+                height={buttonHeight} 
                 cornerRadius={20} 
                 backgroundColor={colors.accent.tertiary} 
                 showBorder={true}
@@ -255,7 +271,13 @@ export default function AddSubscription() {
                 style={{ alignItems: 'center', justifyContent: 'center' }}
             >
                 <View className="w-full h-full items-center justify-center">
-                    <Text className="text-black text-center font-bold text-xl tracking-widest">Save Subscription</Text>
+                    <Text 
+                        className="text-black text-center font-bold text-xl tracking-widest"
+                        allowFontScaling
+                        maxFontSizeMultiplier={1.2}
+                    >
+                        Save Subscription
+                    </Text>
                 </View>
             </Squircle>
         </TouchableOpacity>

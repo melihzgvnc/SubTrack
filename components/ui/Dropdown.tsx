@@ -42,8 +42,18 @@ export const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSel
         <GlassCard style={{ padding: spacing.none }}>
             <View style={{ padding: spacing.sm, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={{ flex: 1, alignItems: 'center' }}>
-                    <Text style={{ color: colors.text.secondary, fontSize: typography.size.xs, marginBottom: 2 }}>{label}</Text>
-                    <Text style={{ color: colors.text.primary, fontSize: typography.size.lg, fontWeight: 'bold' }}>{value}</Text>
+                    <Text 
+                        style={{ color: colors.text.secondary, fontSize: 10, marginBottom: 2 }}
+                        numberOfLines={1}
+                    >
+                        {label}
+                    </Text>
+                    <Text 
+                        style={{ color: colors.text.primary, fontSize: typography.size.lg, fontWeight: 'bold' }}
+                        numberOfLines={1}
+                    >
+                        {value}
+                    </Text>
                 </View>
                 <ChevronDown color={colors.text.muted} size={16} />
             </View>
