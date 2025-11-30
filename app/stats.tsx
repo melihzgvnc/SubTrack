@@ -20,12 +20,14 @@ import { useProStore } from '../store/useProStore';
 import { useSpendingCalculations } from '../hooks/useSpendingCalculations';
 import { useResponsiveValue } from '../hooks/useResponsive';
 import { GlassCard } from '../components/ui/GlassCard';
+
 import {
   CategorySpendingChart,
   SpendingTrendChart,
   SpendingExtremesCards,
   ProFeatureTeaser,
 } from '../components/insights';
+import { NativeAdCategoryCard } from '../components/NativeAdCategoryCard';
 import { PaywallModal } from '../components/PaywallModal';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
@@ -349,7 +351,7 @@ export default function Stats() {
       >
         {/* Header */}
         <View className="flex-row justify-between items-center mb-6 mt-2">
-          <Text 
+          <Text
             className="text-white text-3xl"
             style={{ fontFamily: typography.fontFamily.display }}
           >
@@ -387,7 +389,7 @@ export default function Stats() {
 
         {/* Categories Header */}
         <View className="flex-row justify-between items-center mb-4">
-          <Text 
+          <Text
             className="text-white text-xl"
             style={{ fontFamily: typography.fontFamily.display }}
           >
@@ -447,6 +449,10 @@ export default function Stats() {
             selectedCategory={selectedCategory}
             onSelect={setSelectedCategory}
           />
+
+          {/* Native Ad */}
+          <NativeAdCategoryCard height={categoryCardHeight} />
+
           <CategoryCard
             title="Other"
             count={getCategoryCount('Other')}
