@@ -18,6 +18,7 @@ import '../lib/i18n'; // Initialize i18n
 // Font loading
 import { useFonts, ConcertOne_400Regular } from '@expo-google-fonts/concert-one';
 import * as SplashScreen from 'expo-splash-screen';
+import { LoginModal } from '../components/auth/LoginModal';
 
 // Prevent splash screen from auto-hiding before fonts load
 SplashScreen.preventAutoHideAsync();
@@ -121,6 +122,7 @@ export default function Layout() {
         />
       </Tabs>
       <StatusBar style="light" />
+      <LoginModal />
     </View>
   );
 }

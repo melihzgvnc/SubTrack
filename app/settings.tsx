@@ -29,7 +29,7 @@ export default function Settings() {
         currency,
         setCurrency
     } = useSubStore();
-    const { signOut } = useAuth();
+    const { signOut, openLoginModal } = useAuth();
     const { isTablet, height } = useResponsive();
 
     // Responsive currency list height
@@ -65,7 +65,7 @@ export default function Settings() {
                     <View className="mb-6">
                         <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">{t('common.settings.account')}</Text>
                         <AccountCard
-                            onSignInPress={() => router.push('/(auth)/login')}
+                            onSignInPress={() => openLoginModal()}
                             onSignOutPress={signOut}
                         />
                     </View>

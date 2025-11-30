@@ -26,7 +26,7 @@ export default function Dashboard() {
     const currency = useSubStore((state) => state.currency);
     const router = useRouter();
     const { isTablet, height } = useResponsive();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, openLoginModal } = useAuth();
     const [sortBy, setSortBy] = useState<SortOption>('name');
     const [sortMenuOpen, setSortMenuOpen] = useState(false);
 
@@ -164,7 +164,7 @@ export default function Dashboard() {
                     <View className="flex-row items-center gap-3">
                         {!isAuthenticated && (
                             <TouchableOpacity
-                                onPress={() => router.push('/(auth)/login')}
+                                onPress={() => openLoginModal()}
                                 activeOpacity={0.8}
                             >
                                 <Squircle

@@ -79,6 +79,7 @@
         },
         "skip": "Şimdilik atla",
         "signIn": "GİRİŞ YAP",
+        "continue": "DEVAM ET",
         "addSubscription": "ABONELİK EKLE"
     },
     "dashboard": {
@@ -120,7 +121,7 @@
             "continue": "Devam Et"
         },
         "login": {
-            "title": "Tekrar Hoş Geldin",
+            "title": "Hoş Geldin",
             "subtitle": "Aboneliklerini cihazlar arasında eşitlemek için giriş yap",
             "google": "Google ile Devam Et"
         }

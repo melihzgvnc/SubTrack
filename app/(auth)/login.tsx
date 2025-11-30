@@ -32,7 +32,7 @@ export default function LoginScreen() {
 
     return (
         <View className="flex-1 bg-background-main">
-            <MeshBackground />
+            {/* <MeshBackground /> */}
 
             <SafeAreaView className="flex-1">
                 <View className="px-4 pt-2">

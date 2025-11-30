@@ -133,5 +133,8 @@ export function useAuth() {
         signInWithEmail,
         signOut,
         deleteAccount,
+        isLoginModalOpen: useAuthStore((state) => state.isLoginModalOpen),
+        openLoginModal: useAuthStore((state) => state.openLoginModal),
+        closeLoginModal: useAuthStore((state) => state.closeLoginModal),
     };
 }

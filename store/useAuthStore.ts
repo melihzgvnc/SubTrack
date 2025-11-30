@@ -8,6 +8,9 @@ interface AuthStore extends AuthState {
     setLoading: (loading: boolean) => void;
     setError: (error: string | null) => void;
     signOut: () => void;
+    isLoginModalOpen: boolean;
+    openLoginModal: () => void;
+    closeLoginModal: () => void;
 }
 
 export const useAuthStore = create<AuthStore>()(
@@ -17,6 +20,7 @@ export const useAuthStore = create<AuthStore>()(
             isLoading: true,
             isAuthenticated: false,
             error: null,
+            isLoginModalOpen: false,
 
             setUser: (user) => set({
                 user,
@@ -34,6 +38,9 @@ export const useAuthStore = create<AuthStore>()(
                 isAuthenticated: false,
                 error: null,
             }),
+
+            openLoginModal: () => set({ isLoginModalOpen: true }),
+            closeLoginModal: () => set({ isLoginModalOpen: false }),
         }),
         {
             name: 'auth-storage',

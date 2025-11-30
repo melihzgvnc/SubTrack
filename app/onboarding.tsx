@@ -27,6 +27,8 @@ import { typography } from '../theme/typography';
 import { useResponsive } from '../hooks/useResponsive';
 import { useTranslation } from 'react-i18next';
 
+import { useAuth } from '../hooks/useAuth';
+
 const slides = [
   {
     id: '1',
@@ -124,6 +126,7 @@ const Dot = ({ index, scrollX, screenWidth }: { index: number; scrollX: SharedVa
 export default function Onboarding() {
   const router = useRouter();
   const { t } = useTranslation();
+  const { openLoginModal, isAuthenticated } = useAuth();
   const completeOnboarding = useSubStore((state) => state.completeOnboarding);
   const scrollX = useSharedValue(0);
 
@@ -334,6 +337,21 @@ export default function Onboarding() {
 
           return (
             <View key={slide.id} style={{ width: width, height: height }} className="items-center px-8">
+              {/* Skip Button - Top Right */}
+              {(slide.isAuth || slide.isLast) && (
+                <View className="absolute top-12 right-6 z-10">
+                  <TouchableOpacity
+                    onPress={() => handleComplete('/')}
+                    activeOpacity={0.7}
+                    className="px-4 py-2"
+                  >
+                    <Text className="text-gray-400 font-medium text-sm tracking-widest uppercase">
+                      {t('onboarding.skip')}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              )}
+
               {/* Top Spacer */}
               <View style={{ flex: 1 }} />
 
@@ -403,8 +421,11 @@ export default function Onboarding() {
                   >
                     <TouchableOpacity
                       onPress={() => {
-                        completeOnboarding();
-                        router.push('/(auth)/login');
+                        if (isAuthenticated) {
+                          handleComplete('/');
+                        } else {
+                          openLoginModal();
+                        }
                       }}
                       activeOpacity={0.8}
                     >
@@ -419,19 +440,11 @@ export default function Onboarding() {
                             className="text-background text-xl tracking-wider"
                             style={{ fontFamily: typography.fontFamily.display }}
                           >
-                            {t('onboarding.signIn')}
+                            {isAuthenticated ? t('onboarding.continue') : t('onboarding.signIn')}
                           </Text>
                           <ArrowRight color={colors.text.inverse} size={24} strokeWidth={3} />
                         </View>
                       </Squircle>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      onPress={() => handleComplete('/')}
-                      className="items-center"
-                      style={{ paddingVertical: 16, marginBottom: 60 }}
-                    >
-                      <Text className="text-gray-500 font-medium text-sm tracking-widest uppercase">{t('onboarding.skip')}</Text>
                     </TouchableOpacity>
                   </Animated.View>
                 )}
@@ -462,14 +475,6 @@ export default function Onboarding() {
                           <ArrowRight color={colors.text.inverse} size={24} strokeWidth={3} />
                         </View>
                       </Squircle>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      onPress={() => handleComplete('/')}
-                      className="items-center"
-                      style={{ paddingVertical: 16, marginBottom: 60 }}
-                    >
-                      <Text className="text-gray-500 font-medium text-sm tracking-widest uppercase">{t('onboarding.skip')}</Text>
                     </TouchableOpacity>
                   </Animated.View>
                 )}
