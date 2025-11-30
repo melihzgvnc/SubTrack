@@ -4,6 +4,7 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import { colors } from '../../theme/colors';
 import { spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
+import { useTranslation } from 'react-i18next';
 
 interface SocialLoginButtonsProps {
     onApplePress: () => void;
@@ -16,6 +17,8 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
     onGooglePress,
     isLoading = false,
 }) => {
+    const { t } = useTranslation();
+
     return (
         <View style={styles.container}>
             {/* Apple Sign-In (iOS only) */}
@@ -37,7 +40,7 @@ export const SocialLoginButtons: React.FC<SocialLoginButtonsProps> = ({
                 activeOpacity={0.8}
             >
                 {/* Google Icon SVG here - using text for now */}
-                <Text style={styles.googleText}>Continue with Google</Text>
+                <Text style={styles.googleText}>{t('auth.login.google')}</Text>
             </TouchableOpacity>
         </View>
     );

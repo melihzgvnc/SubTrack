@@ -19,41 +19,43 @@ import { GlassCard } from '../ui/GlassCard';
 import { colors } from '../../theme/colors';
 import { spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
+import { useTranslation } from 'react-i18next';
 
 interface ProFeatureTeaserProps {
   onUnlock: () => void;
 }
-
-const features = [
-  {
-    icon: BarChart3,
-    title: 'Time Range Analysis',
-    description: 'View spending by month, quarter, year, or lifetime',
-  },
-  {
-    icon: TrendingUp,
-    title: 'Spending Trends',
-    description: 'Track how your spending changes over time',
-  },
-  {
-    icon: Crown,
-    title: 'Spending Insights',
-    description: 'See your most and least expensive subscriptions',
-  },
-];
 
 // Approximate height of expanded content
 const EXPANDED_HEIGHT = 340;
 const COLLAPSED_HEIGHT = 56;
 
 export const ProFeatureTeaser: React.FC<ProFeatureTeaserProps> = ({ onUnlock }) => {
+  const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
   const progress = useSharedValue(0);
+
+  const features = [
+    {
+      icon: BarChart3,
+      title: t('stats.pro.features.timeRange.title'),
+      description: t('stats.pro.features.timeRange.description'),
+    },
+    {
+      icon: TrendingUp,
+      title: t('stats.pro.features.trends.title'),
+      description: t('stats.pro.features.trends.description'),
+    },
+    {
+      icon: Crown,
+      title: t('stats.pro.features.insights.title'),
+      description: t('stats.pro.features.insights.description'),
+    },
+  ];
 
   const toggleExpand = () => {
     const newExpanded = !isExpanded;
     setIsExpanded(newExpanded);
-    
+
     progress.value = withTiming(newExpanded ? 1 : 0, {
       duration: 300,
       easing: Easing.bezier(0.4, 0, 0.2, 1),
@@ -67,7 +69,7 @@ export const ProFeatureTeaser: React.FC<ProFeatureTeaserProps> = ({ onUnlock }) 
       [0, 1],
       [COLLAPSED_HEIGHT, EXPANDED_HEIGHT]
     );
-    
+
     return {
       height,
       overflow: 'hidden',
@@ -86,7 +88,7 @@ export const ProFeatureTeaser: React.FC<ProFeatureTeaserProps> = ({ onUnlock }) 
   const expandedContentStyle = useAnimatedStyle(() => {
     const opacity = interpolate(progress.value, [0.3, 1], [0, 1]);
     const translateY = interpolate(progress.value, [0, 1], [-20, 0]);
-    
+
     return {
       opacity,
       transform: [{ translateY }],
@@ -96,7 +98,7 @@ export const ProFeatureTeaser: React.FC<ProFeatureTeaserProps> = ({ onUnlock }) 
   // Animated styles for collapsed content opacity
   const collapsedContentStyle = useAnimatedStyle(() => {
     const opacity = interpolate(progress.value, [0, 0.3], [1, 0]);
-    
+
     return {
       opacity,
     };
@@ -117,10 +119,10 @@ export const ProFeatureTeaser: React.FC<ProFeatureTeaserProps> = ({ onUnlock }) 
           <View style={styles.headerLeft}>
             <Crown color={colors.accent.neutral} size={18} />
             <Animated.View style={collapsedContentStyle}>
-              <Text style={styles.headerText}>Discover Advanced Stats</Text>
+              <Text style={styles.headerText}>{t('stats.pro.discover')}</Text>
             </Animated.View>
             <Animated.View style={[styles.proBadgeInline, expandedContentStyle]}>
-              <Text style={styles.proBadgeText}>PRO</Text>
+              <Text style={styles.proBadgeText}>{t('paywall.pro')}</Text>
             </Animated.View>
           </View>
           <Animated.View style={chevronAnimatedStyle}>
@@ -137,14 +139,14 @@ export const ProFeatureTeaser: React.FC<ProFeatureTeaserProps> = ({ onUnlock }) 
               allowFontScaling
               maxFontSizeMultiplier={1.2}
             >
-              Unlock Advanced Insights
+              {t('stats.pro.unlockTitle')}
             </Text>
             <Text
               style={styles.subtitle}
               allowFontScaling
               maxFontSizeMultiplier={1.3}
             >
-              Get deeper insights into your subscription spending
+              {t('stats.pro.unlockSubtitle')}
             </Text>
           </View>
 
@@ -186,7 +188,7 @@ export const ProFeatureTeaser: React.FC<ProFeatureTeaserProps> = ({ onUnlock }) 
             accessibilityRole="button"
             accessibilityLabel="Unlock Pro features"
           >
-            <Text style={styles.ctaText}>Unlock Pro</Text>
+            <Text style={styles.ctaText}>{t('stats.pro.unlockButton')}</Text>
           </TouchableOpacity>
         </Animated.View>
       </View>

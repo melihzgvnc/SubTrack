@@ -9,10 +9,12 @@ import { typography } from '../../theme/typography';
 import { MeshBackground } from '../../components/ui/MeshBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { ArrowLeft } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 export default function LoginScreen() {
     const router = useRouter();
     const { signInWithApple, signInWithGoogle, isLoading, error } = useAuth();
+    const { t } = useTranslation();
 
     const handleAppleLogin = async () => {
         try {
@@ -40,9 +42,9 @@ export default function LoginScreen() {
 
             <View style={styles.content}>
                 <GlassCard style={styles.card}>
-                    <Text style={styles.title}>Welcome Back</Text>
+                    <Text style={styles.title}>{t('auth.login.title')}</Text>
                     <Text style={styles.subtitle}>
-                        Sign in to sync your subscriptions across devices
+                        {t('auth.login.subtitle')}
                     </Text>
 
                     {error && (

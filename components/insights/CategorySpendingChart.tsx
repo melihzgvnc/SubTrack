@@ -13,6 +13,7 @@ import { spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
 import type { CategorySpending, TimeRange } from '../../types/insights';
 import { useResponsiveValue } from '../../hooks/useResponsive';
+import { useTranslation } from 'react-i18next';
 
 interface CategorySpendingChartProps {
   data: CategorySpending[];
@@ -35,6 +36,7 @@ export const CategorySpendingChart: React.FC<CategorySpendingChartProps> = ({
   onTimeRangeChange,
   chartHeight: customChartHeight,
 }) => {
+  const { t } = useTranslation();
   // Responsive chart height
   const defaultChartHeight = useResponsiveValue({
     sm: 140,
@@ -72,7 +74,7 @@ export const CategorySpendingChart: React.FC<CategorySpendingChartProps> = ({
             allowFontScaling
             maxFontSizeMultiplier={1.3}
           >
-            Total Spending
+            {t('stats.totalSpending')}
           </Text>
           <Text
             style={styles.totalAmount}
@@ -99,7 +101,7 @@ export const CategorySpendingChart: React.FC<CategorySpendingChartProps> = ({
               allowFontScaling
               maxFontSizeMultiplier={1.2}
             >
-              {selectedTimeRange === 'current_month' ? 'This Month ' : ''}
+              {selectedTimeRange === 'current_month' ? t('stats.thisMonth') + ' ' : ''}
               {changeText}
             </Text>
           </View>
@@ -124,7 +126,7 @@ export const CategorySpendingChart: React.FC<CategorySpendingChartProps> = ({
             allowFontScaling
             maxFontSizeMultiplier={1.3}
           >
-            No subscriptions yet
+            {t('stats.noSubscriptionsYet')}
           </Text>
         </View>
       ) : (
@@ -133,6 +135,18 @@ export const CategorySpendingChart: React.FC<CategorySpendingChartProps> = ({
             const heightPercentage = (category.amount / maxValue) * 100;
             const maxBarHeight = chartHeight - 40; // Leave room for labels
             const barHeight = Math.max((heightPercentage / 100) * maxBarHeight, 40);
+
+            const getCategoryKey = (cat: string) => {
+              switch (cat) {
+                case 'Entertainment': return 'categories.media';
+                case 'Productivity': return 'categories.work';
+                case 'Utilities': return 'categories.utilities';
+                case 'Music': return 'categories.music';
+                case 'Shopping': return 'categories.shopping';
+                case 'Other': return 'categories.other';
+                default: return 'categories.other';
+              }
+            };
 
             return (
               <View key={category.category} style={styles.barWrapper}>
@@ -159,7 +173,7 @@ export const CategorySpendingChart: React.FC<CategorySpendingChartProps> = ({
                   allowFontScaling
                   maxFontSizeMultiplier={1.2}
                 >
-                  {category.shortName}
+                  {t(getCategoryKey(category.category))}
                 </Text>
               </View>
             );

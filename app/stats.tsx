@@ -20,6 +20,7 @@ import { useProStore } from '../store/useProStore';
 import { useSpendingCalculations } from '../hooks/useSpendingCalculations';
 import { useResponsiveValue } from '../hooks/useResponsive';
 import { GlassCard } from '../components/ui/GlassCard';
+import { useTranslation } from 'react-i18next';
 
 import {
   CategorySpendingChart,
@@ -39,7 +40,7 @@ import type { TimeRange } from '../types/insights';
 // ============================================================================
 
 interface CategoryCardProps {
-  title: string;
+  titleKey: string;
   count: number;
   icon: React.ComponentType<any>;
   color: string;
@@ -50,7 +51,7 @@ interface CategoryCardProps {
 }
 
 const CategoryCard: React.FC<CategoryCardProps> = ({
-  title,
+  titleKey,
   count,
   icon: Icon,
   color,
@@ -59,8 +60,10 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   selectedCategory,
   onSelect,
 }) => {
+  const { t } = useTranslation();
   const subscriptions = useSubStore((state) => state.subscriptions);
   const [flipAnim] = useState(new Animated.Value(0));
+  const title = t(titleKey);
   const isFlipped = selectedCategory === title;
 
   React.useEffect(() => {
@@ -152,7 +155,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                   fontSize: typography.size.sm,
                 }}
               >
-                {count} subs
+                {count} {t('stats.subsSuffix')}
               </Text>
             </View>
           </View>
@@ -260,7 +263,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                           fontSize: 10,
                         }}
                       >
-                        {sub.cycle}
+                        {t(`addSubscription.${sub.cycle}`)}
                       </Text>
                     </View>
                   </View>
@@ -285,7 +288,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
                     fontSize: typography.size.xs,
                   }}
                 >
-                  No subscriptions
+                  {t('stats.noSubscriptions')}
                 </Text>
               )}
             </ScrollView>
@@ -301,6 +304,7 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
 // ============================================================================
 
 export default function Stats() {
+  const { t } = useTranslation();
   const subscriptions = useSubStore((state) => state.subscriptions);
   const currency = useSubStore((state) => state.currency);
   const { isPro } = useProStore();
@@ -355,7 +359,7 @@ export default function Stats() {
             className="text-white text-3xl"
             style={{ fontFamily: typography.fontFamily.display }}
           >
-            Insights
+            {t('stats.title')}
           </Text>
         </View>
 
@@ -393,14 +397,14 @@ export default function Stats() {
             className="text-white text-xl"
             style={{ fontFamily: typography.fontFamily.display }}
           >
-            Categories
+            {t('stats.categories')}
           </Text>
         </View>
 
         {/* Category Grid */}
         <View className="flex-row flex-wrap justify-between pb-24">
           <CategoryCard
-            title="Media"
+            titleKey="categories.media"
             count={getCategoryCount('Entertainment')}
             icon={MonitorPlay}
             color={colors.accent.secondary}
@@ -410,7 +414,7 @@ export default function Stats() {
             onSelect={setSelectedCategory}
           />
           <CategoryCard
-            title="Music"
+            titleKey="categories.music"
             count={getCategoryCount('Music')}
             icon={Music}
             color={colors.accent.quaternary}
@@ -420,7 +424,7 @@ export default function Stats() {
             onSelect={setSelectedCategory}
           />
           <CategoryCard
-            title="Shopping"
+            titleKey="categories.shopping"
             count={getCategoryCount('Shopping')}
             icon={ShoppingBag}
             color={colors.accent.tertiary}
@@ -430,7 +434,7 @@ export default function Stats() {
             onSelect={setSelectedCategory}
           />
           <CategoryCard
-            title="Work"
+            titleKey="categories.work"
             count={getCategoryCount('Productivity')}
             icon={Briefcase}
             color={colors.accent.primary}
@@ -440,7 +444,7 @@ export default function Stats() {
             onSelect={setSelectedCategory}
           />
           <CategoryCard
-            title="Utilities"
+            titleKey="categories.utilities"
             count={getCategoryCount('Utilities')}
             icon={Zap}
             color={colors.text.primary}
@@ -454,7 +458,7 @@ export default function Stats() {
           <NativeAdCategoryCard height={categoryCardHeight} />
 
           <CategoryCard
-            title="Other"
+            titleKey="categories.other"
             count={getCategoryCount('Other')}
             icon={Zap}
             color={colors.accent.neutral}

@@ -1,0 +1,305 @@
+{
+    "common": {
+        "loading": "Yükleniyor...",
+        "error": "Bir hata oluştu",
+        "save": "Kaydet",
+        "cancel": "İptal",
+        "delete": "Sil",
+        "edit": "Düzenle",
+        "add": "Ekle",
+        "back": "Geri",
+        "next": "İleri",
+        "done": "Tamam",
+        "skip": "Atla",
+        "signIn": "Giriş Yap",
+        "signOut": "Çıkış Yap",
+        "language": "Dil",
+        "select": "{{label}} Seç",
+        "settings": {
+            "title": "Ayarlar",
+            "account": "Hesap",
+            "general": "Genel",
+            "notifications": {
+                "title": "Bildirimler",
+                "subtitle": "Yaklaşan faturalar için hatırlatıcı al"
+            },
+            "preferences": "Tercihler",
+            "currency": {
+                "title": "Para Birimi",
+                "subtitle": "Tercih ettiğin para birimini seç"
+            },
+            "debug": "Hata Ayıklama",
+            "onboarding": {
+                "title": "Karşılama",
+                "subtitle": "Karşılama ekranını başlat"
+            }
+        },
+        "english": "İngilizce",
+        "turkish": "Türkçe",
+        "ad": "Reklam"
+    },
+    "paywall": {
+        "unlock": "Kilidi Aç",
+        "pro": "Pro",
+        "subtitle": "Finansal hayatının kontrolünü eline al.",
+        "features": {
+            "unlimited": "Sınırsız Abonelik",
+            "analytics": "Gelişmiş Analizler ve Grafikler",
+            "sync": "Bulut Eşitleme ve Yedekleme",
+            "icons": "Özel Uygulama İkonları ve Temalar",
+            "support": "Bağımsız Geliştiriciyi Destekle"
+        },
+        "bestValue": "En İyi Değer",
+        "perYear": "/yıl",
+        "perMonth": "/ay",
+        "restore": "Satın Alımları Geri Yükle",
+        "terms": "Hizmet Şartları",
+        "privacy": "Gizlilik Politikası"
+    },
+    "onboarding": {
+        "slide1": {
+            "title": "KONTROL",
+            "subtitle": "Aboneliklerin.\nTek Komuta Merkezi."
+        },
+        "slide2": {
+            "title": "İÇGÖRÜ",
+            "subtitle": "Harcamaları Gör.\nKaçakları Yakala."
+        },
+        "slide3": {
+            "title": "UYARI",
+            "subtitle": "Son Ödeme Tarihini Kaçırma.\nÖnde Ol."
+        },
+        "slide4": {
+            "title": "SENKRONİZE",
+            "subtitle": "Giriş Yap ve Eşitle.\nHer Yerden Eriş."
+        },
+        "slide5": {
+            "title": "BAŞLAT",
+            "subtitle": "Optimize etmeye hazır mısın? Başlayalım."
+        },
+        "skip": "Şimdilik atla",
+        "signIn": "GİRİŞ YAP",
+        "addSubscription": "ABONELİK EKLE"
+    },
+    "dashboard": {
+        "welcomeBack": "Tekrar hoş geldin,",
+        "mySubscriptions": "Aboneliklerim",
+        "totalMonthlySpend": "Toplam Aylık Harcama",
+        "activeServices": "{{count}} aktif servis genelinde",
+        "monthly": "Aylık",
+        "yearly": "Yıllık",
+        "yourSubscriptions": "Aboneliklerin",
+        "sort": {
+            "sortBy": "Sırala",
+            "name": "İsim",
+            "price": "Fiyat",
+            "billingDate": "Fatura Tarihi"
+        },
+        "empty": {
+            "title": "Henüz abonelik yok",
+            "subtitle": "Başlamak için ilk aboneliğini ekle"
+        },
+        "addSubscription": "Abonelik Ekle",
+        "billing": {
+            "dueInDays": "{{count}} gün içinde",
+            "nextBillOn": "Sonraki fatura: {{date}}"
+        }
+    },
+    "auth": {
+        "signInToSync": "Eşitlemek için giriş yap",
+        "accessSubscriptions": "Aboneliklerine her yerden eriş",
+        "syncing": "Eşitleniyor...",
+        "syncedAgo": "{{time}} önce eşitlendi",
+        "notSyncedYet": "Henüz eşitlenmedi",
+        "upgradeToSync": "Eşitlemeyi açmak için Pro'ya geç",
+        "syncNow": "Şimdi Eşitle",
+        "signOut": "Çıkış Yap",
+        "welcome": {
+            "title": "Her şey hazır!",
+            "subtitle": "Aboneliklerin artık bulutla eşitleniyor.",
+            "continue": "Devam Et"
+        },
+        "login": {
+            "title": "Tekrar Hoş Geldin",
+            "subtitle": "Aboneliklerini cihazlar arasında eşitlemek için giriş yap",
+            "google": "Google ile Devam Et"
+        }
+    },
+    "addSubscription": {
+        "title": "Yeni Abonelik",
+        "name": "Hizmet Adı",
+        "namePlaceholder": "örn. Netflix",
+        "price": "Fiyat",
+        "pricePlaceholder": "0.00",
+        "billingCycle": "Fatura Dönemi",
+        "monthly": "Aylık",
+        "yearly": "Yıllık",
+        "startDate": "Başlangıç Tarihi",
+        "day": "Gün",
+        "month": "Ay",
+        "year": "Yıl",
+        "category": "Kategori",
+        "categories": {
+            "Other": "Diğer",
+            "Entertainment": "Eğlence",
+            "Music": "Müzik",
+            "Productivity": "Üretkenlik",
+            "Utilities": "Faturalar",
+            "Shopping": "Alışveriş"
+        },
+        "save": "Aboneliği Kaydet"
+    },
+    "subscriptionDetail": {
+        "title": "Detaylar",
+        "plan": "{{cycle}} Planı",
+        "monthlyCost": "Aylık Maliyet",
+        "perMonth": "aylık",
+        "totalSpend": "Toplam Harcama",
+        "lifetime": "ömür boyu",
+        "status": "Durum",
+        "active": "Aktif",
+        "startedOn": "Başlangıç Tarihi"
+    },
+    "tabBar": {
+        "dashboard": "Ana Sayfa",
+        "insights": "İçgörüler"
+    },
+    "stats": {
+        "title": "İçgörüler",
+        "categories": "Kategoriler",
+        "noSubscriptions": "Abonelik yok",
+        "subsSuffix": "abonelik",
+        "totalSpending": "Toplam Harcama",
+        "thisMonth": "Bu Ay",
+        "noSubscriptionsYet": "Henüz abonelik yok",
+        "spendingTrend": "Harcama Trendi",
+        "needMoreHistory": "Harcama trendini görmek için en az 2 aylık geçmiş gerekli",
+        "avg": "Ort.",
+        "historyLength": "{{count}} aylık harcama geçmişi",
+        "spendingInsights": "Harcama İçgörüleri",
+        "mostSpent": "En Çok Harcanan",
+        "leastSpent": "En Az Harcanan",
+        "noData": "Veri yok",
+        "month": "ay",
+        "months": "ay",
+        "pro": {
+            "discover": "Gelişmiş İstatistikleri Keşfet",
+            "unlockTitle": "Gelişmiş İçgörülerin Kilidini Aç",
+            "unlockSubtitle": "Abonelik harcamaların hakkında daha derin bilgi edin",
+            "unlockButton": "Pro'nun Kilidini Aç",
+            "features": {
+                "timeRange": {
+                    "title": "Zaman Aralığı Analizi",
+                    "description": "Harcamaları aylık, çeyreklik, yıllık veya ömür boyu görüntüle"
+                },
+                "trends": {
+                    "title": "Harcama Trendleri",
+                    "description": "Harcamalarının zamanla nasıl değiştiğini takip et"
+                },
+                "insights": {
+                    "title": "Harcama İçgörüleri",
+                    "description": "En pahalı ve en ucuz aboneliklerini gör"
+                }
+            }
+        }
+    },
+    "currencies": {
+        "USD": "ABD Doları",
+        "EUR": "Euro",
+        "GBP": "İngiliz Sterlini",
+        "JPY": "Japon Yeni",
+        "CNY": "Çin Yuanı",
+        "INR": "Hint Rupisi",
+        "RUB": "Rus Rublesi",
+        "TRY": "Türk Lirası",
+        "KRW": "Güney Kore Wonu",
+        "BRL": "Brezilya Reali",
+        "CAD": "Kanada Doları",
+        "AUD": "Avustralya Doları",
+        "MXN": "Meksika Pesosu",
+        "IDR": "Endonezya Rupisi",
+        "CHF": "İsviçre Frangı",
+        "SEK": "İsveç Kronu",
+        "NOK": "Norveç Kronu",
+        "DKK": "Danimarka Kronu",
+        "PLN": "Polonya Zlotisi",
+        "THB": "Tayland Bahtı",
+        "VND": "Vietnam Dongu",
+        "MYR": "Malezya Ringgiti",
+        "PHP": "Filipinler Pesosu",
+        "ZAR": "Güney Afrika Randı",
+        "NZD": "Yeni Zelanda Doları",
+        "SGD": "Singapur Doları",
+        "HKD": "Hong Kong Doları",
+        "TWD": "Yeni Tayvan Doları",
+        "SAR": "Suudi Arabistan Riyali",
+        "AED": "BAE Dirhemi",
+        "ARS": "Arjantin Pesosu",
+        "CLP": "Şili Pesosu",
+        "COP": "Kolombiya Pesosu",
+        "EGP": "Mısır Lirası",
+        "ILS": "İsrail Yeni Şekeli",
+        "PKR": "Pakistan Rupisi",
+        "HUF": "Macar Forinti",
+        "CZK": "Çek Korunası",
+        "RON": "Rumen Leyi",
+        "NGN": "Nijerya Nairası",
+        "BDT": "Bangladeş Takası",
+        "UAH": "Ukrayna Grivnası",
+        "KZT": "Kazak Tengesi",
+        "QAR": "Katar Riyali",
+        "KWD": "Kuveyt Dinarı",
+        "MAD": "Fas Dirhemi",
+        "DZD": "Cezayir Dinarı",
+        "TND": "Tunus Dinarı",
+        "LBP": "Lübnan Lirası",
+        "JOD": "Ürdün Dinarı",
+        "OMR": "Umman Riyali",
+        "BHD": "Bahreyn Dinarı",
+        "IQD": "Irak Dinarı",
+        "LYD": "Libya Dinarı",
+        "SDG": "Sudan Lirası",
+        "SYP": "Suriye Lirası",
+        "YER": "Yemen Riyali",
+        "AFN": "Afgan Afganisi",
+        "IRR": "İran Riyali",
+        "LKR": "Sri Lanka Rupisi",
+        "NPR": "Nepal Rupisi",
+        "KES": "Kenya Şilini",
+        "GHS": "Gana Sedisi",
+        "TZS": "Tanzanya Şilini",
+        "UGX": "Uganda Şilini",
+        "ETB": "Etiyopya Birri",
+        "VES": "Venezuela Bolivarı",
+        "PEN": "Peru Solü",
+        "UYU": "Uruguay Pesosu",
+        "CRC": "Kosta Rika Kolonu",
+        "DOP": "Dominik Pesosu",
+        "GTQ": "Guatemala Quetzalı",
+        "HNL": "Honduras Lempirası",
+        "NIO": "Nikaragua Kordobası",
+        "PAB": "Panama Balboası",
+        "PYG": "Paraguay Guaranisi",
+        "BOB": "Bolivya Bolivyanosu",
+        "ISK": "İzlanda Kronu",
+        "BGN": "Bulgar Levası",
+        "HRK": "Hırvat Kunası",
+        "RSD": "Sırp Dinarı",
+        "BAM": "Bosna-Hersek Markı",
+        "MKD": "Makedon Dinarı",
+        "ALL": "Arnavut Leki",
+        "GEL": "Gürcü Larisi",
+        "AMD": "Ermeni Dramı",
+        "AZN": "Azerbaycan Manatı",
+        "BYN": "Belarus Rublesi",
+        "MDL": "Moldova Leyi"
+    },
+    "categories": {
+        "media": "Medya",
+        "music": "Müzik",
+        "shopping": "Alışveriş",
+        "work": "İş",
+        "utilities": "Faturalar",
+        "other": "Diğer"
+    }
+}

@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeft, Bell, DollarSign } from 'lucide-react-native';
+import { ArrowLeft, Bell, DollarSign, Globe, ChevronRight, Check } from 'lucide-react-native';
 import { GlassCard } from '../components/ui/GlassCard';
 import { useSubStore } from '../store/useSubStore';
+import { useLanguageStore } from '../store/useLanguageStore';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
@@ -17,6 +19,10 @@ import { useAuth } from '../hooks/useAuth';
 
 export default function Settings() {
     const router = useRouter();
+    const { t } = useTranslation();
+    const { language, setLanguage } = useLanguageStore();
+    const [showLanguageOptions, setShowLanguageOptions] = useState(false);
+
     const {
         notificationsEnabled,
         toggleNotifications,
@@ -50,14 +56,14 @@ export default function Settings() {
                         className="text-white text-3xl"
                         style={{ fontFamily: typography.fontFamily.display }}
                     >
-                        Settings
+                        {t('common.settings.title')}
                     </Text>
                 </View>
 
                 <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: spacing.bottomScroll }}>
                     {/* Account Section */}
                     <View className="mb-6">
-                        <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">Account</Text>
+                        <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">{t('common.settings.account')}</Text>
                         <AccountCard
                             onSignInPress={() => router.push('/(auth)/login')}
                             onSignOutPress={signOut}
@@ -66,7 +72,7 @@ export default function Settings() {
 
                     {/* Notifications Section */}
                     <View className="mb-6">
-                        <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">General</Text>
+                        <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">{t('common.settings.general')}</Text>
                         <GlassCard>
                             <View className="flex-row justify-between items-center py-2">
                                 <View className="flex-row items-center gap-4">
@@ -79,14 +85,14 @@ export default function Settings() {
                                             allowFontScaling
                                             maxFontSizeMultiplier={1.2}
                                         >
-                                            Notifications
+                                            {t('common.settings.notifications.title')}
                                         </Text>
                                         <Text
                                             className="text-shadow-blue-grey text-xs"
                                             allowFontScaling
                                             maxFontSizeMultiplier={1.3}
                                         >
-                                            Get reminders for upcoming bills
+                                            {t('common.settings.notifications.subtitle')}
                                         </Text>
                                     </View>
                                 </View>
@@ -97,12 +103,80 @@ export default function Settings() {
                                     thumbColor={notificationsEnabled ? colors.text.primary : colors.text.secondary}
                                 />
                             </View>
+
+                            {/* Divider */}
+                            <View className="h-[1px] bg-white/10 my-2" />
+
+                            {/* Language Selector */}
+                            <TouchableOpacity
+                                onPress={() => setShowLanguageOptions(!showLanguageOptions)}
+                                activeOpacity={0.7}
+                            >
+                                <View className="flex-row justify-between items-center py-2">
+                                    <View className="flex-row items-center gap-4">
+                                        <View className="w-10 h-10 rounded-full bg-neon-purple/20 justify-center items-center">
+                                            <Globe color={colors.accent.quaternary} size={isTablet ? 24 : 20} />
+                                        </View>
+                                        <View>
+                                            <Text
+                                                className="text-white text-lg font-bold"
+                                                allowFontScaling
+                                                maxFontSizeMultiplier={1.2}
+                                            >
+                                                {t('common.language')}
+                                            </Text>
+                                            <Text
+                                                className="text-shadow-blue-grey text-xs"
+                                                allowFontScaling
+                                                maxFontSizeMultiplier={1.3}
+                                            >
+                                                {language === 'en' ? t('common.english') : t('common.turkish')}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                    <ChevronRight
+                                        color={colors.text.secondary}
+                                        size={20}
+                                        style={{ transform: [{ rotate: showLanguageOptions ? '90deg' : '0deg' }] }}
+                                    />
+                                </View>
+                            </TouchableOpacity>
+
+                            {/* Language Options (Expandable) */}
+                            {showLanguageOptions && (
+                                <View className="mt-2 pl-14">
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            setLanguage('en');
+                                            setShowLanguageOptions(false);
+                                        }}
+                                        className="py-3 flex-row justify-between items-center border-b border-white/5"
+                                    >
+                                        <Text className={language === 'en' ? "text-neon-blue font-bold" : "text-gray-400"}>
+                                            {t('common.english')}
+                                        </Text>
+                                        {language === 'en' && <Check size={16} color={colors.accent.secondary} />}
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            setLanguage('tr');
+                                            setShowLanguageOptions(false);
+                                        }}
+                                        className="py-3 flex-row justify-between items-center"
+                                    >
+                                        <Text className={language === 'tr' ? "text-neon-blue font-bold" : "text-gray-400"}>
+                                            {t('common.turkish')}
+                                        </Text>
+                                        {language === 'tr' && <Check size={16} color={colors.accent.secondary} />}
+                                    </TouchableOpacity>
+                                </View>
+                            )}
                         </GlassCard>
                     </View>
 
                     {/* Currency Section */}
                     <View className="mb-6">
-                        <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">Preferences</Text>
+                        <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">{t('common.settings.preferences')}</Text>
                         <GlassCard>
                             <View className="mb-4">
                                 <View className="flex-row items-center gap-4 mb-4">
@@ -115,14 +189,14 @@ export default function Settings() {
                                             allowFontScaling
                                             maxFontSizeMultiplier={1.2}
                                         >
-                                            Currency
+                                            {t('common.settings.currency.title')}
                                         </Text>
                                         <Text
                                             className="text-shadow-blue-grey text-xs"
                                             allowFontScaling
                                             maxFontSizeMultiplier={1.3}
                                         >
-                                            Select your preferred currency
+                                            {t('common.settings.currency.subtitle')}
                                         </Text>
                                     </View>
                                 </View>
@@ -145,7 +219,7 @@ export default function Settings() {
                                                         <View className="flex-row items-center gap-3">
                                                             <Text className="text-white text-lg font-bold w-8 text-center">{curr.symbol}</Text>
                                                             <Text className={`text-base font-medium ${currency.code === curr.code ? 'text-white' : 'text-gray-400'}`}>
-                                                                {curr.name}
+                                                                {t(`currencies.${curr.code}`)}
                                                             </Text>
                                                         </View>
                                                         {currency.code === curr.code && (
@@ -163,7 +237,7 @@ export default function Settings() {
 
                     {/* Debug Section */}
                     <View className="mb-6">
-                        <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">Debug</Text>
+                        <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">{t('common.settings.debug')}</Text>
                         <GlassCard>
                             <TouchableOpacity
                                 onPress={() => router.push('/onboarding')}
@@ -175,10 +249,10 @@ export default function Settings() {
                                     </View>
                                     <View>
                                         <Text className="text-white text-lg font-bold">
-                                            Onboarding
+                                            {t('common.settings.onboarding.title')}
                                         </Text>
                                         <Text className="text-shadow-blue-grey text-xs">
-                                            Launch onboarding flow
+                                            {t('common.settings.onboarding.subtitle')}
                                         </Text>
                                     </View>
                                 </View>
@@ -186,7 +260,7 @@ export default function Settings() {
                         </GlassCard>
                     </View>
                 </ScrollView>
-            </View>
-        </SafeAreaView>
+            </View >
+        </SafeAreaView >
     );
 }

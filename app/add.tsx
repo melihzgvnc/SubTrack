@@ -17,273 +17,286 @@ import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 import { useResponsive, useResponsiveValue } from '../hooks/useResponsive';
+import { useTranslation } from 'react-i18next';
 
 export default function AddSubscription() {
-  const router = useRouter();
-  const addSubscription = useSubStore((state) => state.addSubscription);
-  const { width, isTablet } = useResponsive();
+    const router = useRouter();
+    const addSubscription = useSubStore((state) => state.addSubscription);
+    const { width, isTablet } = useResponsive();
+    const { t } = useTranslation();
 
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [cycle, setCycle] = useState<Cycle>('monthly');
-  const [category, setCategory] = useState('Other');
-  
-  // Responsive button height
-  const buttonHeight = useResponsiveValue({
-    sm: 56,
-    md: 60,
-    lg: 68,
-    xl: 72,
-    default: 60,
-  });
-  
-  // Date state
-  const today = new Date();
-  const [day, setDay] = useState(today.getDate().toString());
-  const [month, setMonth] = useState((today.getMonth() + 1).toString());
-  const [year, setYear] = useState(today.getFullYear().toString());
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState('');
+    const [cycle, setCycle] = useState<Cycle>('monthly');
+    const [category, setCategory] = useState('Other');
 
-  // Generate options
-  const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
-  const months = Array.from({ length: 12 }, (_, i) => (i + 1).toString());
-  const currentYear = today.getFullYear();
-  const years = Array.from({ length: 11 }, (_, i) => (currentYear - 5 + i).toString());
+    // Responsive button height
+    const buttonHeight = useResponsiveValue({
+        sm: 56,
+        md: 60,
+        lg: 68,
+        xl: 72,
+        default: 60,
+    });
 
-  const currency = useSubStore((state) => state.currency);
+    // Date state
+    const today = new Date();
+    const [day, setDay] = useState(today.getDate().toString());
+    const [month, setMonth] = useState((today.getMonth() + 1).toString());
+    const [year, setYear] = useState(today.getFullYear().toString());
 
-  // AdMob Interstitial
-  const { isLoaded, isClosed, load, show } = useInterstitialAd(adUnitIDs.interstitial!, {
-    requestNonPersonalizedAdsOnly: true,
-  });
-  const [pendingNavigation, setPendingNavigation] = useState(false);
+    // Generate options
+    const days = Array.from({ length: 31 }, (_, i) => (i + 1).toString());
+    const months = Array.from({ length: 12 }, (_, i) => (i + 1).toString());
+    const currentYear = today.getFullYear();
+    const years = Array.from({ length: 11 }, (_, i) => (currentYear - 5 + i).toString());
 
-  useEffect(() => {
-    load();
-  }, [load]);
+    const currency = useSubStore((state) => state.currency);
 
-  useEffect(() => {
-    if (isClosed && pendingNavigation) {
-      setPendingNavigation(false);
-      router.back();
-    }
-  }, [isClosed, pendingNavigation]);
+    // AdMob Interstitial
+    const { isLoaded, isClosed, load, show } = useInterstitialAd(adUnitIDs.interstitial!, {
+        requestNonPersonalizedAdsOnly: true,
+    });
+    const [pendingNavigation, setPendingNavigation] = useState(false);
 
-  const subscriptions = useSubStore((state) => state.subscriptions);
-  const { isPro } = useProStore();
-  const [showPaywall, setShowPaywall] = useState(false);
+    useEffect(() => {
+        load();
+    }, [load]);
 
-  const handleSave = () => {
-    if (!name || !price) return;
+    useEffect(() => {
+        if (isClosed && pendingNavigation) {
+            setPendingNavigation(false);
+            router.back();
+        }
+    }, [isClosed, pendingNavigation]);
 
-    // Check limits
-    if (subscriptions.length >= 5 && !isPro) {
-        setShowPaywall(true);
-        return;
-    }
+    const subscriptions = useSubStore((state) => state.subscriptions);
+    const { isPro } = useProStore();
+    const [showPaywall, setShowPaywall] = useState(false);
 
-    // Construct date
-    const dateObj = new Date(
-        parseInt(year), 
-        parseInt(month) - 1, 
-        parseInt(day)
-    );
+    const handleSave = () => {
+        if (!name || !price) return;
 
-    const newSub = {
-      id: Math.random().toString(36).substr(2, 9),
-      name,
-      price: parseFloat(price),
-      currency: currency.symbol,
-      cycle,
-      startDate: dateObj.toISOString(),
-      color: '#' + Math.floor(Math.random()*16777215).toString(16), // Random color
-      category: category as any,
+        // Check limits
+        if (subscriptions.length >= 5 && !isPro) {
+            setShowPaywall(true);
+            return;
+        }
+
+        // Construct date
+        const dateObj = new Date(
+            parseInt(year),
+            parseInt(month) - 1,
+            parseInt(day)
+        );
+
+        const newSub = {
+            id: Math.random().toString(36).substr(2, 9),
+            name,
+            price: parseFloat(price),
+            currency: currency.symbol,
+            cycle,
+            startDate: dateObj.toISOString(),
+            color: '#' + Math.floor(Math.random() * 16777215).toString(16), // Random color
+            category: category as any,
+        };
+
+        addSubscription(newSub);
+        scheduleSubscriptionNotifications(newSub);
+
+        if (shouldShowInterstitial() && isLoaded) {
+            setPendingNavigation(true);
+            show();
+        } else {
+            router.back();
+        }
     };
 
-    addSubscription(newSub);
-    scheduleSubscriptionNotifications(newSub);
+    const categories = [
+        'Other',
+        'Entertainment',
+        'Music',
+        'Productivity',
+        'Utilities',
+        'Shopping'
+    ];
 
-    if (shouldShowInterstitial() && isLoaded) {
-      setPendingNavigation(true);
-      show();
-    } else {
-      router.back();
-    }
-  };
+    return (
+        <SafeAreaView className="flex-1" edges={['top']}>
+            <ScrollView className="flex-1 px-4 pt-2" contentContainerStyle={{ paddingBottom: spacing.bottomScroll }}>
 
-  return (
-    <SafeAreaView className="flex-1" edges={['top']}>
-      <ScrollView className="flex-1 px-4 pt-2" contentContainerStyle={{ paddingBottom: spacing.bottomScroll }}>
-        
-        {/* Header */}
-        <View className="flex-row items-center mb-8">
-            <TouchableOpacity 
-                onPress={() => router.back()} 
-                className="w-10 h-10 rounded-full bg-surface-highlight justify-center items-center mr-4"
-            >
-                <ArrowLeft color={colors.text.primary} size={20} />
-            </TouchableOpacity>
-            <Text 
-                className="text-white text-2xl"
-                style={{ fontFamily: typography.fontFamily.display }}
-            >
-                New Subscription
-            </Text>
-        </View>
-        
-        <View className="space-y-6">
-            {/* Name Input */}
-            <View>
-                <View className="flex-row gap-4">
-                    {/* Name Input */}
-                    <View className="flex-[1.5]">
-                        <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Service Name</Text>
-                        <GlassCard style={{ padding: spacing.none }}>
-                            <TextInput
-                                className="text-white p-5 text-lg font-medium"
-                                placeholder="e.g. Netflix"
-                                placeholderTextColor={colors.text.muted}
-                                value={name}
-                                onChangeText={setName}
-                                autoFocus
-                            />
-                        </GlassCard>
-                    </View>
-
-                    {/* Price Input */}
-                    <View className="flex-1">
-                        <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Price</Text>
-                        <GlassCard style={{ padding: spacing.none }}>
-                            <View className="flex-row items-center px-4">
-                                <Text className="text-white text-lg font-medium mr-1">{currency.symbol}</Text>
-                                <TextInput
-                                    className="flex-1 text-white py-5 text-lg font-medium"
-                                    placeholder="0.00"
-                                    placeholderTextColor={colors.text.muted}
-                                    value={price}
-                                    onChangeText={setPrice}
-                                    keyboardType="numeric"
-                                />
-                            </View>
-                        </GlassCard>
-                    </View>
-                </View>
-                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium mt-4">Billing Cycle</Text>
-                <View className="flex-row gap-4">
-                    <TouchableOpacity 
-                        className="flex-1"
-                        onPress={() => setCycle('monthly')}
-                        activeOpacity={0.8}
+                {/* Header */}
+                <View className="flex-row items-center mb-8">
+                    <TouchableOpacity
+                        onPress={() => router.back()}
+                        className="w-10 h-10 rounded-full bg-surface-highlight justify-center items-center mr-4"
                     >
-                        <GlassCard 
-                            variant={cycle === 'monthly' ? 'highlight' : 'default'}
-                            style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.lg }}
-                        >
-                            <Text className={`font-bold text-lg ${cycle === 'monthly' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>Monthly</Text>
-                        </GlassCard>
+                        <ArrowLeft color={colors.text.primary} size={20} />
                     </TouchableOpacity>
-                    
-                    <TouchableOpacity 
-                        className="flex-1"
-                        onPress={() => setCycle('yearly')}
-                        activeOpacity={0.8}
+                    <Text
+                        className="text-white text-2xl"
+                        style={{ fontFamily: typography.fontFamily.display }}
                     >
-                        <GlassCard 
-                            variant={cycle === 'yearly' ? 'active' : 'default'}
-                            style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.lg }}
-                        >
-                            <Text className={`font-bold text-lg ${cycle === 'yearly' ? 'text-neon-pink' : 'text-shadow-blue-grey'}`}>Yearly</Text>
-                        </GlassCard>
-                    </TouchableOpacity>
-                </View>
-            </View>
-
-            {/* Start Date */}
-            <View>
-                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Start Date</Text>
-                <View className="flex-row gap-3">
-                    <View className="flex-1">
-                        <Dropdown 
-                            label="Day" 
-                            value={day} 
-                            options={days} 
-                            onSelect={setDay} 
-                        />
-                    </View>
-                    <View className="flex-1">
-                        <Dropdown 
-                            label="Month" 
-                            value={month} 
-                            options={months} 
-                            onSelect={setMonth} 
-                        />
-                    </View>
-                    <View className="flex-[1.5]">
-                        <Dropdown 
-                            label="Year" 
-                            value={year} 
-                            options={years} 
-                            onSelect={setYear} 
-                        />
-                    </View>
-                </View>
-            </View>
-
-            {/* Category */}
-            <View>
-                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">Category</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-3 pl-1">
-                    {['Other', 'Entertainment', 'Music', 'Productivity', 'Utilities', 'Shopping'].map((cat) => (
-                        <TouchableOpacity 
-                            key={cat}
-                            onPress={() => setCategory(cat as any)}
-                            activeOpacity={0.8}
-                        >
-                            <View 
-                                style={{ 
-                                    paddingHorizontal: spacing.xl, 
-                                    paddingVertical: spacing.sm, 
-                                    borderRadius: spacing.xl, 
-                                    backgroundColor: category === cat ? colors.text.primary : colors.border.subtle,
-                                    borderWidth: 1,
-                                    borderColor: category === cat ? colors.text.primary : colors.border.highlight
-                                }}
-                            >
-                                <Text className={`font-medium ${category === cat ? 'text-black' : 'text-shadow-blue-grey'}`}>{cat}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    ))}
-                </ScrollView>
-            </View>
-        </View>
-
-        <TouchableOpacity 
-            className="mt-7"
-            onPress={handleSave}
-            activeOpacity={0.8}
-        >
-            <Squircle 
-                width={width - (spacing.md * 2)} 
-                height={buttonHeight} 
-                cornerRadius={20} 
-                backgroundColor={colors.accent.tertiary} 
-                showBorder={true}
-                borderColor="rgba(255,255,255,0.5)"
-                style={{ alignItems: 'center', justifyContent: 'center' }}
-            >
-                <View className="w-full h-full items-center justify-center">
-                    <Text 
-                        className="text-black text-center font-bold text-xl tracking-widest"
-                        allowFontScaling
-                        maxFontSizeMultiplier={1.2}
-                    >
-                        Save Subscription
+                        {t('addSubscription.title')}
                     </Text>
                 </View>
-            </Squircle>
-        </TouchableOpacity>
 
-      </ScrollView>
-      <PaywallModal visible={showPaywall} onClose={() => setShowPaywall(false)} />
-    </SafeAreaView>
-  );
+                <View className="space-y-6">
+                    {/* Name Input */}
+                    <View>
+                        <View className="flex-row gap-4">
+                            {/* Name Input */}
+                            <View className="flex-[1.5]">
+                                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">{t('addSubscription.name')}</Text>
+                                <GlassCard style={{ padding: spacing.none }}>
+                                    <TextInput
+                                        className="text-white p-5 text-lg font-medium"
+                                        placeholder={t('addSubscription.namePlaceholder')}
+                                        placeholderTextColor={colors.text.muted}
+                                        value={name}
+                                        onChangeText={setName}
+                                        autoFocus
+                                    />
+                                </GlassCard>
+                            </View>
+
+                            {/* Price Input */}
+                            <View className="flex-1">
+                                <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">{t('addSubscription.price')}</Text>
+                                <GlassCard style={{ padding: spacing.none }}>
+                                    <View className="flex-row items-center px-4">
+                                        <Text className="text-white text-lg font-medium mr-1">{currency.symbol}</Text>
+                                        <TextInput
+                                            className="flex-1 text-white py-5 text-lg font-medium"
+                                            placeholder={t('addSubscription.pricePlaceholder')}
+                                            placeholderTextColor={colors.text.muted}
+                                            value={price}
+                                            onChangeText={setPrice}
+                                            keyboardType="numeric"
+                                        />
+                                    </View>
+                                </GlassCard>
+                            </View>
+                        </View>
+                        <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium mt-4">{t('addSubscription.billingCycle')}</Text>
+                        <View className="flex-row gap-4">
+                            <TouchableOpacity
+                                className="flex-1"
+                                onPress={() => setCycle('monthly')}
+                                activeOpacity={0.8}
+                            >
+                                <GlassCard
+                                    variant={cycle === 'monthly' ? 'highlight' : 'default'}
+                                    style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.lg }}
+                                >
+                                    <Text className={`font-bold text-lg ${cycle === 'monthly' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>{t('addSubscription.monthly')}</Text>
+                                </GlassCard>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                className="flex-1"
+                                onPress={() => setCycle('yearly')}
+                                activeOpacity={0.8}
+                            >
+                                <GlassCard
+                                    variant={cycle === 'yearly' ? 'active' : 'default'}
+                                    style={{ alignItems: 'center', justifyContent: 'center', paddingVertical: spacing.lg }}
+                                >
+                                    <Text className={`font-bold text-lg ${cycle === 'yearly' ? 'text-neon-pink' : 'text-shadow-blue-grey'}`}>{t('addSubscription.yearly')}</Text>
+                                </GlassCard>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    {/* Start Date */}
+                    <View>
+                        <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">{t('addSubscription.startDate')}</Text>
+                        <View className="flex-row gap-3">
+                            <View className="flex-1">
+                                <Dropdown
+                                    label={t('addSubscription.day')}
+                                    value={day}
+                                    options={days}
+                                    onSelect={setDay}
+                                />
+                            </View>
+                            <View className="flex-1">
+                                <Dropdown
+                                    label={t('addSubscription.month')}
+                                    value={month}
+                                    options={months}
+                                    onSelect={setMonth}
+                                />
+                            </View>
+                            <View className="flex-[1.5]">
+                                <Dropdown
+                                    label={t('addSubscription.year')}
+                                    value={year}
+                                    options={years}
+                                    onSelect={setYear}
+                                />
+                            </View>
+                        </View>
+                    </View>
+
+                    {/* Category */}
+                    <View>
+                        <Text className="text-shadow-blue-grey mb-3 ml-1 font-medium">{t('addSubscription.category')}</Text>
+                        <ScrollView horizontal showsHorizontalScrollIndicator={false} className="flex-row gap-3 pl-1">
+                            {categories.map((cat) => (
+                                <TouchableOpacity
+                                    key={cat}
+                                    onPress={() => setCategory(cat as any)}
+                                    activeOpacity={0.8}
+                                >
+                                    <View
+                                        style={{
+                                            paddingHorizontal: spacing.xl,
+                                            paddingVertical: spacing.sm,
+                                            borderRadius: spacing.xl,
+                                            backgroundColor: category === cat ? colors.text.primary : colors.border.subtle,
+                                            borderWidth: 1,
+                                            borderColor: category === cat ? colors.text.primary : colors.border.highlight
+                                        }}
+                                    >
+                                        <Text className={`font-medium ${category === cat ? 'text-black' : 'text-shadow-blue-grey'}`}>
+                                            {t(`addSubscription.categories.${cat}`)}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            ))}
+                        </ScrollView>
+                    </View>
+                </View>
+
+                <TouchableOpacity
+                    className="mt-7"
+                    onPress={handleSave}
+                    activeOpacity={0.8}
+                >
+                    <Squircle
+                        width={width - (spacing.md * 2)}
+                        height={buttonHeight}
+                        cornerRadius={20}
+                        backgroundColor={colors.accent.tertiary}
+                        showBorder={true}
+                        borderColor="rgba(255,255,255,0.5)"
+                        style={{ alignItems: 'center', justifyContent: 'center' }}
+                    >
+                        <View className="w-full h-full items-center justify-center">
+                            <Text
+                                className="text-black text-center font-bold text-xl tracking-widest"
+                                allowFontScaling
+                                maxFontSizeMultiplier={1.2}
+                            >
+                                {t('addSubscription.save')}
+                            </Text>
+                        </View>
+                    </Squircle>
+                </TouchableOpacity>
+
+            </ScrollView>
+            <PaywallModal visible={showPaywall} onClose={() => setShowPaywall(false)} />
+        </SafeAreaView>
+    );
 }

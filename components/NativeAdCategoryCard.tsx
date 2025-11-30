@@ -5,6 +5,7 @@ import { GlassCard } from './ui/GlassCard';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
+import { useTranslation } from 'react-i18next';
 
 interface NativeAdCategoryCardProps {
     height: number;
@@ -12,6 +13,7 @@ interface NativeAdCategoryCardProps {
 
 export const NativeAdCategoryCard: React.FC<NativeAdCategoryCardProps> = ({ height }) => {
     const [nativeAd, setNativeAd] = useState<NativeAd>();
+    const { t } = useTranslation();
 
     useEffect(() => {
         const adUnitId = __DEV__ ? TestIds.NATIVE : 'ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyyyy'; // Replace with real ID in prod
@@ -48,7 +50,7 @@ export const NativeAdCategoryCard: React.FC<NativeAdCategoryCardProps> = ({ heig
                                     borderColor: 'rgba(255, 255, 255, 0.2)'
                                 }}
                             >
-                                <Text style={{ color: colors.text.secondary, fontSize: 10, fontWeight: 'bold' }}>Ad</Text>
+                                <Text style={{ color: colors.text.secondary, fontSize: 10, fontWeight: 'bold' }}>{t('common.ad')}</Text>
                             </View>
 
                             {/* Icon */}

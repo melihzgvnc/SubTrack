@@ -15,10 +15,12 @@ import { typography } from '../theme/typography';
 import { useResponsive, useResponsiveValue } from '../hooks/useResponsive';
 import { useAuth } from '../hooks/useAuth';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
+import { useTranslation } from 'react-i18next';
 
 type SortOption = 'name' | 'price' | 'billingDate';
 
 export default function Dashboard() {
+    const { t } = useTranslation();
     const subscriptions = useSubStore((state) => state.subscriptions);
     const totalMonthlyCost = useSubStore((state) => state.totalMonthlyCost);
     const currency = useSubStore((state) => state.currency);
@@ -93,14 +95,14 @@ export default function Dashboard() {
         const daysDiff = differenceInDays(nextDate, now);
 
         if (daysDiff <= 7) {
-            return `Due in ${daysDiff} days`;
+            return t('dashboard.billing.dueInDays', { count: daysDiff });
         }
 
         // Check if next bill is in a different year
         const isNextYear = nextDate.getFullYear() > now.getFullYear();
         const dateFormat = isNextYear ? 'MMM d, yyyy' : 'MMM d';
 
-        return `Next bill on ${format(nextDate, dateFormat)}`;
+        return t('dashboard.billing.nextBillOn', { date: format(nextDate, dateFormat) });
     };
 
     const getNextBillingDate = (sub: typeof subscriptions[0]) => {
@@ -151,12 +153,12 @@ export default function Dashboard() {
                 {/* Header */}
                 <View className="flex-row justify-between items-center mb-6 mt-2">
                     <View>
-                        <Text className="text-shadow-blue-grey text-lg font-medium opacity-80">Welcome back,</Text>
+                        <Text className="text-shadow-blue-grey text-lg font-medium opacity-80">{t('dashboard.welcomeBack')}</Text>
                         <Text
                             className="text-white text-3xl tracking-tight"
                             style={{ fontFamily: typography.fontFamily.display }}
                         >
-                            My Subscriptions
+                            {t('dashboard.mySubscriptions')}
                         </Text>
                     </View>
                     <View className="flex-row items-center gap-3">
@@ -194,7 +196,7 @@ export default function Dashboard() {
                     <GlassCard variant="highlight" style={{ minHeight: heroCardHeight }}>
                         <View className="flex-1 justify-between">
                             <View className="flex-row justify-between items-start">
-                                <Text className="text-neon-blue font-bold tracking-widest uppercase text-xs">Total Monthly Spend</Text>
+                                <Text className="text-neon-blue font-bold tracking-widest uppercase text-xs">{t('dashboard.totalMonthlySpend')}</Text>
                                 <View className="bg-surface-highlight p-2 rounded-full">
                                     <CreditCard color={colors.accent.secondary} size={24} />
                                 </View>
@@ -215,7 +217,7 @@ export default function Dashboard() {
                                     allowFontScaling
                                     maxFontSizeMultiplier={1.3}
                                 >
-                                    across {activeCount} active services
+                                    {t('dashboard.activeServices', { count: activeCount })}
                                 </Text>
                             </View>
                         </View>
@@ -242,7 +244,7 @@ export default function Dashboard() {
                                             allowFontScaling
                                             maxFontSizeMultiplier={1.3}
                                         >
-                                            Monthly
+                                            {t('dashboard.monthly')}
                                         </Text>
                                     </View>
                                 </View>
@@ -267,7 +269,7 @@ export default function Dashboard() {
                                             allowFontScaling
                                             maxFontSizeMultiplier={1.3}
                                         >
-                                            Yearly
+                                            {t('dashboard.yearly')}
                                         </Text>
                                     </View>
                                 </View>
@@ -283,7 +285,7 @@ export default function Dashboard() {
                             className="text-white text-xl"
                             style={{ fontFamily: typography.fontFamily.display }}
                         >
-                            Your Subscriptions
+                            {t('dashboard.yourSubscriptions')}
                         </Text>
                         <TouchableOpacity
                             onPress={() => setSortMenuOpen(!sortMenuOpen)}
@@ -301,156 +303,121 @@ export default function Dashboard() {
                         </TouchableOpacity>
                     </View>
 
-                    {/* Sort Controls */}
-                    <Animated.View style={[animatedMenuStyle, { marginBottom: sortMenuOpen ? spacing.md : 0 }]}>
-                        <View className="flex-row gap-2">
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setSortBy('name');
-                                    setSortMenuOpen(false);
-                                }}
-                                style={{
-                                    flex: 1,
-                                    paddingVertical: spacing.sm,
-                                    paddingHorizontal: spacing.md,
-                                    borderRadius: 12,
-                                    backgroundColor: sortBy === 'name' ? colors.accent.secondary : 'rgba(255,255,255,0.05)',
-                                    borderWidth: 1,
-                                    borderColor: sortBy === 'name' ? colors.accent.secondary : 'rgba(255,255,255,0.1)',
-                                }}
-                                activeOpacity={0.7}
-                            >
-                                <Text
-                                    style={{
-                                        color: sortBy === 'name' ? colors.text.inverse : colors.text.secondary,
-                                        fontSize: typography.size.xs,
-                                        fontWeight: sortBy === 'name' ? 'bold' : '500',
-                                        textAlign: 'center',
-                                    }}
-                                >
-                                    Name
-                                </Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setSortBy('price');
-                                    setSortMenuOpen(false);
-                                }}
-                                style={{
-                                    flex: 1,
-                                    paddingVertical: spacing.sm,
-                                    paddingHorizontal: spacing.md,
-                                    borderRadius: 12,
-                                    backgroundColor: sortBy === 'price' ? colors.accent.secondary : 'rgba(255,255,255,0.05)',
-                                    borderWidth: 1,
-                                    borderColor: sortBy === 'price' ? colors.accent.secondary : 'rgba(255,255,255,0.1)',
-                                }}
-                                activeOpacity={0.7}
-                            >
-                                <Text
-                                    style={{
-                                        color: sortBy === 'price' ? colors.text.inverse : colors.text.secondary,
-                                        fontSize: typography.size.xs,
-                                        fontWeight: sortBy === 'price' ? 'bold' : '500',
-                                        textAlign: 'center',
-                                    }}
-                                >
-                                    Price
-                                </Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                onPress={() => {
-                                    setSortBy('billingDate');
-                                    setSortMenuOpen(false);
-                                }}
-                                style={{
-                                    flex: 1,
-                                    paddingVertical: spacing.sm,
-                                    paddingHorizontal: spacing.md,
-                                    borderRadius: 12,
-                                    backgroundColor: sortBy === 'billingDate' ? colors.accent.secondary : 'rgba(255,255,255,0.05)',
-                                    borderWidth: 1,
-                                    borderColor: sortBy === 'billingDate' ? colors.accent.secondary : 'rgba(255,255,255,0.1)',
-                                }}
-                                activeOpacity={0.7}
-                            >
-                                <Text
-                                    style={{
-                                        color: sortBy === 'billingDate' ? colors.text.inverse : colors.text.secondary,
-                                        fontSize: typography.size.xs,
-                                        fontWeight: sortBy === 'billingDate' ? 'bold' : '500',
-                                        textAlign: 'center',
-                                    }}
-                                >
-                                    Due Date
-                                </Text>
-                            </TouchableOpacity>
-                        </View>
+                    {/* Animated Sort Menu */}
+                    <Animated.View style={[animatedMenuStyle, { marginBottom: sortMenuOpen ? 16 : 0 }]}>
+                        <GlassCard style={{ padding: 8 }}>
+                            <View className="flex-row justify-between items-center">
+                                <Text className="text-gray-400 text-xs font-bold uppercase ml-2">{t('dashboard.sort.sortBy')}</Text>
+                                <View className="flex-row gap-2">
+                                    <TouchableOpacity
+                                        onPress={() => { setSortBy('name'); setSortMenuOpen(false); }}
+                                        className={`px-3 py-1.5 rounded-full ${sortBy === 'name' ? 'bg-neon-blue/20 border border-neon-blue/50' : 'bg-white/5'}`}
+                                    >
+                                        <Text className={`text-xs font-bold ${sortBy === 'name' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>{t('dashboard.sort.name')}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => { setSortBy('price'); setSortMenuOpen(false); }}
+                                        className={`px-3 py-1.5 rounded-full ${sortBy === 'price' ? 'bg-neon-blue/20 border border-neon-blue/50' : 'bg-white/5'}`}
+                                    >
+                                        <Text className={`text-xs font-bold ${sortBy === 'price' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>{t('dashboard.sort.price')}</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => { setSortBy('billingDate'); setSortMenuOpen(false); }}
+                                        className={`px-3 py-1.5 rounded-full ${sortBy === 'billingDate' ? 'bg-neon-blue/20 border border-neon-blue/50' : 'bg-white/5'}`}
+                                    >
+                                        <Text className={`text-xs font-bold ${sortBy === 'billingDate' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>{t('dashboard.sort.billingDate')}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </GlassCard>
                     </Animated.View>
 
-                    <View>
-                        {sortedSubscriptions.map((sub, index) => (
-                            <React.Fragment key={sub.id}>
+                    {sortedSubscriptions.length === 0 ? (
+                        <GlassCard>
+                            <View className="items-center py-8">
+                                <View className="w-16 h-16 rounded-full bg-surface-highlight justify-center items-center mb-4">
+                                    <Plus color={colors.text.secondary} size={32} />
+                                </View>
+                                <Text className="text-white text-lg font-bold mb-2">{t('dashboard.empty.title')}</Text>
+                                <Text className="text-text-secondary text-center max-w-[200px]">
+                                    {t('dashboard.empty.subtitle')}
+                                </Text>
+                            </View>
+                        </GlassCard>
+                    ) : (
+                        <View className="gap-3">
+                            {sortedSubscriptions.map((sub) => (
                                 <TouchableOpacity
+                                    key={sub.id}
                                     onPress={() => router.push(`/subscription/${sub.id}`)}
-                                    activeOpacity={0.7}
-                                    style={{ marginBottom: spacing.md }}
+                                    activeOpacity={0.9}
                                 >
-                                    <GlassCard style={{ padding: spacing.none }}>
-                                        <View className="flex-row items-center p-1">
-                                            {/* Icon Container with Squircle */}
-                                            <View style={{ width: 56, height: 56, marginRight: spacing.md }}>
+                                    <GlassCard>
+                                        <View className="flex-row items-center justify-between p-1">
+                                            <View className="flex-row items-center gap-3">
                                                 <Squircle
-                                                    width={56}
-                                                    height={56}
-                                                    cornerRadius={18}
-                                                    backgroundColor={sub.color || colors.background.surface}
-                                                    showBorder={true}
-                                                    borderColor={colors.border.highlight}
+                                                    width={48}
+                                                    height={48}
+                                                    cornerRadius={16}
+                                                    backgroundColor={sub.color}
                                                 >
                                                     <View className="flex-1 justify-center items-center">
-                                                        <Text className="text-white font-bold text-xl">{sub.name.charAt(0)}</Text>
+                                                        <Text className="text-white font-bold text-lg">
+                                                            {sub.name.charAt(0)}
+                                                        </Text>
                                                     </View>
                                                 </Squircle>
+                                                <View>
+                                                    <Text className="text-white font-bold text-lg">{sub.name}</Text>
+                                                    <Text className="text-shadow-blue-grey text-xs font-medium">
+                                                        {getBillingInfo(sub)}
+                                                    </Text>
+                                                </View>
                                             </View>
-
-                                            <View className="flex-1 py-3">
-                                                <Text className="text-white font-bold text-lg">{sub.name}</Text>
-                                                {(() => {
-                                                    const info = getBillingInfo(sub);
-                                                    const isDueSoon = info.startsWith('Due');
-                                                    return (
-                                                        <Text className={`text-xs font-medium mt-0.5 ${isDueSoon ? 'text-neon-pink' : 'text-gray-300'}`}>
-                                                            {info}
-                                                        </Text>
-                                                    );
-                                                })()}
-                                            </View>
-
-                                            <View className="items-end py-3 pr-4">
+                                            <View className="items-end">
                                                 <Text className="text-white font-bold text-lg">
-                                                    {sub.currency}{sub.price}
+                                                    {currency.symbol}{sub.price.toFixed(2)}
                                                 </Text>
-                                                <Text className="text-shadow-blue-grey text-xs">
-                                                    {sub.cycle === 'monthly' ? 'monthly' : 'yearly'}
+                                                <Text className="text-shadow-blue-grey text-xs font-medium capitalize">
+                                                    {t(`addSubscription.${sub.cycle}`)}
                                                 </Text>
                                             </View>
                                         </View>
                                     </GlassCard>
                                 </TouchableOpacity>
-                                {index === 2 && (
-                                    <View style={{ marginBottom: spacing.md }}>
-                                        <NativeAdCard />
-                                    </View>
-                                )}
-                            </React.Fragment>
-                        ))}
-                    </View>
+                            ))}
+                        </View>
+                    )}
                 </View>
-
             </ScrollView>
+
+            {/* Floating Action Button */}
+            <View className="absolute bottom-6 right-6">
+                <TouchableOpacity
+                    onPress={() => router.push('/add')}
+                    activeOpacity={0.8}
+                    style={{
+                        shadowColor: colors.accent.primary,
+                        shadowOffset: { width: 0, height: 8 },
+                        shadowOpacity: 0.5,
+                        shadowRadius: 16,
+                        elevation: 10,
+                    }}
+                >
+                    <Squircle
+                        width={64}
+                        height={64}
+                        cornerRadius={24}
+                        backgroundColor={colors.accent.primary}
+                        showBorder
+                        borderColor="rgba(255,255,255,0.3)"
+                    >
+                        <View className="flex-1 justify-center items-center">
+                            <Plus color={colors.text.inverse} size={32} strokeWidth={2.5} />
+                        </View>
+                    </Squircle>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 }

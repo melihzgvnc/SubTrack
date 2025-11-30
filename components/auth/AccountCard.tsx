@@ -9,6 +9,7 @@ import { colors } from '../../theme/colors';
 import { spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
 import { formatDistanceToNow } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 interface AccountCardProps {
     onSignInPress: () => void;
@@ -19,6 +20,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
     onSignInPress,
     onSignOutPress,
 }) => {
+    const { t } = useTranslation();
     const { user, isAuthenticated, isPro, canSync } = useAuth();
     const { isSyncing, lastSyncedAt, forceSync } = useCloudSync();
 
@@ -27,9 +29,9 @@ export const AccountCard: React.FC<AccountCardProps> = ({
             <GlassCard style={styles.card}>
                 <View style={styles.signedOutContent}>
                     <User color={colors.text.secondary} size={32} />
-                    <Text style={styles.signedOutTitle}>Sign in to sync</Text>
+                    <Text style={styles.signedOutTitle}>{t('auth.signInToSync')}</Text>
                     <Text style={styles.signedOutSubtitle}>
-                        Access your subscriptions on any device
+                        {t('auth.accessSubscriptions')}
                     </Text>
                     <TouchableOpacity
                         onPress={onSignInPress}
@@ -45,7 +47,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
                             borderColor="rgba(255,255,255,0.5)"
                         >
                             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                                <Text style={styles.signInButtonText}>Sign In</Text>
+                                <Text style={styles.signInButtonText}>{t('common.signIn')}</Text>
                             </View>
                         </Squircle>
                     </TouchableOpacity>
@@ -75,10 +77,10 @@ export const AccountCard: React.FC<AccountCardProps> = ({
                         <Cloud color={colors.accent.tertiary} size={16} />
                         <Text style={styles.syncText}>
                             {isSyncing
-                                ? 'Syncing...'
+                                ? t('auth.syncing')
                                 : lastSyncedAt
-                                    ? `Synced ${formatDistanceToNow(new Date(lastSyncedAt))} ago`
-                                    : 'Not synced yet'
+                                    ? t('auth.syncedAgo', { time: formatDistanceToNow(new Date(lastSyncedAt)) })
+                                    : t('auth.notSyncedYet')
                             }
                         </Text>
                     </>
@@ -86,7 +88,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
                     <>
                         <CloudOff color={colors.text.muted} size={16} />
                         <Text style={styles.syncTextDisabled}>
-                            Upgrade to Pro to enable sync
+                            {t('auth.upgradeToSync')}
                         </Text>
                     </>
                 )}
@@ -100,7 +102,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
                         onPress={forceSync}
                         disabled={isSyncing}
                     >
-                        <Text style={styles.actionButtonText}>Sync Now</Text>
+                        <Text style={styles.actionButtonText}>{t('auth.syncNow')}</Text>
                     </TouchableOpacity>
                 )}
                 <TouchableOpacity
@@ -108,7 +110,7 @@ export const AccountCard: React.FC<AccountCardProps> = ({
                     onPress={onSignOutPress}
                 >
                     <LogOut color={colors.status.error} size={16} />
-                    <Text style={styles.signOutText}>Sign Out</Text>
+                    <Text style={styles.signOutText}>{t('auth.signOut')}</Text>
                 </TouchableOpacity>
             </View>
         </GlassCard>

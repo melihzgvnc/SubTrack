@@ -11,6 +11,7 @@ import { colors } from '../../theme/colors';
 import { spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
 import type { SpendingExtreme } from '../../types/insights';
+import { useTranslation } from 'react-i18next';
 
 interface SpendingExtremesCardsProps {
   mostSpent: SpendingExtreme | null;
@@ -25,10 +26,11 @@ interface ExtremeCardProps {
 }
 
 const ExtremeCard: React.FC<ExtremeCardProps> = ({ type, data, currency }) => {
+  const { t } = useTranslation();
   const isMost = type === 'most';
   const Icon = isMost ? TrendingUp : TrendingDown;
   const iconColor = isMost ? colors.accent.primary : colors.accent.tertiary;
-  const label = isMost ? 'Most Spent' : 'Least Spent';
+  const label = isMost ? t('stats.mostSpent') : t('stats.leastSpent');
 
   if (!data) {
     return (
@@ -38,7 +40,7 @@ const ExtremeCard: React.FC<ExtremeCardProps> = ({ type, data, currency }) => {
             <Icon color={iconColor} size={20} />
           </View>
           <Text style={styles.label}>{label}</Text>
-          <Text style={styles.emptyText}>No data</Text>
+          <Text style={styles.emptyText}>{t('stats.noData')}</Text>
         </View>
       </GlassCard>
     );
@@ -103,7 +105,7 @@ const ExtremeCard: React.FC<ExtremeCardProps> = ({ type, data, currency }) => {
           allowFontScaling
           maxFontSizeMultiplier={1.3}
         >
-          {monthsActive} {monthsActive === 1 ? 'month' : 'months'}
+          {monthsActive} {monthsActive === 1 ? t('stats.month') : t('stats.months')}
         </Text>
       </View>
     </GlassCard>
@@ -115,6 +117,7 @@ export const SpendingExtremesCards: React.FC<SpendingExtremesCardsProps> = ({
   leastSpent,
   currency,
 }) => {
+  const { t } = useTranslation();
   // Don't render if no data at all
   if (!mostSpent && !leastSpent) {
     return null;
@@ -130,7 +133,7 @@ export const SpendingExtremesCards: React.FC<SpendingExtremesCardsProps> = ({
         allowFontScaling
         maxFontSizeMultiplier={1.2}
       >
-        Spending Insights
+        {t('stats.spendingInsights')}
       </Text>
       <View style={styles.cardsRow}>
         <ExtremeCard type="most" data={mostSpent} currency={currency} />

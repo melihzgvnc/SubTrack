@@ -6,9 +6,11 @@ import { colors } from '../../theme/colors';
 import { spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
 import { Check } from 'lucide-react-native';
+import { useTranslation } from 'react-i18next';
 
 export default function WelcomeScreen() {
     const router = useRouter();
+    const { t } = useTranslation();
 
     return (
         <View style={styles.container}>
@@ -19,16 +21,16 @@ export default function WelcomeScreen() {
                     <Check color={colors.accent.primary} size={48} />
                 </View>
 
-                <Text style={styles.title}>You're all set!</Text>
+                <Text style={styles.title}>{t('auth.welcome.title')}</Text>
                 <Text style={styles.subtitle}>
-                    Your subscriptions are now syncing to the cloud.
+                    {t('auth.welcome.subtitle')}
                 </Text>
 
                 <TouchableOpacity
                     style={styles.button}
                     onPress={() => router.replace('/settings')}
                 >
-                    <Text style={styles.buttonText}>Continue</Text>
+                    <Text style={styles.buttonText}>{t('auth.welcome.continue')}</Text>
                 </TouchableOpacity>
             </View>
         </View>

@@ -25,36 +25,37 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { colors } from '../theme/colors';
 import { typography } from '../theme/typography';
 import { useResponsive } from '../hooks/useResponsive';
+import { useTranslation } from 'react-i18next';
 
 const slides = [
   {
     id: '1',
-    title: 'CONTROL',
-    subtitle: 'Your Subscriptions.\nOne Command Center.',
+    titleKey: 'onboarding.slide1.title',
+    subtitleKey: 'onboarding.slide1.subtitle',
     icon: CreditCard,
     color: colors.accent.secondary, // Neon Blue
     accent: 'rgba(181, 222, 255, 0.2)',
   },
   {
     id: '2',
-    title: 'INSIGHT',
-    subtitle: 'Visualize Spending.\nSpot the Leaks.',
+    titleKey: 'onboarding.slide2.title',
+    subtitleKey: 'onboarding.slide2.subtitle',
     icon: TrendingUp,
     color: colors.accent.quaternary, // Neon Purple
     accent: 'rgba(231, 181, 255, 0.2)',
   },
   {
     id: '3',
-    title: 'ALERT',
-    subtitle: 'Never Miss a Due Date.\nStay Ahead.',
+    titleKey: 'onboarding.slide3.title',
+    subtitleKey: 'onboarding.slide3.subtitle',
     icon: Bell,
     color: colors.accent.tertiary, // Neon Green
     accent: 'rgba(181, 255, 205, 0.2)',
   },
   {
     id: '4',
-    title: 'SYNC',
-    subtitle: 'Sign In & Sync.\nAccess Anywhere.',
+    titleKey: 'onboarding.slide4.title',
+    subtitleKey: 'onboarding.slide4.subtitle',
     icon: User,
     color: colors.accent.primary, // Neon Red/Pink
     accent: 'rgba(255, 181, 181, 0.2)',
@@ -62,8 +63,8 @@ const slides = [
   },
   {
     id: '5',
-    title: 'LAUNCH',
-    subtitle: 'Ready to optimize?  Let\'s go.',
+    titleKey: 'onboarding.slide5.title',
+    subtitleKey: 'onboarding.slide5.subtitle',
     icon: Check,
     color: colors.accent.primary, // Neon Red/Pink
     accent: 'rgba(255, 181, 181, 0.2)',
@@ -122,6 +123,7 @@ const Dot = ({ index, scrollX, screenWidth }: { index: number; scrollX: SharedVa
 
 export default function Onboarding() {
   const router = useRouter();
+  const { t } = useTranslation();
   const completeOnboarding = useSubStore((state) => state.completeOnboarding);
   const scrollX = useSharedValue(0);
 
@@ -383,10 +385,10 @@ export default function Onboarding() {
                       textShadowRadius: 10
                     }}
                   >
-                    {slide.title}
+                    {t(slide.titleKey)}
                   </Text>
                   <Text className="text-white text-2xl font-light tracking-wide leading-8 opacity-90 text-center">
-                    {slide.subtitle}
+                    {t(slide.subtitleKey)}
                   </Text>
                 </View>
               </Animated.View>
@@ -417,7 +419,7 @@ export default function Onboarding() {
                             className="text-background text-xl tracking-wider"
                             style={{ fontFamily: typography.fontFamily.display }}
                           >
-                            SIGN IN
+                            {t('onboarding.signIn')}
                           </Text>
                           <ArrowRight color={colors.text.inverse} size={24} strokeWidth={3} />
                         </View>
@@ -429,7 +431,7 @@ export default function Onboarding() {
                       className="items-center"
                       style={{ paddingVertical: 16, marginBottom: 60 }}
                     >
-                      <Text className="text-gray-500 font-medium text-sm tracking-widest uppercase">Skip for now</Text>
+                      <Text className="text-gray-500 font-medium text-sm tracking-widest uppercase">{t('onboarding.skip')}</Text>
                     </TouchableOpacity>
                   </Animated.View>
                 )}
@@ -455,7 +457,7 @@ export default function Onboarding() {
                             className="text-background text-xl tracking-wider"
                             style={{ fontFamily: typography.fontFamily.display }}
                           >
-                            ADD SUBSCRIPTION
+                            {t('onboarding.addSubscription')}
                           </Text>
                           <ArrowRight color={colors.text.inverse} size={24} strokeWidth={3} />
                         </View>
@@ -467,7 +469,7 @@ export default function Onboarding() {
                       className="items-center"
                       style={{ paddingVertical: 16, marginBottom: 60 }}
                     >
-                      <Text className="text-gray-500 font-medium text-sm tracking-widest uppercase">Skip for now</Text>
+                      <Text className="text-gray-500 font-medium text-sm tracking-widest uppercase">{t('onboarding.skip')}</Text>
                     </TouchableOpacity>
                   </Animated.View>
                 )}

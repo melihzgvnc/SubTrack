@@ -11,11 +11,13 @@ import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 import { useResponsive, useResponsiveValue } from '../hooks/useResponsive';
+import { useTranslation } from 'react-i18next';
 
 export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { isTablet } = useResponsive();
+  const { t } = useTranslation();
 
   // Responsive add button size
   const addButtonSize = useResponsiveValue({
@@ -128,10 +130,10 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
 
           if (route.name === 'index') {
             Icon = Home;
-            label = 'Dashboard';
+            label = t('tabBar.dashboard');
           } else if (route.name === 'stats') {
             Icon = BarChart2;
-            label = 'Insights';
+            label = t('tabBar.insights');
           } else if (['subscription/[id]', 'settings', 'onboarding', 'login', '(auth)/login', 'welcome', '(auth)/welcome', '(auth)'].includes(route.name)) {
             return null; // Hide detail, settings, onboarding, and auth from tab bar
           } else {

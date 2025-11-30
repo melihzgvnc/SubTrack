@@ -1,0 +1,302 @@
+{
+    "common": {
+        "loading": "Loading...",
+        "error": "An error occurred",
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete": "Delete",
+        "edit": "Edit",
+        "add": "Add",
+        "back": "Back",
+        "next": "Next",
+        "done": "Done",
+        "skip": "Skip",
+        "signIn": "Sign In",
+        "signOut": "Sign Out",
+        "language": "Language",
+        "select": "Select {{label}}",
+        "settings": {
+            "title": "Settings",
+            "account": "Account",
+            "general": "General",
+            "notifications": {
+                "title": "Notifications",
+                "subtitle": "Get reminders for upcoming bills"
+            },
+            "preferences": "Preferences",
+            "currency": {
+                "title": "Currency",
+                "subtitle": "Select your preferred currency"
+            },
+            "debug": "Debug",
+            "onboarding": {
+                "title": "Onboarding",
+                "subtitle": "Launch onboarding flow"
+            }
+        },
+        "english": "English",
+        "turkish": "Turkish",
+        "ad": "Ad"
+    },
+    "paywall": {
+        "unlock": "Unlock",
+        "pro": "Pro",
+        "subtitle": "Take control of your financial life.",
+        "features": {
+            "unlimited": "Unlimited Subscriptions",
+            "analytics": "Advanced Analytics & Charts",
+            "sync": "Cloud Sync & Backup",
+            "icons": "Custom App Icons & Themes",
+            "support": "Support Indie Development"
+        },
+        "bestValue": "Best Value",
+        "perYear": "/year",
+        "perMonth": "/month",
+        "restore": "Restore Purchases",
+        "terms": "Terms of Service",
+        "privacy": "Privacy Policy"
+    },
+    "onboarding": {
+        "slide1": {
+            "title": "CONTROL",
+            "subtitle": "Your Subscriptions.\nOne Command Center."
+        },
+        "slide2": {
+            "title": "INSIGHT",
+            "subtitle": "Visualize Spending.\nSpot the Leaks."
+        },
+        "slide3": {
+            "title": "ALERT",
+            "subtitle": "Never Miss a Due Date.\nStay Ahead."
+        },
+        "slide4": {
+            "title": "SYNC",
+            "subtitle": "Sign In & Sync.\nAccess Anywhere."
+        },
+        "slide5": {
+            "title": "LAUNCH",
+            "subtitle": "Ready to optimize? Let's go."
+        },
+        "skip": "Skip for now",
+        "signIn": "SIGN IN",
+        "addSubscription": "ADD SUBSCRIPTION"
+    },
+    "dashboard": {
+        "greeting": "Hello",
+        "totalMonthly": "Total Monthly",
+        "activeSubs": "Active Subs",
+        "yourSubscriptions": "Your Subscriptions",
+        "sort": {
+            "sortBy": "Sort By",
+            "name": "Name",
+            "price": "Price",
+            "billingDate": "Billing Date"
+        },
+        "empty": {
+            "title": "No subscriptions yet",
+            "subtitle": "Add your first subscription to get started"
+        },
+        "addSubscription": "Add Subscription",
+        "billing": {
+            "dueInDays": "Due in {{count}} days",
+            "nextBillOn": "Next bill on {{date}}"
+        }
+    },
+    "auth": {
+        "signInToSync": "Sign in to sync",
+        "accessSubscriptions": "Access your subscriptions on any device",
+        "syncing": "Syncing...",
+        "syncedAgo": "Synced {{time}} ago",
+        "notSyncedYet": "Not synced yet",
+        "upgradeToSync": "Upgrade to Pro to enable sync",
+        "syncNow": "Sync Now",
+        "signOut": "Sign Out",
+        "welcome": {
+            "title": "You're all set!",
+            "subtitle": "Your subscriptions are now syncing to the cloud.",
+            "continue": "Continue"
+        },
+        "login": {
+            "title": "Welcome Back",
+            "subtitle": "Sign in to sync your subscriptions across devices",
+            "google": "Continue with Google"
+        }
+    },
+    "addSubscription": {
+        "title": "New Subscription",
+        "name": "Service Name",
+        "namePlaceholder": "e.g. Netflix",
+        "price": "Price",
+        "pricePlaceholder": "0.00",
+        "billingCycle": "Billing Cycle",
+        "monthly": "Monthly",
+        "yearly": "Yearly",
+        "startDate": "Start Date",
+        "day": "Day",
+        "month": "Month",
+        "year": "Year",
+        "category": "Category",
+        "categories": {
+            "Other": "Other",
+            "Entertainment": "Entertainment",
+            "Music": "Music",
+            "Productivity": "Productivity",
+            "Utilities": "Utilities",
+            "Shopping": "Shopping"
+        },
+        "save": "Save Subscription"
+    },
+    "subscriptionDetail": {
+        "title": "Details",
+        "plan": "{{cycle}} Plan",
+        "monthlyCost": "Monthly Cost",
+        "perMonth": "per month",
+        "totalSpend": "Total Spend",
+        "lifetime": "lifetime",
+        "status": "Status",
+        "active": "Active",
+        "startedOn": "Started On"
+    },
+    "tabBar": {
+        "dashboard": "Dashboard",
+        "insights": "Insights"
+    },
+    "stats": {
+        "title": "Insights",
+        "categories": "Categories",
+        "noSubscriptions": "No subscriptions",
+        "subsSuffix": "subs",
+        "totalSpending": "Total Spending",
+        "thisMonth": "This Month",
+        "noSubscriptionsYet": "No subscriptions yet",
+        "spendingTrend": "Spending Trend",
+        "needMoreHistory": "Need at least 2 months of history to show spending trend",
+        "avg": "Avg",
+        "historyLength": "{{count}} months of spending history",
+        "spendingInsights": "Spending Insights",
+        "mostSpent": "Most Spent",
+        "leastSpent": "Least Spent",
+        "noData": "No data",
+        "month": "month",
+        "months": "months",
+        "pro": {
+            "discover": "Discover Advanced Stats",
+            "unlockTitle": "Unlock Advanced Insights",
+            "unlockSubtitle": "Get deeper insights into your subscription spending",
+            "unlockButton": "Unlock Pro",
+            "features": {
+                "timeRange": {
+                    "title": "Time Range Analysis",
+                    "description": "View spending by month, quarter, year, or lifetime"
+                },
+                "trends": {
+                    "title": "Spending Trends",
+                    "description": "Track how your spending changes over time"
+                },
+                "insights": {
+                    "title": "Spending Insights",
+                    "description": "See your most and least expensive subscriptions"
+                }
+            }
+        }
+    },
+    "currencies": {
+        "USD": "US Dollar",
+        "EUR": "Euro",
+        "GBP": "British Pound",
+        "JPY": "Japanese Yen",
+        "CNY": "Chinese Yuan",
+        "INR": "Indian Rupee",
+        "RUB": "Russian Ruble",
+        "TRY": "Turkish Lira",
+        "KRW": "South Korean Won",
+        "BRL": "Brazilian Real",
+        "CAD": "Canadian Dollar",
+        "AUD": "Australian Dollar",
+        "MXN": "Mexican Peso",
+        "IDR": "Indonesian Rupiah",
+        "CHF": "Swiss Franc",
+        "SEK": "Swedish Krona",
+        "NOK": "Norwegian Krone",
+        "DKK": "Danish Krone",
+        "PLN": "Polish Złoty",
+        "THB": "Thai Baht",
+        "VND": "Vietnamese Dong",
+        "MYR": "Malaysian Ringgit",
+        "PHP": "Philippine Peso",
+        "ZAR": "South African Rand",
+        "NZD": "New Zealand Dollar",
+        "SGD": "Singapore Dollar",
+        "HKD": "Hong Kong Dollar",
+        "TWD": "New Taiwan Dollar",
+        "SAR": "Saudi Riyal",
+        "AED": "UAE Dirham",
+        "ARS": "Argentine Peso",
+        "CLP": "Chilean Peso",
+        "COP": "Colombian Peso",
+        "EGP": "Egyptian Pound",
+        "ILS": "Israeli New Shekel",
+        "PKR": "Pakistani Rupee",
+        "HUF": "Hungarian Forint",
+        "CZK": "Czech Koruna",
+        "RON": "Romanian Leu",
+        "NGN": "Nigerian Naira",
+        "BDT": "Bangladeshi Taka",
+        "UAH": "Ukrainian Hryvnia",
+        "KZT": "Kazakhstani Tenge",
+        "QAR": "Qatari Riyal",
+        "KWD": "Kuwaiti Dinar",
+        "MAD": "Moroccan Dirham",
+        "DZD": "Algerian Dinar",
+        "TND": "Tunisian Dinar",
+        "LBP": "Lebanese Pound",
+        "JOD": "Jordanian Dinar",
+        "OMR": "Omani Rial",
+        "BHD": "Bahraini Dinar",
+        "IQD": "Iraqi Dinar",
+        "LYD": "Libyan Dinar",
+        "SDG": "Sudanese Pound",
+        "SYP": "Syrian Pound",
+        "YER": "Yemeni Rial",
+        "AFN": "Afghan Afghani",
+        "IRR": "Iranian Rial",
+        "LKR": "Sri Lankan Rupee",
+        "NPR": "Nepalese Rupee",
+        "KES": "Kenyan Shilling",
+        "GHS": "Ghanaian Cedi",
+        "TZS": "Tanzanian Shilling",
+        "UGX": "Ugandan Shilling",
+        "ETB": "Ethiopian Birr",
+        "VES": "Venezuelan Bolívar",
+        "PEN": "Peruvian Sol",
+        "UYU": "Uruguayan Peso",
+        "CRC": "Costa Rican Colón",
+        "DOP": "Dominican Peso",
+        "GTQ": "Guatemalan Quetzal",
+        "HNL": "Honduran Lempira",
+        "NIO": "Nicaraguan Córdoba",
+        "PAB": "Panamanian Balboa",
+        "PYG": "Paraguayan Guaraní",
+        "BOB": "Bolivian Boliviano",
+        "ISK": "Icelandic Króna",
+        "BGN": "Bulgarian Lev",
+        "HRK": "Croatian Kuna",
+        "RSD": "Serbian Dinar",
+        "BAM": "Bosnia-Herzegovina Mark",
+        "MKD": "Macedonian Denar",
+        "ALL": "Albanian Lek",
+        "GEL": "Georgian Lari",
+        "AMD": "Armenian Dram",
+        "AZN": "Azerbaijani Manat",
+        "BYN": "Belarusian Ruble",
+        "MDL": "Moldovan Leu"
+    },
+    "categories": {
+        "media": "Media",
+        "music": "Music",
+        "shopping": "Shopping",
+        "work": "Work",
+        "utilities": "Utilities",
+        "other": "Other"
+    }
+}

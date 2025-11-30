@@ -5,6 +5,7 @@ import { GlassCard } from './GlassCard';
 import { colors } from '../../theme/colors';
 import { spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
+import { useTranslation } from 'react-i18next';
 
 interface DropdownProps {
   label: string;
@@ -16,6 +17,7 @@ interface DropdownProps {
 
 export const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSelect, width = '100%' }) => {
   const [visible, setVisible] = useState(false);
+  const { t } = useTranslation();
 
   const renderItem = ({ item }: { item: string }) => (
     <TouchableOpacity
@@ -40,23 +42,23 @@ export const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSel
     <View style={{ width: width as any }}>
       <TouchableOpacity onPress={() => setVisible(true)} activeOpacity={0.8}>
         <GlassCard style={{ padding: spacing.none }}>
-            <View style={{ padding: spacing.sm, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
-                <View style={{ flex: 1, alignItems: 'center' }}>
-                    <Text 
-                        style={{ color: colors.text.secondary, fontSize: 10, marginBottom: 2 }}
-                        numberOfLines={1}
-                    >
-                        {label}
-                    </Text>
-                    <Text 
-                        style={{ color: colors.text.primary, fontSize: typography.size.lg, fontWeight: 'bold' }}
-                        numberOfLines={1}
-                    >
-                        {value}
-                    </Text>
-                </View>
-                <ChevronDown color={colors.text.muted} size={16} />
+          <View style={{ padding: spacing.sm, alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ flex: 1, alignItems: 'center' }}>
+              <Text
+                style={{ color: colors.text.secondary, fontSize: 10, marginBottom: 2 }}
+                numberOfLines={1}
+              >
+                {label}
+              </Text>
+              <Text
+                style={{ color: colors.text.primary, fontSize: typography.size.lg, fontWeight: 'bold' }}
+                numberOfLines={1}
+              >
+                {value}
+              </Text>
             </View>
+            <ChevronDown color={colors.text.muted} size={16} />
+          </View>
         </GlassCard>
       </TouchableOpacity>
 
@@ -66,7 +68,7 @@ export const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSel
             <TouchableWithoutFeedback>
               <View style={{ width: '80%', maxHeight: '50%', backgroundColor: colors.background.surface, borderRadius: spacing.lg, overflow: 'hidden', borderWidth: 1, borderColor: colors.border.highlight }}>
                 <View style={{ padding: spacing.md, borderBottomWidth: 1, borderBottomColor: colors.border.highlight, backgroundColor: colors.background.elevated }}>
-                    <Text style={{ color: colors.text.primary, fontSize: typography.size.lg, fontWeight: 'bold', textAlign: 'center' }}>Select {label}</Text>
+                  <Text style={{ color: colors.text.primary, fontSize: typography.size.lg, fontWeight: 'bold', textAlign: 'center' }}>{t('common.select', { label })}</Text>
                 </View>
                 <FlatList
                   data={options}

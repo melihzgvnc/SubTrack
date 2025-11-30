@@ -12,6 +12,7 @@ import { spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
 import type { SpendingTrendPoint } from '../../types/insights';
 import { useResponsiveValue } from '../../hooks/useResponsive';
+import { useTranslation } from 'react-i18next';
 
 interface SpendingTrendChartProps {
   data: SpendingTrendPoint[];
@@ -22,6 +23,7 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
   data,
   currency,
 }) => {
+  const { t } = useTranslation();
   // Responsive chart dimensions
   const chartHeight = useResponsiveValue({
     sm: 160,
@@ -61,10 +63,10 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
   if (data.length < 2) {
     return (
       <GlassCard style={styles.container}>
-        <Text style={styles.title}>Spending Trend</Text>
+        <Text style={styles.title}>{t('stats.spendingTrend')}</Text>
         <View style={styles.emptyState}>
           <Text style={styles.emptyText}>
-            Need at least 2 months of history to show spending trend
+            {t('stats.needMoreHistory')}
           </Text>
         </View>
       </GlassCard>
@@ -78,10 +80,10 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
     <GlassCard style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title} allowFontScaling maxFontSizeMultiplier={1.2}>
-          Spending Trend
+          {t('stats.spendingTrend')}
         </Text>
         <View style={styles.avgBadge}>
-          <Text style={styles.avgLabel}>Avg</Text>
+          <Text style={styles.avgLabel}>{t('stats.avg')}</Text>
           <Text style={styles.avgValue}>
             {currency.symbol}
             {avgValue.toFixed(0)}/mo
@@ -153,7 +155,7 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
       {/* Legend */}
       <View style={styles.legend}>
         <Text style={styles.legendText}>
-          {data.length} months of spending history
+          {t('stats.historyLength', { count: data.length })}
         </Text>
       </View>
     </GlassCard>
