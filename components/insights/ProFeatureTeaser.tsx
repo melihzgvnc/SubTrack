@@ -34,6 +34,10 @@ export const ProFeatureTeaser: React.FC<ProFeatureTeaserProps> = ({ onUnlock }) 
   const [isExpanded, setIsExpanded] = useState(false);
   const progress = useSharedValue(0);
 
+  // Dynamic height measurements
+  const headerHeight = useSharedValue(COLLAPSED_HEIGHT);
+  const contentHeight = useSharedValue(EXPANDED_HEIGHT - COLLAPSED_HEIGHT);
+
   const features = [
     {
       icon: BarChart3,
@@ -64,10 +68,13 @@ export const ProFeatureTeaser: React.FC<ProFeatureTeaserProps> = ({ onUnlock }) 
 
   // Animated styles for the container height
   const containerAnimatedStyle = useAnimatedStyle(() => {
+    const collapsedH = headerHeight.value;
+    const expandedH = headerHeight.value + contentHeight.value;
+
     const height = interpolate(
       progress.value,
       [0, 1],
-      [COLLAPSED_HEIGHT, EXPANDED_HEIGHT]
+      [collapsedH, expandedH]
     );
 
     return {
@@ -115,6 +122,9 @@ export const ProFeatureTeaser: React.FC<ProFeatureTeaserProps> = ({ onUnlock }) 
           accessibilityRole="button"
           accessibilityLabel={isExpanded ? "Collapse Pro features" : "Discover advanced stats"}
           accessibilityHint="Tap to toggle Pro features preview"
+          onLayout={(e) => {
+            headerHeight.value = e.nativeEvent.layout.height;
+          }}
         >
           <View style={styles.headerLeft}>
             <Crown color={colors.accent.neutral} size={18} />
@@ -131,7 +141,12 @@ export const ProFeatureTeaser: React.FC<ProFeatureTeaserProps> = ({ onUnlock }) 
         </TouchableOpacity>
 
         {/* Expanded Content */}
-        <Animated.View style={[styles.expandedContent, expandedContentStyle]}>
+        <Animated.View
+          style={[styles.expandedContent, expandedContentStyle]}
+          onLayout={(e) => {
+            contentHeight.value = e.nativeEvent.layout.height;
+          }}
+        >
           {/* Title Section */}
           <View style={styles.titleSection}>
             <Text

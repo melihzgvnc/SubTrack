@@ -305,31 +305,31 @@ export default function Dashboard() {
 
                     {/* Animated Sort Menu */}
                     <Animated.View style={[animatedMenuStyle, { marginBottom: sortMenuOpen ? 16 : 0 }]}>
-                        <GlassCard style={{ padding: 8 }}>
-                            <View className="flex-row justify-between items-center">
-                                <Text className="text-gray-400 text-xs font-bold uppercase ml-2">{t('dashboard.sort.sortBy')}</Text>
-                                <View className="flex-row gap-2">
-                                    <TouchableOpacity
-                                        onPress={() => { setSortBy('name'); setSortMenuOpen(false); }}
-                                        className={`px-3 py-1.5 rounded-full ${sortBy === 'name' ? 'bg-neon-blue/20 border border-neon-blue/50' : 'bg-white/5'}`}
-                                    >
-                                        <Text className={`text-xs font-bold ${sortBy === 'name' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>{t('dashboard.sort.name')}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => { setSortBy('price'); setSortMenuOpen(false); }}
-                                        className={`px-3 py-1.5 rounded-full ${sortBy === 'price' ? 'bg-neon-blue/20 border border-neon-blue/50' : 'bg-white/5'}`}
-                                    >
-                                        <Text className={`text-xs font-bold ${sortBy === 'price' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>{t('dashboard.sort.price')}</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => { setSortBy('billingDate'); setSortMenuOpen(false); }}
-                                        className={`px-3 py-1.5 rounded-full ${sortBy === 'billingDate' ? 'bg-neon-blue/20 border border-neon-blue/50' : 'bg-white/5'}`}
-                                    >
-                                        <Text className={`text-xs font-bold ${sortBy === 'billingDate' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>{t('dashboard.sort.billingDate')}</Text>
-                                    </TouchableOpacity>
-                                </View>
+                        <View className="flex-row justify-between items-center">
+                            <Text className="text-gray-400 text-xs font-bold uppercase ml-2">{t('dashboard.sort.sortBy')}</Text>
+                            <View className="flex-row gap-2">
+                                <TouchableOpacity
+                                    onPress={() => { setSortBy('name'); setSortMenuOpen(false); }}
+                                    className={`px-3 py-1.5 rounded-full ${sortBy === 'name' ? 'bg-neon-blue/20 border border-neon-blue/50' : 'bg-white/5'}`}
+                                >
+                                    <Text className={`text-xs font-bold ${sortBy === 'name' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>{t('dashboard.sort.name')}</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => { setSortBy('price'); setSortMenuOpen(false); }}
+                                    className={`px-3 py-1.5 rounded-full ${sortBy === 'price' ? 'bg-neon-blue/20 border border-neon-blue/50' : 'bg-white/5'}`}
+                                >
+                                    <Text className={`text-xs font-bold ${sortBy === 'price' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>
+                                        {t('dashboard.sort.price')}
+                                    </Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() => { setSortBy('billingDate'); setSortMenuOpen(false); }}
+                                    className={`px-3 py-1.5 rounded-full ${sortBy === 'billingDate' ? 'bg-neon-blue/20 border border-neon-blue/50' : 'bg-white/5'}`}
+                                >
+                                    <Text className={`text-xs font-bold ${sortBy === 'billingDate' ? 'text-neon-blue' : 'text-shadow-blue-grey'}`}>{t('dashboard.sort.billingDate')}</Text>
+                                </TouchableOpacity>
                             </View>
-                        </GlassCard>
+                        </View>
                     </Animated.View>
 
                     {sortedSubscriptions.length === 0 ? (
@@ -346,78 +346,56 @@ export default function Dashboard() {
                         </GlassCard>
                     ) : (
                         <View className="gap-3">
-                            {sortedSubscriptions.map((sub) => (
-                                <TouchableOpacity
-                                    key={sub.id}
-                                    onPress={() => router.push(`/subscription/${sub.id}`)}
-                                    activeOpacity={0.9}
-                                >
-                                    <GlassCard>
-                                        <View className="flex-row items-center justify-between p-1">
-                                            <View className="flex-row items-center gap-3">
-                                                <Squircle
-                                                    width={48}
-                                                    height={48}
-                                                    cornerRadius={16}
-                                                    backgroundColor={sub.color}
-                                                >
-                                                    <View className="flex-1 justify-center items-center">
-                                                        <Text className="text-white font-bold text-lg">
-                                                            {sub.name.charAt(0)}
+                            {sortedSubscriptions.map((sub, index) => (
+                                <View key={sub.id}>
+                                    <TouchableOpacity
+                                        onPress={() => router.push(`/subscription/${sub.id}`)}
+                                        activeOpacity={0.9}
+                                    >
+                                        <GlassCard>
+                                            <View className="flex-row items-center justify-between p-1">
+                                                <View className="flex-row items-center gap-3">
+                                                    <Squircle
+                                                        width={48}
+                                                        height={48}
+                                                        cornerRadius={16}
+                                                        backgroundColor={sub.color}
+                                                    >
+                                                        <View className="flex-1 justify-center items-center">
+                                                            <Text className="text-white font-bold text-lg">
+                                                                {sub.name.charAt(0)}
+                                                            </Text>
+                                                        </View>
+                                                    </Squircle>
+                                                    <View>
+                                                        <Text className="text-white font-bold text-lg">{sub.name}</Text>
+                                                        <Text className="text-shadow-blue-grey text-xs font-medium">
+                                                            {getBillingInfo(sub)}
                                                         </Text>
                                                     </View>
-                                                </Squircle>
-                                                <View>
-                                                    <Text className="text-white font-bold text-lg">{sub.name}</Text>
-                                                    <Text className="text-shadow-blue-grey text-xs font-medium">
-                                                        {getBillingInfo(sub)}
+                                                </View>
+                                                <View className="items-end">
+                                                    <Text className="text-white font-bold text-lg">
+                                                        {currency.symbol}{sub.price.toFixed(2)}
+                                                    </Text>
+                                                    <Text className="text-shadow-blue-grey text-xs font-medium capitalize">
+                                                        {t(`addSubscription.${sub.cycle}`)}
                                                     </Text>
                                                 </View>
                                             </View>
-                                            <View className="items-end">
-                                                <Text className="text-white font-bold text-lg">
-                                                    {currency.symbol}{sub.price.toFixed(2)}
-                                                </Text>
-                                                <Text className="text-shadow-blue-grey text-xs font-medium capitalize">
-                                                    {t(`addSubscription.${sub.cycle}`)}
-                                                </Text>
-                                            </View>
+                                        </GlassCard>
+                                    </TouchableOpacity>
+                                    {index === 1 && (
+                                        <View className="mt-3">
+                                            <NativeAdCard />
                                         </View>
-                                    </GlassCard>
-                                </TouchableOpacity>
+                                    )}
+                                </View>
                             ))}
                         </View>
                     )}
                 </View>
             </ScrollView>
-
-            {/* Floating Action Button */}
-            <View className="absolute bottom-6 right-6">
-                <TouchableOpacity
-                    onPress={() => router.push('/add')}
-                    activeOpacity={0.8}
-                    style={{
-                        shadowColor: colors.accent.primary,
-                        shadowOffset: { width: 0, height: 8 },
-                        shadowOpacity: 0.5,
-                        shadowRadius: 16,
-                        elevation: 10,
-                    }}
-                >
-                    <Squircle
-                        width={64}
-                        height={64}
-                        cornerRadius={24}
-                        backgroundColor={colors.accent.primary}
-                        showBorder
-                        borderColor="rgba(255,255,255,0.3)"
-                    >
-                        <View className="flex-1 justify-center items-center">
-                            <Plus color={colors.text.inverse} size={32} strokeWidth={2.5} />
-                        </View>
-                    </Squircle>
-                </TouchableOpacity>
-            </View>
-        </SafeAreaView>
+        </SafeAreaView >
     );
 }

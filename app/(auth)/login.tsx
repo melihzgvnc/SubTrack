@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { SocialLoginButtons } from '../../components/auth/SocialLoginButtons';
 import { useAuth } from '../../hooks/useAuth';
 import { colors } from '../../theme/colors';
-import { spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
 import { MeshBackground } from '../../components/ui/MeshBackground';
 import { GlassCard } from '../../components/ui/GlassCard';
@@ -31,78 +31,48 @@ export default function LoginScreen() {
     };
 
     return (
-        <View style={styles.container}>
+        <View className="flex-1 bg-background-main">
             <MeshBackground />
 
-            <View style={styles.header}>
-                <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-                    <ArrowLeft color="#FFF" size={24} />
-                </TouchableOpacity>
-            </View>
+            <SafeAreaView className="flex-1">
+                <View className="px-4 pt-2">
+                    <TouchableOpacity
+                        onPress={() => router.back()}
+                        className="w-10 h-10 rounded-full bg-white/10 justify-center items-center"
+                        activeOpacity={0.7}
+                    >
+                        <ArrowLeft color="#FFF" size={24} />
+                    </TouchableOpacity>
+                </View>
 
-            <View style={styles.content}>
-                <GlassCard style={styles.card}>
-                    <Text style={styles.title}>{t('auth.login.title')}</Text>
-                    <Text style={styles.subtitle}>
-                        {t('auth.login.subtitle')}
-                    </Text>
+                <View className="flex-1 justify-center px-6 pb-20">
+                    <GlassCard style={{ padding: 32 }}>
+                        <View className="items-center mb-8">
+                            <Text
+                                className="text-white text-4xl text-center mb-3"
+                                style={{ fontFamily: typography.fontFamily.display }}
+                            >
+                                {t('auth.login.title')}
+                            </Text>
+                            <Text className="text-text-secondary text-base text-center px-4 leading-6">
+                                {t('auth.login.subtitle')}
+                            </Text>
+                        </View>
 
-                    {error && (
-                        <Text style={styles.error}>{error}</Text>
-                    )}
+                        {error && (
+                            <View className="bg-red-500/10 border border-red-500/20 p-3 rounded-xl mb-6">
+                                <Text className="text-red-400 text-center font-medium">{error}</Text>
+                            </View>
+                        )}
 
-                    <SocialLoginButtons
-                        onApplePress={handleAppleLogin}
-                        onGooglePress={handleGoogleLogin}
-                        isLoading={isLoading}
-                    />
-                </GlassCard>
-            </View>
+                        <SocialLoginButtons
+                            onApplePress={handleAppleLogin}
+                            onGooglePress={handleGoogleLogin}
+                            isLoading={isLoading}
+                        />
+                    </GlassCard>
+                </View>
+            </SafeAreaView>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: colors.background.main,
-    },
-    header: {
-        paddingTop: 60,
-        paddingHorizontal: spacing.md,
-    },
-    backButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: 'rgba(255,255,255,0.1)',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    content: {
-        flex: 1,
-        justifyContent: 'center',
-        padding: spacing.lg,
-    },
-    card: {
-        padding: spacing.xl,
-    },
-    title: {
-        color: '#FFF',
-        fontSize: typography.size.xxl,
-        fontWeight: 'bold',
-        marginBottom: spacing.sm,
-        textAlign: 'center',
-    },
-    subtitle: {
-        color: colors.text.secondary,
-        fontSize: typography.size.base,
-        textAlign: 'center',
-        marginBottom: spacing.xl,
-    },
-    error: {
-        color: colors.status.error,
-        textAlign: 'center',
-        marginBottom: spacing.md,
-    },
-});
