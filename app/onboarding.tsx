@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, SafeAreaView, StyleSheet, use
 import { useRouter } from 'expo-router';
 import { useSubStore } from '../store/useSubStore';
 import { Squircle } from '../components/ui/Squircle';
-import { CreditCard, TrendingUp, Bell, Check, ArrowRight } from 'lucide-react-native';
+import { CreditCard, TrendingUp, Bell, Check, ArrowRight, User } from 'lucide-react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -53,6 +53,15 @@ const slides = [
   },
   {
     id: '4',
+    title: 'SYNC',
+    subtitle: 'Sign In & Sync.\nAccess Anywhere.',
+    icon: User,
+    color: colors.accent.primary, // Neon Red/Pink
+    accent: 'rgba(255, 181, 181, 0.2)',
+    isAuth: true,
+  },
+  {
+    id: '5',
     title: 'LAUNCH',
     subtitle: 'Ready to optimize?  Let\'s go.',
     icon: Check,
@@ -159,7 +168,7 @@ export default function Onboarding() {
               opacity: 0.25,
             },
             useAnimatedStyle(() => {
-              const inputRange = [0, width, width * 2, width * 3];
+              const inputRange = [0, width, width * 2, width * 3, width * 4];
 
               // Interpolate background color
               const backgroundColor = interpolateColor(
@@ -169,7 +178,8 @@ export default function Onboarding() {
                   colors.accent.secondary,  // Blue for slide 1
                   colors.accent.quaternary, // Purple for slide 2
                   colors.accent.tertiary,   // Green for slide 3
-                  colors.accent.primary,    // Pink for slide 4
+                  colors.accent.primary,    // Pink for slide 4 (auth)
+                  colors.accent.primary,    // Pink for slide 5 (launch)
                 ]
               );
 
@@ -177,14 +187,14 @@ export default function Onboarding() {
               const top = interpolate(
                 scrollX.value,
                 inputRange,
-                [-150, height - 250, height - 250, -150],
+                [-150, height - 250, height - 250, -150, -150],
                 Extrapolation.CLAMP
               );
 
               const left = interpolate(
                 scrollX.value,
                 inputRange,
-                [width - 250, width - 250, -150, -150],
+                [width - 250, width - 250, -150, -150, width - 250],
                 Extrapolation.CLAMP
               );
 
@@ -208,7 +218,7 @@ export default function Onboarding() {
               opacity: 0.2,
             },
             useAnimatedStyle(() => {
-              const inputRange = [0, width, width * 2, width * 3];
+              const inputRange = [0, width, width * 2, width * 3, width * 4];
 
               // Interpolate background color
               const backgroundColor = interpolateColor(
@@ -219,6 +229,7 @@ export default function Onboarding() {
                   colors.accent.secondary,  // Blue for slide 2
                   colors.accent.primary,    // Pink for slide 3
                   colors.accent.quaternary, // Purple for slide 4
+                  colors.accent.tertiary,   // Green for slide 5
                 ]
               );
 
@@ -226,14 +237,14 @@ export default function Onboarding() {
               const top = interpolate(
                 scrollX.value,
                 inputRange,
-                [height - 300, -200, -200, height - 300],
+                [height - 300, -200, -200, height - 300, height - 300],
                 Extrapolation.CLAMP
               );
 
               const left = interpolate(
                 scrollX.value,
                 inputRange,
-                [-150, -150, width - 300, width - 300],
+                [-150, -150, width - 300, width - 300, -150],
                 Extrapolation.CLAMP
               );
 
@@ -382,6 +393,47 @@ export default function Onboarding() {
 
               {/* Bottom Spacer / Buttons Container */}
               <View style={{ flex: 1 }} className="w-full justify-start items-center pt-16">
+                {/* Actions for Auth Slide */}
+                {slide.isAuth && (
+                  <Animated.View
+                    entering={FadeInDown.delay(300).springify()}
+                    className="w-full gap-4"
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        completeOnboarding();
+                        router.push('/(auth)/login');
+                      }}
+                      activeOpacity={0.8}
+                    >
+                      <Squircle
+                        width={width - 64}
+                        height={buttonHeight}
+                        cornerRadius={20}
+                        backgroundColor={slide.color}
+                      >
+                        <View className="flex-1 flex-row justify-center items-center gap-3">
+                          <Text
+                            className="text-background text-xl tracking-wider"
+                            style={{ fontFamily: typography.fontFamily.display }}
+                          >
+                            SIGN IN
+                          </Text>
+                          <ArrowRight color={colors.text.inverse} size={24} strokeWidth={3} />
+                        </View>
+                      </Squircle>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => handleComplete('/')}
+                      className="items-center"
+                      style={{ paddingVertical: 16, marginBottom: 60 }}
+                    >
+                      <Text className="text-gray-500 font-medium text-sm tracking-widest uppercase">Skip for now</Text>
+                    </TouchableOpacity>
+                  </Animated.View>
+                )}
+
                 {/* Actions for Last Slide */}
                 {slide.isLast && (
                   <Animated.View
@@ -412,16 +464,10 @@ export default function Onboarding() {
 
                     <TouchableOpacity
                       onPress={() => handleComplete('/')}
-                      className="py-4 items-center"
+                      className="items-center"
+                      style={{ paddingVertical: 16, marginBottom: 60 }}
                     >
                       <Text className="text-gray-500 font-medium text-sm tracking-widest uppercase">Skip for now</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      onPress={() => router.push('/(auth)/login')}
-                      className="py-2 items-center"
-                    >
-                      <Text className="text-white font-medium text-sm tracking-widest uppercase">I have an account</Text>
                     </TouchableOpacity>
                   </Animated.View>
                 )}
