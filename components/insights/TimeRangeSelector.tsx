@@ -1,10 +1,11 @@
 /**
  * Time range selector component for Pro users
  * Allows switching between different time periods for spending analysis
+ * Features smooth sliding indicator animation
  */
 
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, LayoutChangeEvent } from 'react-native';
 import { colors } from '../../theme/colors';
 import { spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
@@ -22,8 +23,52 @@ export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
   onChange,
   disabled = false,
 }) => {
+  const slideAnim = useRef(new Animated.Value(0)).current;
+  const containerWidth = useRef(0);
+  const optionWidth = useRef(0);
+
+  // Get the index of the selected option
+  const selectedIndex = TIME_RANGE_OPTIONS.findIndex((opt) => opt.value === value);
+
+  // Animate the indicator when selection changes
+  useEffect(() => {
+    if (optionWidth.current > 0) {
+      const targetPosition = selectedIndex * (optionWidth.current + 4); // 4 is the gap
+      Animated.spring(slideAnim, {
+        toValue: targetPosition,
+        friction: 8,
+        tension: 100,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [selectedIndex, slideAnim]);
+
+  const handleContainerLayout = (event: LayoutChangeEvent) => {
+    const { width } = event.nativeEvent.layout;
+    containerWidth.current = width;
+    // Calculate option width: (container - padding - gaps) / number of options
+    const padding = 8; // 4px on each side
+    const gaps = (TIME_RANGE_OPTIONS.length - 1) * 4;
+    optionWidth.current = (width - padding - gaps) / TIME_RANGE_OPTIONS.length;
+    
+    // Set initial position
+    const targetPosition = selectedIndex * (optionWidth.current + 4);
+    slideAnim.setValue(targetPosition);
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} onLayout={handleContainerLayout}>
+      {/* Animated sliding indicator */}
+      <Animated.View
+        style={[
+          styles.indicator,
+          {
+            width: optionWidth.current || '25%',
+            transform: [{ translateX: slideAnim }],
+          },
+        ]}
+      />
+      
       {TIME_RANGE_OPTIONS.map((option) => {
         const isSelected = value === option.value;
         
@@ -32,7 +77,6 @@ export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
             key={option.value}
             style={[
               styles.option,
-              isSelected && styles.optionSelected,
               disabled && styles.optionDisabled,
             ]}
             onPress={() => !disabled && onChange(option.value)}
@@ -66,6 +110,15 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 4,
     gap: 4,
+    position: 'relative',
+  },
+  indicator: {
+    position: 'absolute',
+    top: 4,
+    left: 4,
+    bottom: 4,
+    backgroundColor: colors.accent.secondary,
+    borderRadius: 8,
   },
   option: {
     flex: 1,
@@ -74,9 +127,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  optionSelected: {
-    backgroundColor: colors.accent.secondary,
+    zIndex: 1,
   },
   optionDisabled: {
     opacity: 0.5,

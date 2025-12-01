@@ -161,7 +161,7 @@ export function CustomTabBar({ state, descriptors, navigation }: BottomTabBarPro
                 style={{
                   color: isFocused ? colors.accent.secondary : colors.text.muted,
                   fontSize: isTablet ? typography.size.sm : typography.size.xs,
-                  fontWeight: isFocused ? '600' : '400',
+                  fontWeight: isFocused ? '400' : '400',
                   marginTop: -spacing.xxs,
                   marginBottom: spacing.xxs
                 }}

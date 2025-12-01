@@ -1,6 +1,12 @@
 /**
  * Spending Trend Line Chart
- * PRO ONLY - Shows spending history over time
+ * PRO ONLY - Shows lifetime spending history over time
+ * 
+ * Features:
+ * - Displays monthly spending from oldest to current month
+ * - Horizontally scrollable when more than 4 months of data
+ * - Shows data points on each month with labels
+ * - Starts scrolled to the most recent data (scrollToEnd)
  */
 
 import React, { useMemo } from 'react';
@@ -14,6 +20,11 @@ import type { SpendingTrendPoint } from '../../types/insights';
 import { useResponsiveValue } from '../../hooks/useResponsive';
 import { useTranslation } from 'react-i18next';
 
+// Constants for chart configuration
+const POINT_SPACING = 70; // Fixed spacing between data points for consistent display
+const MIN_POINTS_FOR_SCROLL = 4; // Minimum points before enabling scroll behavior
+const CHART_PADDING = 20; // Padding at start and end of chart
+
 interface SpendingTrendChartProps {
   data: SpendingTrendPoint[];
   currency: { code: string; symbol: string };
@@ -24,7 +35,8 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
   currency,
 }) => {
   const { t } = useTranslation();
-  // Responsive chart dimensions
+  
+  // Responsive chart height
   const chartHeight = useResponsiveValue({
     sm: 160,
     md: 180,
@@ -33,19 +45,12 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
     default: 180,
   });
 
-  const chartWidth = useResponsiveValue({
-    sm: 280,
-    md: 320,
-    lg: 360,
-    xl: 400,
-    default: 320,
-  });
-
   // Transform data for the chart library
+  // Data comes in chronological order (oldest first) from getSpendingTrend
   const chartData = useMemo(() => {
-    return data.map((point, index) => ({
+    return data.map((point) => ({
       value: point.totalSpending,
-      label: index % 3 === 0 ? point.label : '', // Show every 3rd label to avoid crowding
+      label: point.label, // Show all month labels
       dataPointText: '',
     }));
   }, [data]);
@@ -58,6 +63,9 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
     const avg = values.reduce((a, b) => a + b, 0) / values.length;
     return { maxValue: max, avgValue: avg };
   }, [data]);
+
+  // Determine if chart should be scrollable
+  const isScrollable = data.length > MIN_POINTS_FOR_SCROLL;
 
   // Not enough data to show trend
   if (data.length < 2) {
@@ -72,9 +80,6 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
       </GlassCard>
     );
   }
-
-  // Calculate spacing based on data points
-  const spacing = Math.max(30, Math.min(60, chartWidth / data.length));
 
   return (
     <GlassCard style={styles.container}>
@@ -95,33 +100,48 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
         <LineChart
           data={chartData}
           height={chartHeight}
-          width={chartWidth}
+          // Don't set width to allow natural scrolling when content exceeds container
           areaChart
           curved
           curvature={0.2}
           color={colors.accent.secondary}
-          thickness={3}
+          thickness={2.5}
           startFillColor={colors.accent.secondary}
           endFillColor="transparent"
-          startOpacity={0.4}
+          startOpacity={0.3}
           endOpacity={0}
-          initialSpacing={20}
-          endSpacing={20}
-          spacing={spacing}
-          hideDataPoints={data.length > 12}
+          initialSpacing={CHART_PADDING}
+          endSpacing={CHART_PADDING}
+          spacing={POINT_SPACING}
+          // Always show data points for clarity
+          hideDataPoints={false}
           dataPointsColor={colors.accent.secondary}
-          dataPointsRadius={4}
-          xAxisColor="transparent"
-          yAxisColor="transparent"
-          yAxisTextStyle={styles.axisText}
+          dataPointsRadius={5}
+          // X-axis configuration
+          xAxisColor={colors.border.subtle}
+          xAxisThickness={1}
           xAxisLabelTextStyle={styles.axisText}
-          hideRules
-          hideYAxisText
-          maxValue={maxValue * 1.2}
+          // Y-axis configuration - visible for better data comprehension
+          yAxisColor={colors.border.subtle}
+          yAxisThickness={1}
+          yAxisTextStyle={styles.yAxisText}
+          hideYAxisText={false}
+          yAxisLabelPrefix={currency.symbol}
+          yAxisLabelWidth={50}
+          hideRules={false}
+          rulesColor={colors.border.subtle}
+          rulesType="solid"
+          rulesThickness={0.5}
+          // Value bounds with padding
+          maxValue={maxValue > 0 ? maxValue * 1.2 : 100}
           noOfSections={4}
+          // Animation
           animateOnDataChange
           animationDuration={500}
           isAnimated
+          // Scroll behavior - start at the end (most recent month) by default
+          scrollToEnd={isScrollable}
+          // Pointer/tooltip configuration for touch interaction
           pointerConfig={{
             pointerStripHeight: chartHeight,
             pointerStripColor: colors.accent.secondary,
@@ -152,10 +172,11 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
         />
       </View>
 
-      {/* Legend */}
+      {/* Legend showing data range */}
       <View style={styles.legend}>
         <Text style={styles.legendText}>
           {t('stats.historyLength', { count: data.length })}
+          {isScrollable && ' • ' + t('stats.scrollHint', { defaultValue: 'Scroll to see more' })}
         </Text>
       </View>
     </GlassCard>
@@ -202,6 +223,11 @@ const styles = StyleSheet.create({
   axisText: {
     color: colors.text.muted,
     fontSize: 10,
+  },
+  yAxisText: {
+    color: colors.text.muted,
+    fontSize: 9,
+    fontWeight: '500',
   },
   tooltip: {
     backgroundColor: colors.background.elevated,

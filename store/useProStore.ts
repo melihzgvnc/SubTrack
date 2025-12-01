@@ -6,9 +6,10 @@ interface ProState {
   customerInfo: CustomerInfo | null;
   setCustomerInfo: (info: CustomerInfo) => void;
   reset: () => void;
+  toggleProForTesting: () => void; // Temporary testing function
 }
 
-export const useProStore = create<ProState>((set) => ({
+export const useProStore = create<ProState>((set, get) => ({
   isPro: false,
   customerInfo: null,
   setCustomerInfo: (info: CustomerInfo) => {
@@ -18,4 +19,6 @@ export const useProStore = create<ProState>((set) => ({
     set({ customerInfo: info, isPro });
   },
   reset: () => set({ isPro: false, customerInfo: null }),
+  // 🚧 TEMPORARY: Toggle Pro status for testing (bypasses RevenueCat)
+  toggleProForTesting: () => set({ isPro: !get().isPro }),
 }));

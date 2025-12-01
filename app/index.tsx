@@ -14,6 +14,7 @@ import { spacing } from '../theme/spacing';
 import { typography } from '../theme/typography';
 import { useResponsive, useResponsiveValue } from '../hooks/useResponsive';
 import { useAuth } from '../hooks/useAuth';
+import { useProStore } from '../store/useProStore';
 import Animated, { useSharedValue, useAnimatedStyle, withSpring, withTiming } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 
@@ -27,6 +28,7 @@ export default function Dashboard() {
     const router = useRouter();
     const { isTablet, height } = useResponsive();
     const { isAuthenticated, openLoginModal } = useAuth();
+    const { isPro } = useProStore();
     const [sortBy, setSortBy] = useState<SortOption>('name');
     const [sortMenuOpen, setSortMenuOpen] = useState(false);
 
@@ -385,7 +387,7 @@ export default function Dashboard() {
                                             </View>
                                         </GlassCard>
                                     </TouchableOpacity>
-                                    {index === 1 && (
+                                    {!isPro && index === 1 && (
                                         <View className="mt-3">
                                             <NativeAdCard />
                                         </View>

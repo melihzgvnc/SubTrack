@@ -2,10 +2,11 @@
  * Category Spending Bar Chart
  * Available for FREE users (current month)
  * Enhanced for PRO users (with time range selection)
+ * Features smooth bar height animations when data changes
  */
 
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useMemo, useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, Animated } from 'react-native';
 import { GlassCard } from '../ui/GlassCard';
 import { TimeRangeSelector } from './TimeRangeSelector';
 import { colors } from '../../theme/colors';
@@ -14,6 +15,63 @@ import { typography } from '../../theme/typography';
 import type { CategorySpending, TimeRange } from '../../types/insights';
 import { useResponsiveValue } from '../../hooks/useResponsive';
 import { useTranslation } from 'react-i18next';
+
+// Animated bar component for smooth height transitions
+interface AnimatedBarProps {
+  height: number;
+  color: string;
+  label: string;
+  value: string;
+  categoryLabel: string;
+}
+
+const AnimatedBar: React.FC<AnimatedBarProps> = ({
+  height,
+  color,
+  label,
+  value,
+  categoryLabel,
+}) => {
+  const heightAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.spring(heightAnim, {
+      toValue: height,
+      friction: 8,
+      tension: 40,
+      useNativeDriver: false, // height animation requires non-native driver
+    }).start();
+  }, [height, heightAnim]);
+
+  return (
+    <View style={styles.barWrapper}>
+      <Text
+        style={styles.barValue}
+        allowFontScaling
+        maxFontSizeMultiplier={1.2}
+      >
+        {value}
+      </Text>
+      <Animated.View
+        style={[
+          styles.bar,
+          {
+            height: heightAnim,
+            backgroundColor: color,
+          },
+        ]}
+        accessibilityLabel={label}
+      />
+      <Text
+        style={styles.barLabel}
+        allowFontScaling
+        maxFontSizeMultiplier={1.2}
+      >
+        {categoryLabel}
+      </Text>
+    </View>
+  );
+};
 
 interface CategorySpendingChartProps {
   data: CategorySpending[];
@@ -131,7 +189,7 @@ export const CategorySpendingChart: React.FC<CategorySpendingChartProps> = ({
         </View>
       ) : (
         <View style={[styles.chartContainer, { height: chartHeight }]}>
-          {data.map((category, index) => {
+          {data.map((category) => {
             const heightPercentage = (category.amount / maxValue) * 100;
             const maxBarHeight = chartHeight - 40; // Leave room for labels
             const barHeight = Math.max((heightPercentage / 100) * maxBarHeight, 40);
@@ -149,33 +207,14 @@ export const CategorySpendingChart: React.FC<CategorySpendingChartProps> = ({
             };
 
             return (
-              <View key={category.category} style={styles.barWrapper}>
-                <Text
-                  style={styles.barValue}
-                  allowFontScaling
-                  maxFontSizeMultiplier={1.2}
-                >
-                  {currency.symbol}
-                  {category.amount.toFixed(0)}
-                </Text>
-                <View
-                  style={[
-                    styles.bar,
-                    {
-                      height: barHeight,
-                      backgroundColor: category.color,
-                    },
-                  ]}
-                  accessibilityLabel={`${category.category}: ${currency.symbol}${category.amount.toFixed(2)}`}
-                />
-                <Text
-                  style={styles.barLabel}
-                  allowFontScaling
-                  maxFontSizeMultiplier={1.2}
-                >
-                  {t(getCategoryKey(category.category))}
-                </Text>
-              </View>
+              <AnimatedBar
+                key={category.category}
+                height={barHeight}
+                color={category.color}
+                label={`${category.category}: ${currency.symbol}${category.amount.toFixed(2)}`}
+                value={`${currency.symbol}${category.amount.toFixed(0)}`}
+                categoryLabel={t(getCategoryKey(category.category))}
+              />
             );
           })}
         </View>

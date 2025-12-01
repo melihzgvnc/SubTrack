@@ -103,15 +103,14 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
   }, [category, subscriptions]);
 
   return (
-    <TouchableOpacity
-      onPress={() => onSelect(isFlipped ? null : title)}
-      activeOpacity={0.8}
+    <View
       style={{ width: '48%', marginBottom: spacing.md, height }}
       accessibilityRole="button"
       accessibilityLabel={`${title} category with ${count} subscriptions`}
     >
-      {/* Front of Card */}
+      {/* Front of Card - Tappable */}
       <Animated.View
+        pointerEvents={isFlipped ? 'none' : 'auto'}
         style={[
           {
             position: 'absolute',
@@ -122,48 +121,55 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
           flipToFrontStyle,
         ]}
       >
-        <GlassCard style={{ height: '100%' }}>
-          <View style={{ flex: 1, justifyContent: 'space-between' }}>
-            <View style={{ alignItems: 'flex-end' }}>
-              <View
-                style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 20,
-                  backgroundColor: colors.border.highlight,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}
-              >
-                <Icon color={color} size={20} />
+        <TouchableOpacity
+          onPress={() => onSelect(title)}
+          activeOpacity={0.8}
+          style={{ height: '100%' }}
+        >
+          <GlassCard style={{ height: '100%' }}>
+            <View style={{ flex: 1, justifyContent: 'space-between' }}>
+              <View style={{ alignItems: 'flex-end' }}>
+                <View
+                  style={{
+                    width: 40,
+                    height: 40,
+                    borderRadius: 20,
+                    backgroundColor: colors.border.highlight,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Icon color={color} size={20} />
+                </View>
+              </View>
+              <View>
+                <Text
+                  style={{
+                    color: colors.text.primary,
+                    fontSize: typography.size.xl,
+                    fontWeight: 'bold',
+                    marginBottom: spacing.xxs,
+                  }}
+                >
+                  {title}
+                </Text>
+                <Text
+                  style={{
+                    color: colors.text.secondary,
+                    fontSize: typography.size.sm,
+                  }}
+                >
+                  {count} {t('stats.subsSuffix')}
+                </Text>
               </View>
             </View>
-            <View>
-              <Text
-                style={{
-                  color: colors.text.primary,
-                  fontSize: typography.size.xl,
-                  fontWeight: 'bold',
-                  marginBottom: spacing.xxs,
-                }}
-              >
-                {title}
-              </Text>
-              <Text
-                style={{
-                  color: colors.text.secondary,
-                  fontSize: typography.size.sm,
-                }}
-              >
-                {count} {t('stats.subsSuffix')}
-              </Text>
-            </View>
-          </View>
-        </GlassCard>
+          </GlassCard>
+        </TouchableOpacity>
       </Animated.View>
 
-      {/* Back of Card */}
+      {/* Back of Card - Full surface tappable if ≤1 sub, otherwise header tappable + scrollable content */}
       <Animated.View
+        pointerEvents={isFlipped ? 'auto' : 'none'}
         style={[
           {
             position: 'absolute',
@@ -174,128 +180,248 @@ const CategoryCard: React.FC<CategoryCardProps> = ({
           flipToBackStyle,
         ]}
       >
-        <GlassCard style={{ height: '100%' }}>
-          <View style={{ flex: 1 }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                marginBottom: spacing.sm,
-              }}
-            >
-              <Text
-                style={{
-                  color: colors.text.primary,
-                  fontSize: typography.size.lg,
-                  fontWeight: 'bold',
-                }}
-              >
-                {title}
-              </Text>
-              <Text
-                style={{
-                  color: colors.text.secondary,
-                  fontSize: typography.size.xs,
-                }}
-              >
-                {subs.length}
-              </Text>
-            </View>
-            <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-              {subs.map((sub) => (
+        {subs.length <= 1 ? (
+          // Full surface tappable when 0-1 subscriptions
+          <TouchableOpacity
+            onPress={() => onSelect(null)}
+            activeOpacity={0.8}
+            style={{ height: '100%' }}
+          >
+            <GlassCard style={{ height: '100%' }}>
+              <View style={{ flex: 1 }}>
                 <View
-                  key={sub.id}
                   style={{
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    backgroundColor: colors.border.subtle,
-                    padding: spacing.xs,
-                    borderRadius: spacing.sm,
-                    marginBottom: 6,
-                    borderWidth: 1,
-                    borderColor: colors.border.highlight,
+                    marginBottom: spacing.sm,
                   }}
                 >
+                  <Text
+                    style={{
+                      color: colors.text.primary,
+                      fontSize: typography.size.lg,
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {title}
+                  </Text>
+                  <Text
+                    style={{
+                      color: colors.text.secondary,
+                      fontSize: typography.size.xs,
+                    }}
+                  >
+                    {subs.length}
+                  </Text>
+                </View>
+                {subs.length === 1 ? (
                   <View
                     style={{
                       flexDirection: 'row',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
-                      gap: spacing.xs,
-                      flex: 1,
+                      backgroundColor: colors.border.subtle,
+                      padding: spacing.xs,
+                      borderRadius: spacing.sm,
+                      borderWidth: 1,
+                      borderColor: colors.border.highlight,
                     }}
                   >
                     <View
                       style={{
-                        width: 28,
-                        height: 28,
-                        borderRadius: 14,
-                        justifyContent: 'center',
+                        flexDirection: 'row',
                         alignItems: 'center',
-                        backgroundColor: sub.color + '20',
+                        gap: spacing.xs,
+                        flex: 1,
                       }}
                     >
-                      <Text
+                      <View
                         style={{
-                          fontSize: typography.size.xs,
-                          fontWeight: 'bold',
-                          color: sub.color,
+                          width: 28,
+                          height: 28,
+                          borderRadius: 14,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          backgroundColor: subs[0].color + '20',
                         }}
                       >
-                        {sub.name[0]}
-                      </Text>
+                        <Text
+                          style={{
+                            fontSize: typography.size.xs,
+                            fontWeight: 'bold',
+                            color: subs[0].color,
+                          }}
+                        >
+                          {subs[0].name[0]}
+                        </Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          style={{
+                            color: colors.text.primary,
+                            fontSize: typography.size.xs,
+                            fontWeight: '600',
+                          }}
+                          numberOfLines={1}
+                        >
+                          {subs[0].name}
+                        </Text>
+                        <Text
+                          style={{
+                            color: colors.text.secondary,
+                            fontSize: 10,
+                          }}
+                        >
+                          {t(`addSubscription.${subs[0].cycle}`)}
+                        </Text>
+                      </View>
                     </View>
-                    <View style={{ flex: 1 }}>
-                      <Text
-                        style={{
-                          color: colors.text.primary,
-                          fontSize: typography.size.xs,
-                          fontWeight: '600',
-                        }}
-                        numberOfLines={1}
-                      >
-                        {sub.name}
-                      </Text>
-                      <Text
-                        style={{
-                          color: colors.text.secondary,
-                          fontSize: 10,
-                        }}
-                      >
-                        {t(`addSubscription.${sub.cycle}`)}
-                      </Text>
-                    </View>
+                    <Text
+                      style={{
+                        color: colors.text.primary,
+                        fontSize: typography.size.xs,
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {subs[0].currency}
+                      {subs[0].price.toFixed(2)}
+                    </Text>
                   </View>
+                ) : (
                   <Text
                     style={{
-                      color: colors.text.primary,
+                      color: colors.text.secondary,
+                      textAlign: 'center',
+                      marginTop: spacing.lg,
                       fontSize: typography.size.xs,
-                      fontWeight: 'bold',
                     }}
                   >
-                    {sub.currency}
-                    {sub.price.toFixed(2)}
+                    {t('stats.noSubscriptions')}
                   </Text>
-                </View>
-              ))}
-              {subs.length === 0 && (
+                )}
+              </View>
+            </GlassCard>
+          </TouchableOpacity>
+        ) : (
+          // Header tappable + scrollable content when 2+ subscriptions
+          <GlassCard style={{ height: '100%' }}>
+            <View style={{ flex: 1 }}>
+              <TouchableOpacity
+                onPress={() => onSelect(null)}
+                activeOpacity={0.8}
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: spacing.sm,
+                }}
+              >
+                <Text
+                  style={{
+                    color: colors.text.primary,
+                    fontSize: typography.size.lg,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {title}
+                </Text>
                 <Text
                   style={{
                     color: colors.text.secondary,
-                    textAlign: 'center',
-                    marginTop: spacing.lg,
                     fontSize: typography.size.xs,
                   }}
                 >
-                  {t('stats.noSubscriptions')}
+                  {subs.length}
                 </Text>
-              )}
-            </ScrollView>
-          </View>
-        </GlassCard>
+              </TouchableOpacity>
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                style={{ flex: 1 }}
+                nestedScrollEnabled={true}
+              >
+                {subs.map((sub) => (
+                  <View
+                    key={sub.id}
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      backgroundColor: colors.border.subtle,
+                      padding: spacing.xs,
+                      borderRadius: spacing.sm,
+                      marginBottom: 6,
+                      borderWidth: 1,
+                      borderColor: colors.border.highlight,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        gap: spacing.xs,
+                        flex: 1,
+                      }}
+                    >
+                      <View
+                        style={{
+                          width: 28,
+                          height: 28,
+                          borderRadius: 14,
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          backgroundColor: sub.color + '20',
+                        }}
+                      >
+                        <Text
+                          style={{
+                            fontSize: typography.size.xs,
+                            fontWeight: 'bold',
+                            color: sub.color,
+                          }}
+                        >
+                          {sub.name[0]}
+                        </Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          style={{
+                            color: colors.text.primary,
+                            fontSize: typography.size.xs,
+                            fontWeight: '600',
+                          }}
+                          numberOfLines={1}
+                        >
+                          {sub.name}
+                        </Text>
+                        <Text
+                          style={{
+                            color: colors.text.secondary,
+                            fontSize: 10,
+                          }}
+                        >
+                          {t(`addSubscription.${sub.cycle}`)}
+                        </Text>
+                      </View>
+                    </View>
+                    <Text
+                      style={{
+                        color: colors.text.primary,
+                        fontSize: typography.size.xs,
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {sub.currency}
+                      {sub.price.toFixed(2)}
+                    </Text>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
+          </GlassCard>
+        )}
       </Animated.View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
@@ -454,8 +580,8 @@ export default function Stats() {
             onSelect={setSelectedCategory}
           />
 
-          {/* Native Ad */}
-          <NativeAdCategoryCard height={categoryCardHeight} />
+          {/* Native Ad - Only for Free users */}
+          {!isPro && <NativeAdCategoryCard height={categoryCardHeight} />}
 
           <CategoryCard
             titleKey="categories.other"

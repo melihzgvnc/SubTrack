@@ -32,9 +32,10 @@ export function useSpendingCalculations(
 ): InsightsData {
   const { includePro = true, maxTrendMonths = 24 } = options;
 
-  // Memoize the reference date to prevent recalculations on every render
-  // Only update when the component mounts or subscriptions change significantly
-  const referenceDate = useMemo(() => new Date(), []);
+  // Memoize the reference date to prevent excessive recalculations
+  // Update when subscription count changes to ensure data freshness
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const referenceDate = useMemo(() => new Date(), [subscriptions.length]);
 
   // Category spending - calculated for all users
   const categorySpending = useMemo(
@@ -54,7 +55,9 @@ export function useSpendingCalculations(
     [subscriptions, timeRange, referenceDate]
   );
 
-  // Spending trend - Pro only, but always calculate if includePro is true
+  // Spending trend - Pro only, always shows lifetime data
+  // Intentionally NOT tied to selectedTimeRange - trend chart displays
+  // complete spending history regardless of category chart time selection
   const spendingTrend = useMemo(() => {
     if (!includePro) {
       return [];
@@ -88,7 +91,9 @@ export function useCategorySpending(
   subscriptions: Subscription[],
   timeRange: TimeRange = 'current_month'
 ) {
-  const referenceDate = useMemo(() => new Date(), []);
+  // Update reference date when subscription count changes
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const referenceDate = useMemo(() => new Date(), [subscriptions.length]);
 
   const categorySpending = useMemo(
     () => getCategorySpending(subscriptions, timeRange, referenceDate),

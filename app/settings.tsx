@@ -16,6 +16,7 @@ import { currencies } from '../utils/currencies';
 
 import { AccountCard } from '../components/auth/AccountCard';
 import { useAuth } from '../hooks/useAuth';
+import { useProStore } from '../store/useProStore';
 
 export default function Settings() {
     const router = useRouter();
@@ -30,6 +31,7 @@ export default function Settings() {
         setCurrency
     } = useSubStore();
     const { signOut, openLoginModal } = useAuth();
+    const { isPro, toggleProForTesting } = useProStore();
     const { isTablet, height } = useResponsive();
 
     // Responsive currency list height
@@ -253,6 +255,29 @@ export default function Settings() {
                                         </Text>
                                         <Text className="text-shadow-blue-grey text-xs">
                                             {t('common.settings.onboarding.subtitle')}
+                                        </Text>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+
+                            {/* Divider */}
+                            <View className="h-[1px] bg-white/10 my-2" />
+
+                            {/* Pro Testing Toggle */}
+                            <TouchableOpacity
+                                onPress={toggleProForTesting}
+                                className="flex-row justify-between items-center py-2"
+                            >
+                                <View className="flex-row items-center gap-4">
+                                    <View className="w-10 h-10 rounded-full bg-neon-purple/20 justify-center items-center">
+                                        <Text className="text-neon-purple text-lg">✨</Text>
+                                    </View>
+                                    <View>
+                                        <Text className="text-white text-lg font-bold">
+                                            Toggle Pro (Testing)
+                                        </Text>
+                                        <Text className="text-shadow-blue-grey text-xs">
+                                            Status: {isPro ? '🟢 Pro Active' : '🔴 Free'}
                                         </Text>
                                     </View>
                                 </View>

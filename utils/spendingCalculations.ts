@@ -89,7 +89,7 @@ export function calculateSubscriptionSpending(
   endDate: Date
 ): number {
   const subStart = new Date(subscription.startDate);
-  
+
   // If subscription started after the end date, no spending
   if (isAfter(subStart, endDate)) {
     return 0;
@@ -97,7 +97,7 @@ export function calculateSubscriptionSpending(
 
   // Effective start is the later of subscription start or range start
   const effectiveStart = max([subStart, startDate]);
-  
+
   // Calculate months of activity (at least 1 if active at all)
   const monthsActive = Math.max(
     1,
@@ -116,14 +116,14 @@ export function calculateLifetimeSpending(
   referenceDate: Date = new Date()
 ): { totalSpent: number; monthsActive: number } {
   const subStart = new Date(subscription.startDate);
-  
+
   if (isAfter(subStart, referenceDate)) {
     return { totalSpent: 0, monthsActive: 0 };
   }
 
   const monthsActive = Math.max(1, differenceInMonths(referenceDate, subStart) + 1);
   const monthlyPrice = getMonthlyPrice(subscription);
-  
+
   return {
     totalSpent: monthlyPrice * monthsActive,
     monthsActive,
@@ -143,13 +143,13 @@ export function getCategorySpending(
   }
 
   const { startDate, endDate } = getDateRangeForTimeRange(timeRange, referenceDate);
-  
+
   // Aggregate spending by category
   const categoryMap = new Map<string, { amount: number; count: number }>();
 
   subscriptions.forEach((sub) => {
     const spending = calculateSubscriptionSpending(sub, startDate, endDate);
-    
+
     if (spending > 0) {
       const existing = categoryMap.get(sub.category) || { amount: 0, count: 0 };
       categoryMap.set(sub.category, {
@@ -176,12 +176,17 @@ export function getCategorySpending(
 /**
  * Get monthly spending trend data points
  * Returns data for each month from the earliest subscription to now
- * Limited to last 24 months for performance
+ * Limited to last 24 months for performance by default
+ * @param subscriptions - Array of subscriptions
+ * @param referenceDate - The current reference date (usually today)
+ * @param maxMonths - Maximum number of months to show (default: 24)
+ * @param limitToTimeRange - Optional time range to limit the trend data
  */
 export function getSpendingTrend(
   subscriptions: Subscription[],
   referenceDate: Date = new Date(),
-  maxMonths: number = 24
+  maxMonths: number = 24,
+  limitToTimeRange?: TimeRange
 ): SpendingTrendPoint[] {
   if (subscriptions.length === 0) {
     return [];
@@ -193,10 +198,17 @@ export function getSpendingTrend(
     return subStart < earliest ? subStart : earliest;
   }, new Date(subscriptions[0].startDate));
 
+  // If a time range is specified, limit the trend to that range
+  let effectiveStartDate = earliestStart;
+  if (limitToTimeRange) {
+    const { startDate } = getDateRangeForTimeRange(limitToTimeRange, referenceDate);
+    effectiveStartDate = max([earliestStart, startDate]);
+  }
+
   // Calculate how many months to show (capped at maxMonths)
   const totalMonths = Math.min(
     maxMonths,
-    differenceInMonths(referenceDate, earliestStart) + 1
+    differenceInMonths(referenceDate, effectiveStartDate) + 1
   );
 
   const trendData: SpendingTrendPoint[] = [];
@@ -207,9 +219,19 @@ export function getSpendingTrend(
     const monthEnd = endOfMonth(monthDate);
 
     // Calculate total spending for this month
+    // Only count subscriptions that were active for at least part of this month
     let monthlyTotal = 0;
     subscriptions.forEach((sub) => {
-      if (wasActiveInMonth(sub, monthStart, monthEnd)) {
+      const subStart = new Date(sub.startDate);
+
+      // Skip if subscription started after this month
+      if (isAfter(subStart, monthEnd)) {
+        return;
+      }
+
+      // If subscription started this month or earlier, count it
+      // This gives a more accurate representation of actual spending commitment
+      if (isBefore(subStart, monthEnd) || subStart <= monthEnd) {
         monthlyTotal += getMonthlyPrice(sub);
       }
     });
@@ -262,7 +284,7 @@ export function getTotalSpending(
   referenceDate: Date = new Date()
 ): number {
   const { startDate, endDate } = getDateRangeForTimeRange(timeRange, referenceDate);
-  
+
   return subscriptions.reduce((total, sub) => {
     return total + calculateSubscriptionSpending(sub, startDate, endDate);
   }, 0);
@@ -282,7 +304,7 @@ export function getPercentageChange(
   }
 
   const currentSpending = getTotalSpending(subscriptions, timeRange, referenceDate);
-  
+
   // Calculate previous period
   let previousReferenceDate: Date;
   switch (timeRange) {
