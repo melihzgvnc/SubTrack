@@ -77,18 +77,18 @@ export interface InsightsData {
  */
 export interface TimeRangeOption {
   value: TimeRange;
-  label: string;
-  shortLabel: string;
+  labelKey: string;
+  shortLabelKey: string;
 }
 
 /**
- * Available time range options
+ * Available time range options with translation keys
  */
 export const TIME_RANGE_OPTIONS: TimeRangeOption[] = [
-  { value: 'current_month', label: 'Current Month', shortLabel: 'Month' },
-  { value: 'last_3_months', label: 'Last 3 Months', shortLabel: '3 Mo' },
-  { value: 'last_year', label: 'Last Year', shortLabel: 'Year' },
-  { value: 'lifetime', label: 'Lifetime', shortLabel: 'All' },
+  { value: 'current_month', labelKey: 'stats.timeRanges.currentMonth', shortLabelKey: 'stats.timeRanges.currentMonthShort' },
+  { value: 'last_3_months', labelKey: 'stats.timeRanges.last3Months', shortLabelKey: 'stats.timeRanges.last3MonthsShort' },
+  { value: 'last_year', labelKey: 'stats.timeRanges.lastYear', shortLabelKey: 'stats.timeRanges.lastYearShort' },
+  { value: 'lifetime', labelKey: 'stats.timeRanges.lifetime', shortLabelKey: 'stats.timeRanges.lifetimeShort' },
 ];
 
 /**

@@ -91,7 +91,7 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
           <Text style={styles.avgLabel}>{t('stats.avg')}</Text>
           <Text style={styles.avgValue}>
             {currency.symbol}
-            {avgValue.toFixed(0)}/mo
+            {avgValue.toFixed(0)}{t('stats.perMonth')}
           </Text>
         </View>
       </View>
@@ -126,8 +126,8 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
           yAxisThickness={1}
           yAxisTextStyle={styles.yAxisText}
           hideYAxisText={false}
-          yAxisLabelPrefix={currency.symbol}
           yAxisLabelWidth={50}
+          formatYLabel={(value) => `${currency.symbol}${Math.round(Number(value))}`}
           hideRules={false}
           rulesColor={colors.border.subtle}
           rulesType="solid"

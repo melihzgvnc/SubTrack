@@ -14,6 +14,8 @@ import {
   min,
   max,
 } from 'date-fns';
+import { tr, enUS } from 'date-fns/locale';
+import i18n from '../lib/i18n';
 import type { Subscription } from '../store/useSubStore';
 import type {
   TimeRange,
@@ -22,6 +24,14 @@ import type {
   SpendingExtreme,
 } from '../types/insights';
 import { CATEGORY_COLORS, CATEGORY_SHORT_NAMES } from '../types/insights';
+
+/**
+ * Get the current date-fns locale based on i18n language
+ */
+function getDateLocale() {
+  const currentLanguage = i18n.language;
+  return currentLanguage === 'tr' ? tr : enUS;
+}
 
 /**
  * Calculate the monthly equivalent price for a subscription
@@ -238,7 +248,7 @@ export function getSpendingTrend(
 
     trendData.push({
       date: monthStart,
-      label: format(monthStart, 'MMM yy'),
+      label: format(monthStart, 'MMM yy', { locale: getDateLocale() }),
       totalSpending: monthlyTotal,
     });
   }

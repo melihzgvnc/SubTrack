@@ -6,6 +6,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, LayoutChangeEvent } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { colors } from '../../theme/colors';
 import { spacing } from '../../theme/spacing';
 import { typography } from '../../theme/typography';
@@ -23,6 +24,7 @@ export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
   onChange,
   disabled = false,
 }) => {
+  const { t } = useTranslation();
   const slideAnim = useRef(new Animated.Value(0)).current;
   const containerWidth = useRef(0);
   const optionWidth = useRef(0);
@@ -83,7 +85,7 @@ export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
             activeOpacity={disabled ? 1 : 0.7}
             accessibilityRole="button"
             accessibilityState={{ selected: isSelected, disabled }}
-            accessibilityLabel={`Select ${option.label}`}
+            accessibilityLabel={`Select ${t(option.labelKey)}`}
           >
             <Text
               style={[
@@ -94,7 +96,7 @@ export const TimeRangeSelector: React.FC<TimeRangeSelectorProps> = ({
               allowFontScaling
               maxFontSizeMultiplier={1.2}
             >
-              {option.shortLabel}
+              {t(option.shortLabelKey)}
             </Text>
           </TouchableOpacity>
         );
