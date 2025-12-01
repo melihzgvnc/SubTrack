@@ -192,7 +192,11 @@ export const CategorySpendingChart: React.FC<CategorySpendingChartProps> = ({
           {data.map((category) => {
             const heightPercentage = (category.amount / maxValue) * 100;
             const maxBarHeight = chartHeight - 40; // Leave room for labels
-            const barHeight = Math.max((heightPercentage / 100) * maxBarHeight, 40);
+            
+            // Calculate bar height with proper proportional scaling
+            // Use a minimum of 8px for visibility, but maintain proportions
+            const calculatedHeight = (heightPercentage / 100) * maxBarHeight;
+            const barHeight = Math.max(calculatedHeight, 8);
 
             const getCategoryKey = (cat: string) => {
               switch (cat) {
