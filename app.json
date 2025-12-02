@@ -13,6 +13,7 @@
       "backgroundColor": "#09090B"
     },
     "ios": {
+      "usesAppleSignIn":true,
       "supportsTablet": true,
       "bundleIdentifier": "com.melihzgvnc.SubTrack"
     },
