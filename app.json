@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "SubTrack",
+    "name": "SubPulse",
     "slug": "SubTrack",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,7 +13,7 @@
       "backgroundColor": "#09090B"
     },
     "ios": {
-      "usesAppleSignIn":true,
+      "usesAppleSignIn": true,
       "supportsTablet": true,
       "bundleIdentifier": "com.melihzgvnc.SubTrack"
     },
@@ -34,11 +34,17 @@
       [
         "react-native-google-mobile-ads",
         {
-          "androidAppId": "ca-app-pub-3940256099942544~3347511713",
-          "iosAppId": "ca-app-pub-3940256099942544~1458002511"
+          "iosAppId": "ca-app-pub-3940256099942544~1458002511",
+          "android_app_id": "ca-app-pub-3940256099942544~3347511713"
         }
       ],
       "expo-web-browser"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a26e13aa-9e32-4e64-8cf1-ecd6661b3ae0"
+      }
+    }
   }
 }

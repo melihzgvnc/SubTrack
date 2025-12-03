@@ -238,7 +238,7 @@ export default function Settings() {
                     </View>
 
                     {/* Debug Section */}
-                    <View className="mb-6">
+                    {/* <View className="mb-6">
                         <Text className="text-shadow-blue-grey text-sm font-bold uppercase mb-3 ml-1">{t('common.settings.debug')}</Text>
                         <GlassCard>
                             <TouchableOpacity
@@ -258,13 +258,13 @@ export default function Settings() {
                                         </Text>
                                     </View>
                                 </View>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
 
                             {/* Divider */}
-                            <View className="h-[1px] bg-white/10 my-2" />
+                            {/* <View className="h-[1px] bg-white/10 my-2" /> */}
 
                             {/* Pro Testing Toggle */}
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 onPress={toggleProForTesting}
                                 className="flex-row justify-between items-center py-2"
                             >
@@ -283,7 +283,9 @@ export default function Settings() {
                                 </View>
                             </TouchableOpacity>
                         </GlassCard>
-                    </View>
+                    </View> */}
+
+
                 </ScrollView>
             </View >
         </SafeAreaView >
